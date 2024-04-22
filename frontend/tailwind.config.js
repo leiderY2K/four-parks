@@ -4,12 +4,14 @@ export default {
   theme: {
     extend: {
       colors: {
-        'yellowDark': '#fbdd50',
-        'yellowLight': '#fbeb9e',
-        'orangeDark': '#f58d30',
-        'orangeLight': '#f9af6d',
-        'white': '#f9f9f9',
-        'black': '#161616',
+        'blue-light': '#9dcfe8',
+        'blue-dark': '#2d6a88',
+        'red-light': '#d46e51',
+        'red-dark': '#9b442b',
+        'white': '#efefef',
+        'gray-light': 'b2afaf',
+        'grady-dark': '4a4a4a',
+        'black': '#171717',
       },
       fontFamily: {
         'title': ['Martel Sans','sans-serif'],
