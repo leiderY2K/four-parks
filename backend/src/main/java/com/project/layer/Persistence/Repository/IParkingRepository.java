@@ -19,6 +19,13 @@ public interface IParkingRepository extends JpaRepository<Parking, Integer>{
     List<Parking> queryParkingsByCity(@Param("city") String city);
 
     @Query(
+        value = "SELECT * FROM PARKING p, CITY c, PARKINGTYPE pt WHERE p.CITY_IDCITY = c.IDCITY AND c.DESCCITY = :city " + 
+                                                                "AND p.PARKINGTYPE_IDPARKINGTYPE = pt.IDPARKINGTYPE AND pt.DESCPARKINGTYPE = :type",
+        nativeQuery = true
+    )
+    List<Parking> queryParkingsByCityAndType(@Param("city") String city, @Param("type") String type);
+
+    @Query(
         value = "SELECT p.* FROM PARKING p INNER JOIN ADDRESS a ON p.ADDRESS_IDADDRESS = a.IDADDRESS " +
             "WHERE a.COORDINATESX = :coordinateX AND a.COORDINATESY = :coordinateY",
         nativeQuery = true)
