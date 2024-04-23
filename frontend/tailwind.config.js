@@ -12,6 +12,8 @@ export default {
         'gray-light': 'b2afaf',
         'grady-dark': '4a4a4a',
         'black': '#171717',
+        'white2': '#f8f6f6',
+        
       },
       fontFamily: {
         'title': ['Martel Sans','sans-serif'],
