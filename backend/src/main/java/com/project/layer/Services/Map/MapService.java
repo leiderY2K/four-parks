@@ -18,12 +18,22 @@ public class MapService {
     public MapService(){}
 
     public List<Parking> getParkingsPerCity(String city){
-        List<Parking> parkings = parkingRepository.queryParkingsPerCity(city); 
+        List<Parking> parkings = parkingRepository.queryParkingsByCity(city); 
 
         if(parkings.isEmpty()){
             return Collections.emptyList();
         }
         
         return parkings;
+    }
+
+    public Parking getParkingsPerCity(String coordinateX, String coordinateY) {
+        Parking parking = (Parking) parkingRepository.queryParkingByCoordinates(coordinateX, coordinateY);
+
+        if(parking == null){
+            return null;
+        }
+
+        return parking;
     }
 }

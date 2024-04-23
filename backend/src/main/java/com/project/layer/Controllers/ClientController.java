@@ -30,5 +30,11 @@ public class ClientController {
         return mapService.getParkingsPerCity(city);
     }
 
+    @GetMapping("/getParkingByCoordinates")
+    public Parking getParkingByCoordinates(@RequestParam String coordinateX, @RequestParam String coordinateY) {
+        return mapService.getParkingsPerCity(coordinateX, coordinateY);
+    }
+    
+
     
 }
