@@ -1,0 +1,32 @@
+-- Insertar tipo de documento 1
+INSERT INTO `FOURPARKSDATABASE`.`DOCUMENTTYPE` (`IDDOCTYPE`, `DESCDOCTYPE`) VALUES 
+('1', 'DNI');
+
+-- Insertar tipo de documento 2
+INSERT INTO `FOURPARKSDATABASE`.`DOCUMENTTYPE` (`IDDOCTYPE`, `DESCDOCTYPE`) VALUES 
+('2', 'Pasaporte');
+
+-- Insertar tipo de documento 3
+INSERT INTO `FOURPARKSDATABASE`.`DOCUMENTTYPE` (`IDDOCTYPE`, `DESCDOCTYPE`) VALUES 
+('3', 'Carnet de conducir');
+
+
+-- Insertar usuario 1
+INSERT INTO `FOURPARKSDATABASE`.`USER` (`IDUSER`, `FIRSTNAME`, `LASTNAME`, `IDDOCTYPEFK`)
+VALUES ('1234567890123', 'Juan', 'Pérez', '1'); -- DNI
+
+-- Insertar usuario 2
+INSERT INTO `FOURPARKSDATABASE`.`USER` (`IDUSER`, `FIRSTNAME`, `LASTNAME`, `IDDOCTYPEFK`)
+VALUES ('9876543210987', 'María', 'Gómez', '2'); -- Pasaporte
+
+-- Insertar usuario 3
+INSERT INTO `FOURPARKSDATABASE`.`USER` (`IDUSER`, `FIRSTNAME`, `LASTNAME`, `IDDOCTYPEFK`)
+VALUES ('4567890123456', 'Pedro', 'Martínez', '1'); -- DNI
+
+-- Insertar usuario 4
+INSERT INTO `FOURPARKSDATABASE`.`USER` (`IDUSER`, `FIRSTNAME`, `LASTNAME`, `IDDOCTYPEFK`)
+VALUES ('7890123456789', 'Ana', 'López', '3'); -- Carnet de conducir
+
+-- Insertar usuario 5
+INSERT INTO `FOURPARKSDATABASE`.`USER` (`IDUSER`, `FIRSTNAME`, `LASTNAME`, `IDDOCTYPEFK`)
+VALUES ('6543210987654', 'Luis', 'Rodríguez', '2'); -- Pasaporte
