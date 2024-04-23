@@ -1,12 +1,13 @@
-import Login from "./components/Login"
-
+import { BrowserRouter, Route, Routes } from "react-router-dom"
+import Home from "./pages/client/Home"
 
 function App() {
-  return (    
-    <div className="w-full flex items-center justify-center h-screen">
-      <Login/>
-      
-    </div>
+  return (
+    <BrowserRouter>
+    <Routes>
+      <Route path="/*" element={<Home />} />
+    </Routes>
+    </BrowserRouter>
   )
 }
 export default App
