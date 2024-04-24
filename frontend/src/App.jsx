@@ -7,7 +7,8 @@ function App() {
     <BrowserRouter>
     <Routes>
       
-        <Route  path="/" element={<div className="w-full flex items-center justify-center h-screen"> <Login /> </div>} />
+        <Route  path="/*" element={<div className="w-full flex items-center justify-center h-screen"> <Login /> </div>} />
+        <Route path="inicio-cliente" element={<Home />}/>
 
     </Routes>
     </BrowserRouter>
