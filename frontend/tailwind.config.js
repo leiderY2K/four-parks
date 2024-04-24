@@ -4,16 +4,19 @@ export default {
   theme: {
     extend: {
       colors: {
-        'yellowDark': '#fbdd50',
-        'yellowLight': '#fbeb9e',
-        'orangeDark': '#f58d30',
-        'orangeLight': '#f9af6d',
-        'white': '#f9f9f9',
-        'black': '#161616',
+        'blue-light': '#b1d4e6',
+        'blue-dark': '#2d6a88',
+        'blue-darkest': '#205d7b',
+        'red-light': '#d46e51',
+        'red-dark': '#9b442b',
+        'white': '#f8f6f6',
+        'gray-light': '#efefef',
+        'gray-dark': '#b2afaf',
+        'black': '#222222',
       },
       fontFamily: {
-        'title': ['Martel Sans','sans-serif'],
-        'paragraph': ['Montserrat', 'sans-serif']
+        'title': ['Montserrat', 'sans-serif'],
+        'paragraph': ['Myriad-pro','sans-serif']
       }
     },
   },
