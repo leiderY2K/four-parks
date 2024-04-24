@@ -15,13 +15,22 @@ VALUES
     ('3', 'Carnet de conducir');
 
 -- Insertar usuarios
-INSERT INTO `FOURPARKSDATABASE`.`USER` (`IDUSER`, `FIRSTNAME`, `LASTNAME`, `IDDOCTYPEFK`)
+INSERT INTO `FOURPARKSDATABASE`.`USER` (`IDUSER`, `FIRSTNAME`, `LASTNAME`, `IDDOCTYPEFK`, `EMAIL`, `PHONE`)
 VALUES 
-    ('1234567890123', 'Juan', 'Pérez', '1'),    -- DNI
-    ('9876543210987', 'María', 'Gómez', '2'),    -- Pasaporte
-    ('4567890123456', 'Pedro', 'Martínez', '1'), -- DNI
-    ('7890123456789', 'Ana', 'López', '3'),      -- Carnet de conducir
-    ('6543210987654', 'Luis', 'Rodríguez', '2'); -- Pasaporte
+    ('1234567890123', 'Juan', 'Pérez', '1', 'juan@example.com', '123456789'),    -- DNI
+    ('9876543210987', 'María', 'Gómez', '2', 'maria@example.com', '987654321'),    -- Pasaporte
+    ('4567890123456', 'Pedro', 'Martínez', '1', 'pedro@example.com', '456789012'), -- DNI
+    ('7890123456789', 'Ana', 'López', '3', 'ana@example.com', '789012345'),      -- Carnet de conducir
+    ('6543210987654', 'Luis', 'Rodríguez', '2', 'luis@example.com', '654321098'); -- Pasaporte
+    
+-- Insertar Autenticacion de usuarios
+INSERT INTO `FOURPARKSDATABASE`.`USER_AUTHENTICATION` (`IDUSER`, `IDDOCTYPEFK`, `USERNAME`, `PASSWORD`)
+VALUES
+    ('1234567890123', '1', 'juanperez', 'contraseña1'),
+    ('9876543210987', '2', 'mariagomez', 'contraseña2'),
+    ('4567890123456', '1', 'pedromartinez', 'contraseña3'),
+    ('7890123456789', '3', 'analopez', 'contraseña4'),
+    ('6543210987654', '2', 'luisrodriguez', 'contraseña5');
 
 -- Insertar ciudades
 ALTER TABLE CITY AUTO_INCREMENT = 1; 

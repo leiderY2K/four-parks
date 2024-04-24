@@ -1,4 +1,4 @@
-package com.project.layer.Persistence.Model;
+package com.project.layer.Services.Access;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -9,7 +9,7 @@ import lombok.NoArgsConstructor;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class LoginRequest {
-    String user;
-    String password;
+public class AuthResponse {
+    String token;
 }
+

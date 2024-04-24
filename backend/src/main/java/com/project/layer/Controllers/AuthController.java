@@ -1,9 +1,9 @@
 package com.project.layer.Controllers;
 
-import com.project.layer.Persistence.Model.AuthResponse;
-import com.project.layer.Persistence.Model.AuthService;
-import com.project.layer.Persistence.Model.LoginRequest;
-import com.project.layer.Persistence.Model.RegisterRequest;
+import com.project.layer.Persistence.Entity.UserAuthentication;
+import com.project.layer.Services.Access.AuthResponse;
+import com.project.layer.Services.Access.AuthService;
+
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -20,7 +20,7 @@ public class AuthController {
     private final AuthService authService;
 
     @PostMapping(value = "login")
-    public ResponseEntity<AuthResponse> login(@RequestBody LoginRequest request){
+    public ResponseEntity<AuthResponse> login(@RequestBody UserAuthentication request){
         return ResponseEntity.ok(authService.login(request));
     }
 

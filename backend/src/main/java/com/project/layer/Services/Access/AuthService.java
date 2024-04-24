@@ -1,7 +1,8 @@
-package com.project.layer.Persistence.Model;
+package com.project.layer.Services.Access;
 
 
 import com.project.layer.Persistence.Entity.User;
+import com.project.layer.Persistence.Entity.UserAuthentication;
 import com.project.layer.Persistence.Entity.UserDetail;
 import com.project.layer.Persistence.Repository.IUserRepository;
 import com.project.layer.Services.Access.jwt.JwtService;
@@ -19,13 +20,13 @@ public class AuthService {
     private final JwtService jwtService;
     //private final PasswordEncoder passwordEncoder;
 
-    public AuthResponse login(LoginRequest request) {
+    public AuthResponse login(UserAuthentication request) {
         return null;
     }
 
-    public AuthResponse register(RegisterRequest request) {
+    public AuthResponse register(UserAuthentication request) {
         UserDetail user = UserDetail.builder()
-                .user(request.getUser())
+                .user(request.getUsername())
                 .password(request.getPassword())
                 .build();
 

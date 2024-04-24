@@ -17,6 +17,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @IdClass(UserId.class)
 public class User {
+
     @Id
     @Column(name = "IDUSER", nullable = false)
     private String idUser;
@@ -29,5 +30,11 @@ public class User {
 
     @Column(name = "LASTNAME", nullable = false)
     private String lastName;
+
+    @Column(name = "EMAIL", nullable = false)
+    private String email;
+
+    @Column(name = "PHONE", nullable = false)
+    private String phone;
 
 }
