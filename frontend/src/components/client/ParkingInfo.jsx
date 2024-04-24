@@ -35,7 +35,7 @@ const ParkingInfo = () => {
                 </section>
             </article>
 
-            <button className="w-1/3 mt-8 px-2 py-3 rounded-2xl bg-blue-dark shadow-md font-title font-bold text-lg text-white"> Realizar reserva </button>
+            <button className="w-1/3 mt-8 px-2 py-3 rounded-2xl bg-blue-dark shadow-md font-title font-semibold text-lg text-white"> Realizar reserva </button>
         </section>
     )
 }

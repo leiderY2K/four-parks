@@ -1,14 +1,14 @@
 import { BrowserRouter, Route, Routes } from "react-router-dom"
-import Home from "./pages/client/Home"
-import Login from "./components/client/Login.jsx"
+import HomeClientPage from "./pages/client/HomeClientPage"
+import LoginPage from "./pages/general/LoginPage"
 
 function App() {
   return (
     <BrowserRouter>
     <Routes>
       
-        <Route  path="/*" element={<div className="w-full flex items-center justify-center h-screen"> <Login /> </div>} />
-        <Route path="inicio-cliente" element={<Home />}/>
+        <Route  path="/*" element={<LoginPage />} />
+        <Route path="inicio-cliente" element={<HomeClientPage />}/>
 
     </Routes>
     </BrowserRouter>
