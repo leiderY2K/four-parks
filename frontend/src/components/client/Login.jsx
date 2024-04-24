@@ -20,7 +20,7 @@ export default function Login(){
                 <div>
                     <input className="mt-7 w-full rounded p-3 bg-white" placeholder="Contraseña" type="password"></input>
                 </div>
-                <div className="recaptcha">
+                <div className="recaptcha mt-10 object-center px-8">
                     <ReCAPTCHA
                         ref={captcha}
                         sitekey="6LfEr8QpAAAAAHkHnuDZebwy-ZRwIYKLoVA5MmyR"
