@@ -1,6 +1,7 @@
 import { BrowserRouter, Route, Routes } from "react-router-dom"
 import HomeClientPage from "./pages/client/HomeClientPage"
 import LoginPage from "./pages/general/LoginPage"
+import Registro from "./components/client/Registro.jsx"
 
 function App() {
   return (
