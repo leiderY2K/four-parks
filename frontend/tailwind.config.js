@@ -9,8 +9,8 @@ export default {
         'red-light': '#d46e51',
         'red-dark': '#9b442b',
         'white': '#f8f6f6',
-        'gray-light': 'efefef',
-        'grady-dark': 'b2afaf',
+        'gray-light': '#efefef',
+        'gray-dark': '#b2afaf',
         'black': '#222222',
       },
       fontFamily: {
