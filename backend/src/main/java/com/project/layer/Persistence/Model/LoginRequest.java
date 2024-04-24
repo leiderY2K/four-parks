@@ -1,4 +1,4 @@
-package com.project.layer.Model;
+package com.project.layer.Persistence.Model;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
