@@ -1,6 +1,5 @@
 package com.project.layer.Services.Map;
 
-import java.util.Collections;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -34,7 +33,7 @@ public class MapService {
         return parkings;
     }
 
-    public Parking getParkingsPerCoordinates(String coordinateX, String coordinateY) {
+    public Parking getParkingsPerCoordinates(float coordinateX, float coordinateY) {
         Parking parking = (Parking) parkingRepository.queryParkingByCoordinates(coordinateX, coordinateY);
 
         if(parking == null){

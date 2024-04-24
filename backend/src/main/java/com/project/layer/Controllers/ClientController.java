@@ -35,7 +35,7 @@ public class ClientController {
     }
 
     @GetMapping("/getParkingByCoordinates")
-    public Parking getParkingByCoordinates(@RequestParam String coordinateX, @RequestParam String coordinateY) {
+    public Parking getParkingByCoordinates(@RequestParam float coordinateX, @RequestParam float coordinateY) {
         return mapService.getParkingsPerCoordinates(coordinateX, coordinateY);
     }
     
