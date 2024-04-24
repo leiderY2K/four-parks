@@ -17,13 +17,31 @@ public class MapService {
 
     public MapService(){}
 
-    public List<Parking> getParkingsPerCity(String city){
-        List<Parking> parkings = parkingRepository.queryParkingsPerCity(city); 
+    public List<Parking> getParkingsFilter(String city, String type){
 
-        if(parkings.isEmpty()){
-            return Collections.emptyList();
+        List<Parking> parkings = null; 
+
+        if (type == null){
+            parkings = parkingRepository.queryParkingsByCity(city);
+        }else{
+            parkings = parkingRepository.queryParkingsByCityAndType(city, type);
+        }
+
+        if(parkings == null || parkings.isEmpty()){
+            return null;
         }
         
         return parkings;
     }
+
+    public Parking getParkingsPerCoordinates(String coordinateX, String coordinateY) {
+        Parking parking = (Parking) parkingRepository.queryParkingByCoordinates(coordinateX, coordinateY);
+
+        if(parking == null){
+            return null;
+        }
+
+        return parking;
+    }
+
 }

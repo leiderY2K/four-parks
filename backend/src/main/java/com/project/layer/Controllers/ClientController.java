@@ -1,4 +1,5 @@
 package com.project.layer.Controllers;
+import java.util.Collections;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,9 +27,18 @@ public class ClientController {
     }
 
     @GetMapping("/getParkings")
-    public List<Parking> getParkingsInMap(@RequestParam String city){
-        return mapService.getParkingsPerCity(city);
+    public List<Parking> getParkingsInMap(
+        @RequestParam(required = true) String city,
+        @RequestParam(required = false) String type
+    ) {
+        return mapService.getParkingsFilter(city, type);
     }
+
+    @GetMapping("/getParkingByCoordinates")
+    public Parking getParkingByCoordinates(@RequestParam String coordinateX, @RequestParam String coordinateY) {
+        return mapService.getParkingsPerCoordinates(coordinateX, coordinateY);
+    }
+    
 
     
 }

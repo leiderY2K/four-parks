@@ -13,9 +13,22 @@ import com.project.layer.Persistence.Entity.Parking;
 public interface IParkingRepository extends JpaRepository<Parking, Integer>{
     
     @Query(
-        value = "SELECT * FROM PARKING p WHERE p.CITY_IDCITY = ?1",
+        value = "SELECT * FROM PARKING p, CITY c WHERE p.CITY_IDCITY = c.IDCITY AND c.DESCCITY = :city",
         nativeQuery = true
     )
-    List<Parking> queryParkingsPerCity(@Param("city") String city);
+    List<Parking> queryParkingsByCity(@Param("city") String city);
+
+    @Query(
+        value = "SELECT * FROM PARKING p, CITY c, PARKINGTYPE pt WHERE p.CITY_IDCITY = c.IDCITY AND c.DESCCITY = :city " + 
+                                                                "AND p.PARKINGTYPE_IDPARKINGTYPE = pt.IDPARKINGTYPE AND pt.DESCPARKINGTYPE = :type",
+        nativeQuery = true
+    )
+    List<Parking> queryParkingsByCityAndType(@Param("city") String city, @Param("type") String type);
+
+    @Query(
+        value = "SELECT p.* FROM PARKING p INNER JOIN ADDRESS a ON p.ADDRESS_IDADDRESS = a.IDADDRESS " +
+            "WHERE a.COORDINATESX = :coordinateX AND a.COORDINATESY = :coordinateY",
+        nativeQuery = true)
+    Parking queryParkingByCoordinates(@Param("coordinateX") String coordinateX, @Param("coordinateY") String coordinateY);
 
 }
