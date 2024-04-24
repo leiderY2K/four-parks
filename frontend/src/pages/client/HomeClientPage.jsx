@@ -13,7 +13,7 @@ const Home = () => {
             <ParkingInfo />
           </section>
 
-          <div className="w-1/2 ml-44 rounded-2xl"> 
+          <div className="w-1/2 ml-44 rounded-2xl "> 
             <Map />
           </div>
         </div>
