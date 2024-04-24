@@ -34,19 +34,19 @@ VALUES
 
 -- Insertar ciudades
 ALTER TABLE CITY AUTO_INCREMENT = 1; 
-INSERT INTO `FOURPARKSDATABASE`.`CITY` (`NAME`) 
+INSERT INTO `FOURPARKSDATABASE`.`CITY` (`NAME`,`B_TOP`,`B_BOTTOM`,`B_LEFT`,`B_RIGHT`) 
 VALUES 
-    ('Bogota'),
-    ('Medellin'),
-    ('Cali');
+    ('Bogota',-74.7800,-74.8100,4.2900,4.3100),
+    ('Medellin',-75.7800,-75.8100,4.2900,4.3100),
+    ('Cali',-76.7800,-76.8100,4.2900,4.3100);
 
 -- Insertar direcciones en la tabla ADDRESS
 INSERT INTO `FOURPARKSDATABASE`.`ADDRESS` (`DESCADDRESS`, `COORDINATESX`, `COORDINATESY`) 
 VALUES 
-    ('Dirección 1', 4.6544, 74.5678),
-    ('Dirección 2', 4.6544, 74.8765),
-    ('Dirección 3', 4.6544, 74.7890),
-    ('Dirección 4', 4.6544, 74.2222);
+    ('Dirección 1', 4.6544, -74.5678),
+    ('Dirección 2', 4.6544, -74.6765),
+    ('Dirección 3', 4.6544, -74.7890),
+    ('Dirección 4', 4.6544, -74.2222);
 
 
 -- Insertar tipos de estacionamiento
@@ -66,8 +66,8 @@ VALUES
 -- Insertar estacionamientos
 INSERT INTO `FOURPARKSDATABASE`.`PARKING` (`NAMEPARK`, `CAPACITY`, `ADDRESS_COORDINATESX`, `ADDRESS_COORDINATESY`, `PARKINGTYPE_IDPARKINGTYPE`, `PHONE`, `EMAIL`, `CITY_IDCITY`, `SCHEDULE_IDSCHEDULE`) 
 VALUES 
-    ('Parking Lot A', 100, 4.6544, 74.5678, 1, '123-4567', 'parkinglotA@example.com', 1, 1),
-    ('Outdoor Park B', 200, 4.6544, 74.8765, 2, '987-6543', 'outdoorparkB@example.com', 2, 2),
-    ('Covered Park C', 30, 4.6544, 74.7890, 3, '601-8877', 'parkingexample@example.com', 1, 2),
-    ('Outdoor Park A', 56, 4.6544, 74.2222, 2, '312-1233', 'outdorfp@example.com', 1, 1);
+    ('Parking Lot A', 100, 4.6544, -74.5678, 1, '123-4567', 'parkinglotA@example.com', 1, 1),
+    ('Outdoor Park B', 200, 4.6544, -74.6765, 2, '987-6543', 'outdoorparkB@example.com', 2, 2),
+    ('Covered Park C', 30, 4.6544, -74.7890, 3, '601-8877', 'parkingexample@example.com', 1, 2),
+    ('Outdoor Park A', 56, 4.6544, -74.2222, 2, '312-1233', 'outdorfp@example.com', 1, 1);
 

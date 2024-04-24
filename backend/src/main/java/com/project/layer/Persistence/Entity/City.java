@@ -22,4 +22,16 @@ public class City {
     @Column(name = "NAME", nullable = false)
     private String name;
 
+    @Column(name = "B_TOP", nullable = false)
+    private String bTop;
+
+    @Column(name = "B_BOTTOM", nullable = false)
+    private String bBottom;
+
+    @Column(name = "B_LEFT", nullable = false)
+    private String bLeft;
+
+    @Column(name = "B_RIGHT", nullable = false)
+    private String bRight;
+
 }

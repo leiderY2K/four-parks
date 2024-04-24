@@ -13,9 +13,11 @@ import java.util.Optional;
 public interface IUserRepository extends JpaRepository<User, UserId> {
     
     
+    
+
     static void save(UserDetail user) {
         
     }
 
-    Optional<User> findByUsername(String username);
+    //Optional<User> findByUsername(String username);
 }

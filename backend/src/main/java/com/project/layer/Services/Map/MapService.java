@@ -1,11 +1,14 @@
 package com.project.layer.Services.Map;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.project.layer.Persistence.Entity.City;
 import com.project.layer.Persistence.Entity.Parking;
+import com.project.layer.Persistence.Repository.ICityRepository;
 import com.project.layer.Persistence.Repository.IParkingRepository;
 
 @Service
@@ -13,6 +16,10 @@ public class MapService {
     
     @Autowired
     IParkingRepository parkingRepository;
+
+    @Autowired
+    ICityRepository cityRepository;
+
 
     public MapService(){}
 
@@ -41,6 +48,27 @@ public class MapService {
         }
 
         return parking;
+    }
+
+    public List<String> getCityList() {
+        List<String> cityList =cityRepository.queryCityList();
+        
+        if(cityList == null){
+            return null;
+        }
+        
+        return cityList;
+        
+    }
+
+    public City getCity(String cityName) {
+        City city = cityRepository.queryCityByName(cityName);
+
+        if(city == null){
+            return null;
+        }
+
+        return city;
     }
 
 }
