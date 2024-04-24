@@ -2,6 +2,8 @@ package com.project.layer.Persistence.Entity;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
@@ -19,18 +21,21 @@ import lombok.NoArgsConstructor;
 public class Parking {
     
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "IDPARKING", nullable = false)
     private int idParking;
 
     @Column(name = "NAMEPARK", nullable = false)
     private String namePark;
 
-    @Column(name = "", nullable = false)
+    @Column(name = "CAPACITY", nullable = false)
     private int capacity;
 
-    @OneToOne
-    @JoinColumn(name = "ADDRESS_IDADDRESS")
-    private Address address;
+    @Column(name = "ADDRESS_COORDINATESX", nullable = false) // Nueva columna para las coordenadas X
+    private float addressCoordinatesX;
+
+    @Column(name = "ADDRESS_COORDINATESY", nullable = false) // Nueva columna para las coordenadas Y
+    private float addressCoordinatesY;
 
     @ManyToOne
     @JoinColumn(name = "PARKINGTYPE_IDPARKINGTYPE")

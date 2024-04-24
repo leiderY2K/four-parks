@@ -25,25 +25,26 @@ VALUES
 
 -- Insertar ciudades
 ALTER TABLE CITY AUTO_INCREMENT = 1; 
-INSERT INTO `FOURPARKSDATABASE`.`CITY` (`DESCCITY`) 
+INSERT INTO `FOURPARKSDATABASE`.`CITY` (`NAME`) 
 VALUES 
     ('Bogota'),
     ('Medellin'),
     ('Cali');
 
--- Insertar una dirección en la tabla ADDRESS
-INSERT INTO `FOURPARKSDATABASE`.`ADDRESS` (`IDADDRESS`, `DESCADDRESS`, `COORDINATESX`, `COORDINATESY`) 
+-- Insertar direcciones en la tabla ADDRESS
+INSERT INTO `FOURPARKSDATABASE`.`ADDRESS` (`DESCADDRESS`, `COORDINATESX`, `COORDINATESY`) 
 VALUES 
-    (1, 'Dirección 1', '12345', '67890'),
-    (2, 'Dirección 2', '12345', '13133'),
-    (3, 'Dirección 3', '12333', '21321'),
-    (4, 'Dirección 4', '12223', '22222');
+    ('Dirección 1', 4.6544, 74.5678),
+    ('Dirección 2', 4.6544, 74.8765),
+    ('Dirección 3', 4.6544, 74.7890),
+    ('Dirección 4', 4.6544, 74.2222);
+
 
 -- Insertar tipos de estacionamiento
 INSERT INTO `FOURPARKSDATABASE`.`PARKINGTYPE` (`IDPARKINGTYPE`, `DESCPARKINGTYPE`) 
 VALUES 
-    (1, 'Indoor'),
-    (2, 'Outdoor'),
+    (1, 'Uncovered'),
+    (2, 'SemiCovered'),
     (3, 'Covered');
 
 -- Insertar horarios
@@ -54,10 +55,10 @@ VALUES
     (3, '00:00:00', '23:59:59', 'Full Time');
 
 -- Insertar estacionamientos
-INSERT INTO `FOURPARKSDATABASE`.`PARKING` (`NAMEPARK`, `CAPACITY`, `ADDRESS_IDADDRESS`, `PARKINGTYPE_IDPARKINGTYPE`, `PHONE`, `EMAIL`, `CITY_IDCITY`, `SCHEDULE_IDSCHEDULE`) 
+INSERT INTO `FOURPARKSDATABASE`.`PARKING` (`NAMEPARK`, `CAPACITY`, `ADDRESS_COORDINATESX`, `ADDRESS_COORDINATESY`, `PARKINGTYPE_IDPARKINGTYPE`, `PHONE`, `EMAIL`, `CITY_IDCITY`, `SCHEDULE_IDSCHEDULE`) 
 VALUES 
-    ('Parking Lot A', 100, 1, 1, '123-4567', 'parkinglotA@example.com', 1, 1),
-    ('Outdoor Park B', 200, 2, 2, '987-6543', 'outdoorparkB@example.com', 2, 2),
-    ('Covered Park C', 30, 3, 3, '601-8877', 'parkingexample@example.com', 1, 2),
-    ('Outdoor Park A', 56, 4, 2, '312-1233', 'outdorfp@example.com', 1, 1);
+    ('Parking Lot A', 100, 4.6544, 74.5678, 1, '123-4567', 'parkinglotA@example.com', 1, 1),
+    ('Outdoor Park B', 200, 4.6544, 74.8765, 2, '987-6543', 'outdoorparkB@example.com', 2, 2),
+    ('Covered Park C', 30, 4.6544, 74.7890, 3, '601-8877', 'parkingexample@example.com', 1, 2),
+    ('Outdoor Park A', 56, 4.6544, 74.2222, 2, '312-1233', 'outdorfp@example.com', 1, 1);
 

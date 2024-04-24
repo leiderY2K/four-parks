@@ -19,7 +19,7 @@ public class City {
     @Column(name = "IDCITY", nullable = false)
     private int idCity;
 
-    @Column(name = "DESCCITY", nullable = false)
-    private String descCity;
+    @Column(name = "NAME", nullable = false)
+    private String name;
 
 }
