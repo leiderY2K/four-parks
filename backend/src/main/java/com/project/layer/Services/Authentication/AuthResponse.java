@@ -1,13 +1,14 @@
-package com.project.layer.Services.Access;
+package com.project.layer.Services.Authentication;
 
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
 @Data
+@Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class LoginRes {
-    private String username;
-    private String token;
+public class AuthResponse {
+    String token;
 }

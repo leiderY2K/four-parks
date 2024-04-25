@@ -1,29 +1,25 @@
 package com.project.layer.Persistence.Entity;
 
-import jakarta.persistence.Id;
 import jakarta.persistence.Column;
+import jakarta.persistence.EmbeddedId;
 import jakarta.persistence.Entity;
-import jakarta.persistence.IdClass;
 import jakarta.persistence.Table;
 
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
 @Entity
 @Table(name = "USER")
 @Data
+@Builder
 @AllArgsConstructor
 @NoArgsConstructor
-@IdClass(UserId.class)
 public class User {
 
-    @Id
-    @Column(name = "IDUSER", nullable = false)
-    private String idUser;
-    @Id
-    @Column(name = "IDDOCTYPEFK", nullable = false)
-    private String idDocTypeFk;
+    @EmbeddedId
+    private UserId userId;
 
     @Column(name = "FIRSTNAME", nullable = false)
     private String firstName;
