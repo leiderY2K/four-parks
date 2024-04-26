@@ -31,6 +31,10 @@ public class RegisterRequest {
     private String password;
 
     @NotBlank
+    @JsonProperty("role")
+    private String role;
+
+    @NotBlank
     @JsonProperty("firstName")
     private String firstName;
 

@@ -1,8 +1,11 @@
 package com.project.layer.Services.Authentication;
 
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import com.project.layer.Persistence.Entity.Role;
 import com.project.layer.Persistence.Entity.User;
 import com.project.layer.Persistence.Entity.UserAuthentication;
 import com.project.layer.Persistence.Entity.UserId;
@@ -18,12 +21,18 @@ public class AuthService {
 
     private final IUserRepository userRepository;
     private final IUserAuthRepository userAuthRepository;
-
+    private final PasswordEncoder passwordEncoder;
     private final JwtService jwtService;
 
+    private final AuthenticationManager authenticationManager;
+
     public AuthResponse login(LoginRequest request) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'login'");
+        authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(request.getUsername(), request.getPassword()));
+        UserDetails user = userAuthRepository.findByUsername(request.getUsername()).orElseThrow();
+        String token = jwtService.getToken(user);
+        return AuthResponse.builder()
+            .token(token)
+            .build();             
     }
 
     public AuthResponse register(RegisterRequest request) {
@@ -51,8 +60,8 @@ public class AuthService {
         UserAuthentication userAuthentication = UserAuthentication.builder()
             .userId(userId)
             .username(request.getUsername())
-            .password(request.getPassword())
-            .role(Role.CLIENT)
+            .password(passwordEncoder.encode(request.getPassword()))
+            .role(request.getRole())
             .build();
 
         // Guardar el usuario en la base de datos

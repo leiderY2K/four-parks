@@ -24,13 +24,13 @@ VALUES
     ('6543210987654', 'Luis', 'Rodríguez', '2', 'luis@example.com', '654321098'); -- Pasaporte
     
 -- Insertar Autenticacion de usuarios
-INSERT INTO `FOURPARKSDATABASE`.`USER_AUTHENTICATION` (`IDUSER`, `IDDOCTYPEFK`, `USERNAME`, `PASSWORD`)
+INSERT INTO `FOURPARKSDATABASE`.`USER_AUTHENTICATION` (`IDUSER`, `IDDOCTYPEFK`, `USERNAME`, `PASSWORD`, `ROLE`)
 VALUES
-    ('1234567890123', '1', 'juanperez', 'contraseña1'),
-    ('9876543210987', '2', 'mariagomez', 'contraseña2'),
-    ('4567890123456', '1', 'pedromartinez', 'contraseña3'),
-    ('7890123456789', '3', 'analopez', 'contraseña4'),
-    ('6543210987654', '2', 'luisrodriguez', 'contraseña5');
+    ('1234567890123', '1', 'juanperez', 'contraseña1','CLIENT'),
+    ('9876543210987', '2', 'mariagomez', 'contraseña2','CLIENT'),
+    ('4567890123456', '1', 'pedromartinez', 'contraseña3','CLIENT'),
+    ('7890123456789', '3', 'analopez', 'contraseña4','CLIENT'),
+    ('6543210987654', '2', 'luisrodriguez', 'contraseña5','CLIENT');
 
 -- Insertar ciudades
 ALTER TABLE CITY AUTO_INCREMENT = 1; 
