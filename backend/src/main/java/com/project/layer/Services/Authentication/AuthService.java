@@ -11,7 +11,7 @@ import com.project.layer.Persistence.Entity.UserAuthentication;
 import com.project.layer.Persistence.Entity.UserId;
 import com.project.layer.Persistence.Repository.IUserAuthRepository;
 import com.project.layer.Persistence.Repository.IUserRepository;
-import com.project.layer.Services.jwt.JwtService;
+import com.project.layer.Services.JWT.JwtService;
 
 import lombok.RequiredArgsConstructor;
 
@@ -26,11 +26,16 @@ public class AuthService {
 
     private final AuthenticationManager authenticationManager;
 
-    public AuthResponse login(LoginRequest request) {
+    public AuthLoginResponse login(LoginRequest request) {
         authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(request.getUsername(), request.getPassword()));
         UserDetails user = userAuthRepository.findByUsername(request.getUsername()).orElseThrow();
+        
+        UserId userId = ((UserAuthentication) user).getUserId();
+        String role = ((UserAuthentication) user).getRole();
         String token = jwtService.getToken(user);
-        return AuthResponse.builder()
+        return AuthLoginResponse.builder()
+            .userId(userId)
+            .role(role)
             .token(token)
             .build();             
     }

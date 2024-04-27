@@ -1,4 +1,4 @@
-package com.project.layer.Services.jwt;
+package com.project.layer.Services.JWT;
 
 import java.security.Key;
 import java.util.Date;

@@ -7,6 +7,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.project.layer.Services.Authentication.AuthLoginResponse;
 import com.project.layer.Services.Authentication.AuthResponse;
 import com.project.layer.Services.Authentication.AuthService;
 import com.project.layer.Services.Authentication.LoginRequest;
@@ -23,7 +24,7 @@ public class AuthController {
     private final AuthService authService;
 
     @PostMapping(value = "login")
-    public ResponseEntity<AuthResponse> login(@RequestBody LoginRequest request){
+    public ResponseEntity<AuthLoginResponse> login(@RequestBody LoginRequest request){
         System.err.println(request.toString());
         return ResponseEntity.ok(authService.login(request));
     }
