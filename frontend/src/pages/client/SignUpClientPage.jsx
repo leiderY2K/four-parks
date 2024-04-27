@@ -6,11 +6,11 @@ const backgroundStyle = {
     backgroundSize: 'cover'
 };
 
-const SignUpClientPage = () => {
+const SignUpClientPage = ({url}) => {
     return (
         <div className="h-screen" style={backgroundStyle}>
             <div className="flex items-center justify-center h-screen">
-                <SignUp />
+                <SignUp url={url} />
             </div>
         </div>
     )
