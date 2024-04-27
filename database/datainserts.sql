@@ -7,14 +7,14 @@ DELETE FROM `FOURPARKSDATABASE`.`ADDRESS`;
 DELETE FROM `FOURPARKSDATABASE`.`PARKINGTYPE`;
 DELETE FROM `FOURPARKSDATABASE`.`SCHEDULE`;
 
--- Insertar tipos de documento
+-- Insertar tipos de documento primero
 INSERT INTO `FOURPARKSDATABASE`.`DOCUMENTTYPE` (`IDDOCTYPE`, `DESCDOCTYPE`) 
 VALUES 
     ('1', 'DNI'),
     ('2', 'Pasaporte'),
     ('3', 'Carnet de conducir');
 
--- Insertar usuarios
+-- Insertar usuarios después de los tipos de documento
 INSERT INTO `FOURPARKSDATABASE`.`USER` (`IDUSER`, `FIRSTNAME`, `LASTNAME`, `IDDOCTYPEFK`, `EMAIL`, `PHONE`)
 VALUES 
     ('1234567890123', 'Juan', 'Pérez', '1', 'juan@example.com', '123456789'),    -- DNI
@@ -23,7 +23,7 @@ VALUES
     ('7890123456789', 'Ana', 'López', '3', 'ana@example.com', '789012345'),      -- Carnet de conducir
     ('6543210987654', 'Luis', 'Rodríguez', '2', 'luis@example.com', '654321098'); -- Pasaporte
     
--- Insertar Autenticacion de usuarios
+-- Insertar Autenticacion de usuarios después de los usuarios
 INSERT INTO `FOURPARKSDATABASE`.`USER_AUTHENTICATION` (`IDUSER`, `IDDOCTYPEFK`, `USERNAME`, `PASSWORD`, `ROLE`)
 VALUES
     ('1234567890123', '1', 'juanperez', 'contraseña1','CLIENT'),
@@ -31,6 +31,12 @@ VALUES
     ('4567890123456', '1', 'pedromartinez', 'contraseña3','CLIENT'),
     ('7890123456789', '3', 'analopez', 'contraseña4','CLIENT'),
     ('6543210987654', '2', 'luisrodriguez', 'contraseña5','CLIENT');
+
+-- Insertar administradores después de los usuarios y autenticaciones
+INSERT INTO `FOURPARKSDATABASE`.`ADMINISTRATOR` (`USER_IDUSER`, `USER_IDDOCTYPEFK`)
+VALUES
+    ('9876543210987', '2'), -- María Gómez - Pasaporte
+    ('4567890123456', '1'); -- Pedro Martínez - DNI
 
 -- Insertar ciudades
 ALTER TABLE CITY AUTO_INCREMENT = 1; 
@@ -64,10 +70,10 @@ VALUES
     (3, '00:00:00', '23:59:59', 'Full Time');
 
 -- Insertar estacionamientos
-INSERT INTO `FOURPARKSDATABASE`.`PARKING` (`NAMEPARK`, `CAPACITY`, `ADDRESS_COORDINATESX`, `ADDRESS_COORDINATESY`, `PARKINGTYPE_IDPARKINGTYPE`, `PHONE`, `EMAIL`, `CITY_IDCITY`, `SCHEDULE_IDSCHEDULE`) 
+INSERT INTO `FOURPARKSDATABASE`.`PARKING` (`NAMEPARK`, `CAPACITY`, `ADDRESS_COORDINATESX`, `ADDRESS_COORDINATESY`, `PARKINGTYPE_IDPARKINGTYPE`, `PHONE`, `EMAIL`, `CITY_IDCITY`, `SCHEDULE_IDSCHEDULE`, `ADMINISTRADOR_USER_IDUSER`, `ADMINISTRADOR_USER_IDDOCTYPEFK`) 
 VALUES 
-    ('Parking Lot A', 100, 4.6544, -74.5678, 1, '123-4567', 'parkinglotA@example.com', 1, 1),
-    ('Outdoor Park B', 200, 4.6544, -74.6765, 2, '987-6543', 'outdoorparkB@example.com', 2, 2),
-    ('Covered Park C', 30, 4.6544, -74.7890, 3, '601-8877', 'parkingexample@example.com', 1, 2),
-    ('Outdoor Park A', 56, 4.6544, -74.2222, 2, '312-1233', 'outdorfp@example.com', 1, 1);
+    ('Parking Lot A', 100, 4.6544, -74.5678, 1, '123-4567', 'parkinglotA@example.com', 1, 1,'9876543210987', '2'),
+    ('Outdoor Park B', 200, 4.6544, -74.6765, 2, '987-6543', 'outdoorparkB@example.com', 2, 2,'9876543210987', '2'),
+    ('Covered Park C', 30, 4.6544, -74.7890, 3, '601-8877', 'parkingexample@example.com', 1, 2,'9876543210987', '2'),
+    ('Outdoor Park A', 56, 4.6544, -74.2222, 2, '312-1233', 'outdorfp@example.com', 1, 1,'4567890123456', '1');
 
