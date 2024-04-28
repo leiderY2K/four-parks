@@ -10,33 +10,33 @@ DELETE FROM `FOURPARKSDATABASE`.`SCHEDULE`;
 -- Insertar tipos de documento primero
 INSERT INTO `FOURPARKSDATABASE`.`DOCUMENTTYPE` (`IDDOCTYPE`, `DESCDOCTYPE`) 
 VALUES 
-    ('1', 'DNI'),
-    ('2', 'Pasaporte'),
-    ('3', 'Carnet de conducir');
+    ('CC', 'Cedula'),
+    ('TI', 'Tarjeta de identidad'),
+    ('CI', 'Cedula de extranjeria');
 
 -- Insertar usuarios después de los tipos de documento
-INSERT INTO `FOURPARKSDATABASE`.`USER` (`IDUSER`, `FIRSTNAME`, `LASTNAME`, `IDDOCTYPEFK`, `EMAIL`, `PHONE`)
+INSERT INTO `FOURPARKSDATABASE`.`USER` (`IDUSER`, `FIRSTNAME`, `LASTNAME`, `FK_IDDOCTYPE`, `EMAIL`, `PHONE`)
 VALUES 
-    ('1234567890123', 'Juan', 'Pérez', '1', 'juan@example.com', '123456789'),    -- DNI
-    ('9876543210987', 'María', 'Gómez', '2', 'maria@example.com', '987654321'),    -- Pasaporte
-    ('4567890123456', 'Pedro', 'Martínez', '1', 'pedro@example.com', '456789012'), -- DNI
-    ('7890123456789', 'Ana', 'López', '3', 'ana@example.com', '789012345'),      -- Carnet de conducir
-    ('6543210987654', 'Luis', 'Rodríguez', '2', 'luis@example.com', '654321098'); -- Pasaporte
+    ('1234567890123', 'Juan', 'Pérez', 'CC', 'juan@example.com', '123456789'),    -- Cedula
+    ('9876543210987', 'María', 'Gómez', 'TI', 'maria@example.com', '987654321'),    -- Tarjeta de identidad
+    ('4567890123456', 'Pedro', 'Martínez', 'CC', 'pedro@example.com', '456789012'), -- Cedula
+    ('7890123456789', 'Ana', 'López', 'CI', 'ana@example.com', '789012345'),      -- Cedula de extranjeria
+    ('6543210987654', 'Luis', 'Rodríguez', 'TI', 'luis@example.com', '654321098'); -- Tarjeta de identidad
     
 -- Insertar Autenticacion de usuarios después de los usuarios
-INSERT INTO `FOURPARKSDATABASE`.`USER_AUTHENTICATION` (`IDUSER`, `IDDOCTYPEFK`, `USERNAME`, `PASSWORD`, `ROLE`)
+INSERT INTO `FOURPARKSDATABASE`.`USER_AUTHENTICATION` (`FK_IDUSER`, `FK_IDDOCTYPE`, `USERNAME`, `PASSWORD`, `ROLE`, `ATTEMPTS`,`BLOCK`)
 VALUES
-    ('1234567890123', '1', 'juanperez', 'contraseña1','CLIENT'),
-    ('9876543210987', '2', 'mariagomez', 'contraseña2','CLIENT'),
-    ('4567890123456', '1', 'pedromartinez', 'contraseña3','CLIENT'),
-    ('7890123456789', '3', 'analopez', 'contraseña4','CLIENT'),
-    ('6543210987654', '2', 'luisrodriguez', 'contraseña5','CLIENT');
+    ('1234567890123', 'CC', 'juanperez', 'contraseña1','CLIENT',0,0),
+    ('9876543210987', 'TI', 'mariagomez', 'contraseña2','CLIENT',0,0),
+    ('4567890123456', 'CC', 'pedromartinez', 'contraseña3','CLIENT',0,0),
+    ('7890123456789', 'CI', 'analopez', 'contraseña4','CLIENT',0,0),
+    ('6543210987654', 'TI', 'luisrodriguez', 'contraseña5','CLIENT',0,0);
 
 -- Insertar administradores después de los usuarios y autenticaciones
-INSERT INTO `FOURPARKSDATABASE`.`ADMINISTRATOR` (`USER_IDUSER`, `USER_IDDOCTYPEFK`)
+INSERT INTO `FOURPARKSDATABASE`.`ADMINISTRATOR` (`FK_IDUSER`, `FK_IDDOCTYPE`)
 VALUES
-    ('9876543210987', '2'), -- María Gómez - Pasaporte
-    ('4567890123456', '1'); -- Pedro Martínez - DNI
+    ('9876543210987', 'TI'), -- María Gómez - Tarjeta de identidad
+    ('4567890123456', 'CC'); -- Pedro Martínez - Cedula
 
 -- Insertar ciudades
 ALTER TABLE CITY AUTO_INCREMENT = 1; 
@@ -58,22 +58,46 @@ VALUES
 -- Insertar tipos de estacionamiento
 INSERT INTO `FOURPARKSDATABASE`.`PARKINGTYPE` (`IDPARKINGTYPE`, `DESCPARKINGTYPE`) 
 VALUES 
-    (1, 'Uncovered'),
-    (2, 'SemiCovered'),
-    (3, 'Covered');
+    ('UNC', 'Sin cubrir'), 
+    ('SEC', 'Semi cubierto'), 
+    ('COV', 'Cubierto'); 
 
 -- Insertar horarios
 INSERT INTO `FOURPARKSDATABASE`.`SCHEDULE` (`IDSCHEDULE`, `STARTTIME`, `ENDTIME`, `SCHEDULETYPE`) 
 VALUES 
-    (1, '08:00:00', '18:00:00', 'Weekdays'),
-    (2, '08:00:00', '20:00:00', 'Weekends'),
-    (3, '00:00:00', '23:59:59', 'Full Time');
+    (1, '08:00:00', '18:00:00', 'Días de semana'),
+    (2, '08:00:00', '20:00:00', 'Fines de semana'),
+    (3, '00:00:00', '23:59:59', 'Tiempo completo');
 
 -- Insertar estacionamientos
-INSERT INTO `FOURPARKSDATABASE`.`PARKING` (`NAMEPARK`, `CAPACITY`, `ADDRESS_COORDINATESX`, `ADDRESS_COORDINATESY`, `PARKINGTYPE_IDPARKINGTYPE`, `PHONE`, `EMAIL`, `CITY_IDCITY`, `SCHEDULE_IDSCHEDULE`, `ADMINISTRADOR_USER_IDUSER`, `ADMINISTRADOR_USER_IDDOCTYPEFK`) 
+INSERT INTO `FOURPARKSDATABASE`.`PARKING` (`NAMEPARK`, `CAPACITY`, `FK_COORDINATESX`, `FK_COORDINATESY`, `PHONE`, `EMAIL`, `FK_IDCITY`, `FK_IDSCHEDULE`, `FK_ADMIN_IDUSER`, `FK_ADMIN_IDDOCTYPE`) 
 VALUES 
-    ('Parking Lot A', 100, 4.6544, -74.5678, 1, '123-4567', 'parkinglotA@example.com', 1, 1,'9876543210987', '2'),
-    ('Outdoor Park B', 200, 4.6544, -74.6765, 2, '987-6543', 'outdoorparkB@example.com', 2, 2,'9876543210987', '2'),
-    ('Covered Park C', 30, 4.6544, -74.7890, 3, '601-8877', 'parkingexample@example.com', 1, 2,'9876543210987', '2'),
-    ('Outdoor Park A', 56, 4.6544, -74.2222, 2, '312-1233', 'outdorfp@example.com', 1, 1,'4567890123456', '1');
+    ('Parqueadero A', 100, 4.6544, -74.5678, '123-4567', 'parqueaderoA@example.com', 1, 1,'9876543210987', 'TI'),
+    ('Parque al aire libre B', 200, 4.6544, -74.6765, '987-6543', 'parqueairelibreB@example.com', 2, 2,'9876543210987', 'TI'),
+    ('Parque cubierto C', 30, 4.6544, -74.7890, '601-8877', 'parqueejemplo@example.com', 1, 2,'9876543210987', 'TI'),
+    ('Parque al aire libre A', 56, 4.6544, -74.2222, '312-1233', 'parqueaderoA@example.com', 1, 1,'4567890123456', 'CC');
+    
+-- Insertar Tipos de Vehiculos
+INSERT INTO `FOURPARKSDATABASE`.`VEHICLETYPE` (`IDVEHICLETYPE`,`DESCVEHICLETYPE`) 
+VALUES
+    ('CAR', 'AUTOMOVIL'),
+    ('MOT', 'MOTOCICLETA'),
+    ('BIC', 'BICICLETA');
+    
+-- Insertar espacios de estacionamiento
+INSERT INTO `FOURPARKSDATABASE`.`PARKINGSPACE` (`IDPARKINGSPACE`, `ISAVAILABLEVE`, `FK_IDPARKING`, `FK_IDCITY`, `FK_IDVEHICLETYPE`, `FK_IDPARKINGTYPE`) 
+VALUES 
+    (1, 1, 1, 1, 'CAR', 'UNC'),   -- Espacio de estacionamiento 1 en Parqueadero A para automóviles descubiertos
+    (2, 1, 1, 1, 'CAR', 'COV'),   -- Espacio de estacionamiento 2 en Parqueadero A para automóviles cubiertos
+    (3, 1, 2, 2, 'MOT', 'UNC'),   -- Espacio de estacionamiento 3 en Parque al aire libre B para motocicletas descubiertas
+    (4, 1, 3, 1, 'CAR', 'SEC');   -- Espacio de estacionamiento 4 en Parque cubierto C para automóviles semi cubiertos
 
+-- Insertar tarifas
+INSERT INTO `FOURPARKSDATABASE`.`RATE` (`HOURCOST`, `RESERVATIONCOST`, `FK_IDPARKING`, `FK_IDCITY`, `FK_IDVEHICLETYPE`, `FK_IDPARKINGTYPE`) 
+VALUES 
+    (5000, 10000, 1, 1, 'CAR', 'UNC'),    -- Tarifa para Parqueadero A, Bogotá, Automóviles descubiertos
+    (7000, 12000, 1, 1, 'CAR', 'COV'),    -- Tarifa para Parqueadero A, Bogotá, Automóviles cubiertos
+    (3000, 5000, 2, 2, 'MOT', 'UNC'),     -- Tarifa para Parque al aire libre B, Medellín, Motocicletas descubiertas
+    (4000, 6000, 3, 1, 'CAR', 'SEC');     -- Tarifa para Parque cubierto C, Bogotá, Automóviles semi cubiertos
+
+    
