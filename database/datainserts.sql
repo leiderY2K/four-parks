@@ -24,7 +24,7 @@ VALUES
     ('6543210987654', 'Luis', 'Rodríguez', 'TI', 'luis@example.com', '654321098'); -- Tarjeta de identidad
     
 -- Insertar Autenticacion de usuarios después de los usuarios
-INSERT INTO `FOURPARKSDATABASE`.`USER_AUTHENTICATION` (`FK_IDUSER`, `FK_IDDOCTYPE`, `USERNAME`, `PASSWORD`, `ROLE`, `ATTEMPTS`,`BLOCK`)
+INSERT INTO `FOURPARKSDATABASE`.`USER_AUTHENTICATION` (`IDUSER`, `FK_IDDOCTYPE`, `USERNAME`, `PASSWORD`, `ROLE`, `ATTEMPTS`,`ISBLOCKED`)
 VALUES
     ('1234567890123', 'CC', 'juanperez', 'contraseña1','CLIENT',0,0),
     ('9876543210987', 'TI', 'mariagomez', 'contraseña2','CLIENT',0,0),
@@ -33,7 +33,7 @@ VALUES
     ('6543210987654', 'TI', 'luisrodriguez', 'contraseña5','CLIENT',0,0);
 
 -- Insertar administradores después de los usuarios y autenticaciones
-INSERT INTO `FOURPARKSDATABASE`.`ADMINISTRATOR` (`FK_IDUSER`, `FK_IDDOCTYPE`)
+INSERT INTO `FOURPARKSDATABASE`.`ADMINISTRATOR` (`IDUSER`, `FK_IDDOCTYPE`)
 VALUES
     ('9876543210987', 'TI'), -- María Gómez - Tarjeta de identidad
     ('4567890123456', 'CC'); -- Pedro Martínez - Cedula
@@ -85,7 +85,7 @@ VALUES
     ('BIC', 'BICICLETA');
     
 -- Insertar espacios de estacionamiento
-INSERT INTO `FOURPARKSDATABASE`.`PARKINGSPACE` (`IDPARKINGSPACE`, `ISAVAILABLEVE`, `FK_IDPARKING`, `FK_IDCITY`, `FK_IDVEHICLETYPE`, `FK_IDPARKINGTYPE`) 
+INSERT INTO `FOURPARKSDATABASE`.`PARKINGSPACE` (`IDPARKINGSPACE`, `ISAVAILABLE`, `FK_IDPARKING`, `FK_IDCITY`, `FK_IDVEHICLETYPE`, `FK_IDPARKINGTYPE`) 
 VALUES 
     (1, 1, 1, 1, 'CAR', 'UNC'),   -- Espacio de estacionamiento 1 en Parqueadero A para automóviles descubiertos
     (2, 1, 1, 1, 'CAR', 'COV'),   -- Espacio de estacionamiento 2 en Parqueadero A para automóviles cubiertos

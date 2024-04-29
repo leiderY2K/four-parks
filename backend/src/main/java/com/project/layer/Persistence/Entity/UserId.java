@@ -24,13 +24,13 @@ import jakarta.persistence.AttributeOverrides;
         column = @Column(name = "IDUSER")
     ),
     @AttributeOverride(
-        name = "idDocTypeFk",
-        column = @Column(name = "IDDOCTYPEFK")
+        name = "idDocType",
+        column = @Column(name = "FK_IDDOCTYPE")
     )
 })
 public class UserId implements Serializable {
 
     private String idUser;
 
-    private String idDocTypeFk;
+    private String idDocType;
 }

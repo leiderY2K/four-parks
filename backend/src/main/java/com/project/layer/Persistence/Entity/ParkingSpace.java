@@ -9,15 +9,15 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 @Entity
-@Table(name = "RATE")
+@Table(name = "PARKINGSPACE")
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class Rate {
+public class ParkingSpace {
     
     @Id
-    @Column(name = "IDRATE", nullable = false)
-    private int idRate;
+    @Column(name = "IDPARKINGSPACE", nullable = false)
+    private String ipParkingSpace;
 
     @Id
     @Column(name = "FK_IDPARKING", nullable = false)
@@ -35,10 +35,7 @@ public class Rate {
     @Column(name = "FK_IDPARKINGTYPE", nullable = false)
     private String idParkingType;
 
-    @Column(name = "HOURCOST", nullable = false)
-    private int costRate;
-
-    @Column(name = "RESERVATIONCOST", nullable = false)
-    private int reservationCost;
+    @Column(name = "ISAVAILABLE", nullable = false)
+    private boolean isAvailable;    
 
 }

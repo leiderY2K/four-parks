@@ -25,13 +25,11 @@ public class AuthController {
 
     @PostMapping(value = "login")
     public ResponseEntity<AuthLoginResponse> login(@RequestBody LoginRequest request){
-        System.err.println(request.toString());
         return ResponseEntity.ok(authService.login(request));
     }
 
     @PostMapping(value = "register")
     public ResponseEntity<AuthResponse> register(@RequestBody RegisterRequest request){
-        System.err.println(request.toString());
         return ResponseEntity.ok(authService.register(request));
     }
 
