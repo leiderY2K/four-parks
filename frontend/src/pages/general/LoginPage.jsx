@@ -6,11 +6,11 @@ const backgroundStyle = {
     backgroundSize: 'cover'
 };
 
-const LoginPage = () => {
+const LoginPage = ({url}) => {
   return (
     <div className="h-screen" style={backgroundStyle}>
         <div className="flex items-center justify-center h-screen">
-            <Login />
+            <Login url={url} />
         </div>
     </div>
   )

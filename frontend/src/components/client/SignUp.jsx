@@ -1,6 +1,6 @@
 import axios from "axios";
 
-export default function SignUp() {
+export default function SignUp({url}) {
     return (
         <article className="bg-gradient-to-b from-red-light from-75% to-red-dark pt-12 pb-6 relative rounded-2xl shadow-xl">
             <section className="flex flex-col items-center px-12">

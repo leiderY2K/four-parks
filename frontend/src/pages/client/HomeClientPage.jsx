@@ -3,7 +3,7 @@ import Map from '../../components/client/Map.jsx'
 import ParkingFilters from '../../components/client/ParkingFilters.jsx'
 import ParkingInfo from '../../components/client/ParkingInfo.jsx'
 
-const Home = () => {
+const Home = ({url}) => {
   return (
     <>
         <Header />
@@ -13,7 +13,7 @@ const Home = () => {
             <ParkingInfo />
           </section>
 
-          <div className="w-1/2 ml-44 rounded-2xl "> 
+          <div className="w-1/2 ml-44 rounded-2xl z-0"> 
             <Map />
           </div>
         </div>
