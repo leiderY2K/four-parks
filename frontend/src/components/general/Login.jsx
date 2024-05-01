@@ -25,7 +25,28 @@ export default function Login({url}){
             if(captchaState) {
                 axios.post(`${url}/auth/login`, {username: user, password: password})
                 .then(res => {
-                    console.log(res)
+                    const tokenDecoded = decodeJWT(res.data.token);
+                    console.log(tokenDecoded)
+
+                    const userLogged = {
+                        "idNumber": tokenDecoded.userId.idUser,
+                        "idType": tokenDecoded.userId.idDocType,
+                        "role": tokenDecoded.role
+                    }
+
+                    sessionStorage.setItem("userLogged", JSON.stringify(userLogged));
+                    sessionStorage.setItem("token", JSON.stringify(res.data.token));
+
+                    if(tokenDecoded.role == "CLIENT") {
+                        Swal.fire({
+                            icon: 'success',
+                            title: `Bienvenid@ ${user}`
+                        });
+
+                        navigate("/cliente-inicio", {
+                            replace: ("/inicio-sesion", true)
+                        });
+                    }
                 })
                 .catch(err => {
                     Swal.fire({
