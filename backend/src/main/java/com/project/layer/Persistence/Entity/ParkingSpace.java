@@ -1,6 +1,5 @@
 package com.project.layer.Persistence.Entity;
 
-import jakarta.persistence.Column;
 import jakarta.persistence.EmbeddedId;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Table;
@@ -16,9 +15,6 @@ import lombok.NoArgsConstructor;
 public class ParkingSpace {
     
     @EmbeddedId
-    private ParkingSpaceId parkingSpaceId;
-
-    @Column(name = "ISAVAILABLE", nullable = false)
-    private boolean isAvailable;    
+    private ParkingSpaceId parkingSpaceId; 
 
 }

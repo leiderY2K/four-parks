@@ -35,7 +35,7 @@ import lombok.NoArgsConstructor;
 public class ParkingSpaceId implements Serializable {
     private String idParkingSpace;
     private int idParking;
-    private int idCity;
+    private String idCity;
     private String idVehicleType;
 
 }

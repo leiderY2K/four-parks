@@ -62,8 +62,8 @@ public class ClientController {
         return reservationService.startParkingSpace(reservationRequest);
     }
 
-    @PostMapping("/getReservations")
-    public List<Reservation> getReservations(@RequestBody UserId clientId){
+    @PostMapping("/postReservations")
+    public List<Reservation> postReservations(@RequestBody UserId clientId){
         System.out.println(clientId.toString());
         return reservationService.getReservationsByClientId(clientId);
     }

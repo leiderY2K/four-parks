@@ -17,7 +17,7 @@ public class City {
 
     @Id
     @Column(name = "IDCITY", nullable = false)
-    private int idCity;
+    private String idCity;
 
     @Column(name = "NAME", nullable = false)
     private String name;
