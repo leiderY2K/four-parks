@@ -30,27 +30,29 @@ public class Parking {
     @Column(name = "CAPACITY", nullable = false)
     private int capacity;
 
-    @Column(name = "ADDRESS_COORDINATESX", nullable = false) // Nueva columna para las coordenadas X
+    @Column(name = "FK_COORDINATESX", nullable = false) // Nueva columna para las coordenadas X
     private float addressCoordinatesX;
 
-    @Column(name = "ADDRESS_COORDINATESY", nullable = false) // Nueva columna para las coordenadas Y
+    @Column(name = "FK_COORDINATESY", nullable = false) // Nueva columna para las coordenadas Y
     private float addressCoordinatesY;
-
-    @ManyToOne
-    @JoinColumn(name = "PARKINGTYPE_IDPARKINGTYPE")
-    private ParkingType parkingType;
-
+    
     @Column(name = "PHONE")
     private String phone;
-
+    
     @Column(name = "EMAIL")
     private String email;
 
     @ManyToOne
-    @JoinColumn(name = "CITY_IDCITY")
+    @JoinColumn(name = "FK_IDCITY")
     private City city;
+    
+    @ManyToOne
+    @JoinColumn(name = "FK_IDSCHEDULE")
+    private Schedule schedule;
 
     @ManyToOne
-    @JoinColumn(name = "SCHEDULE_IDSCHEDULE")
-    private Schedule schedule;
+    @JoinColumn(name = "FK_IDPARKINGTYPE")
+    private ParkingType parkingType;
+    
+
 }

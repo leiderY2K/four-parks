@@ -9,7 +9,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 @Entity
-@Table(name = "ADDRESS")
+@Table(name = "RATE")
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
@@ -19,9 +19,26 @@ public class Rate {
     @Column(name = "IDRATE", nullable = false)
     private int idRate;
 
-    @Column(name = "COSTRATE", nullable = false)
+    @Id
+    @Column(name = "FK_IDPARKING", nullable = false)
+    private int idParking;
+
+    @Id
+    @Column(name = "FK_IDCITY", nullable = false)
+    private int idCity;
+
+    @Id
+    @Column(name = "FK_IDVEHICLETYPE", nullable = false)
+    private String idVehicleType;
+
+    @Id
+    @Column(name = "FK_IDPARKINGTYPE", nullable = false)
+    private String idParkingType;
+
+    @Column(name = "HOURCOST", nullable = false)
     private int costRate;
 
-    //TERMINAR!!!
+    @Column(name = "RESERVATIONCOST", nullable = false)
+    private int reservationCost;
 
 }

@@ -10,33 +10,39 @@ DELETE FROM `FOURPARKSDATABASE`.`SCHEDULE`;
 -- Insertar tipos de documento primero
 INSERT INTO `FOURPARKSDATABASE`.`DOCUMENTTYPE` (`IDDOCTYPE`, `DESCDOCTYPE`) 
 VALUES 
-    ('1', 'DNI'),
-    ('2', 'Pasaporte'),
-    ('3', 'Carnet de conducir');
+    ('CC', 'Cedula'),
+    ('TI', 'Tarjeta de identidad'),
+    ('CI', 'Cedula de extranjeria');
 
 -- Insertar usuarios después de los tipos de documento
-INSERT INTO `FOURPARKSDATABASE`.`USER` (`IDUSER`, `FIRSTNAME`, `LASTNAME`, `IDDOCTYPEFK`, `EMAIL`, `PHONE`)
+INSERT INTO `FOURPARKSDATABASE`.`USER` (`IDUSER`, `FIRSTNAME`, `LASTNAME`, `FK_IDDOCTYPE`, `EMAIL`, `PHONE`)
 VALUES 
-    ('1234567890123', 'Juan', 'Pérez', '1', 'juan@example.com', '123456789'),    -- DNI
-    ('9876543210987', 'María', 'Gómez', '2', 'maria@example.com', '987654321'),    -- Pasaporte
-    ('4567890123456', 'Pedro', 'Martínez', '1', 'pedro@example.com', '456789012'), -- DNI
-    ('7890123456789', 'Ana', 'López', '3', 'ana@example.com', '789012345'),      -- Carnet de conducir
-    ('6543210987654', 'Luis', 'Rodríguez', '2', 'luis@example.com', '654321098'); -- Pasaporte
+    ('1234567890123', 'Juan', 'Pérez', 'CC', 'juan@example.com', '123456789'),    -- Cedula
+    ('9876543210987', 'María', 'Gómez', 'TI', 'maria@example.com', '987654321'),    -- Tarjeta de identidad
+    ('4567890123456', 'Pedro', 'Martínez', 'CC', 'pedro@example.com', '456789012'), -- Cedula
+    ('7890123456789', 'Ana', 'López', 'CI', 'ana@example.com', '789012345'),      -- Cedula de extranjeria
+    ('6543210987654', 'Luis', 'Rodríguez', 'TI', 'luis@example.com', '654321098'); -- Tarjeta de identidad
     
 -- Insertar Autenticacion de usuarios después de los usuarios
-INSERT INTO `FOURPARKSDATABASE`.`USER_AUTHENTICATION` (`IDUSER`, `IDDOCTYPEFK`, `USERNAME`, `PASSWORD`, `ROLE`)
+INSERT INTO `FOURPARKSDATABASE`.`USER_AUTHENTICATION` (`IDUSER`, `FK_IDDOCTYPE`, `USERNAME`, `PASSWORD`, `ROLE`, `ATTEMPTS`,`ISBLOCKED`)
 VALUES
-    ('1234567890123', '1', 'juanperez', 'contraseña1','CLIENT'),
-    ('9876543210987', '2', 'mariagomez', 'contraseña2','CLIENT'),
-    ('4567890123456', '1', 'pedromartinez', 'contraseña3','CLIENT'),
-    ('7890123456789', '3', 'analopez', 'contraseña4','CLIENT'),
-    ('6543210987654', '2', 'luisrodriguez', 'contraseña5','CLIENT');
+    ('1234567890123', 'CC', 'juanperez', '$2a$10$QaazF..XTCslpdfjsNS.ZO3O6VhyG4roY6JJcE9TYc93W5ZbMbfwa','CLIENT',0,0),
+    ('9876543210987', 'TI', 'mariagomez', '$2a$10$QaazF..XTCslpdfjsNS.ZO3O6VhyG4roY6JJcE9TYc93W5ZbMbfwa','CLIENT',0,0),
+    ('4567890123456', 'CC', 'pedromartinez', '$2a$10$QaazF..XTCslpdfjsNS.ZO3O6VhyG4roY6JJcE9TYc93W5ZbMbfwa','CLIENT',0,0),
+    ('7890123456789', 'CI', 'analopez', '$2a$10$QaazF..XTCslpdfjsNS.ZO3O6VhyG4roY6JJcE9TYc93W5ZbMbfwa','CLIENT',0,0),
+    ('6543210987654', 'TI', 'luisrodriguez', '$2a$10$QaazF..XTCslpdfjsNS.ZO3O6VhyG4roY6JJcE9TYc93W5ZbMbfwa','CLIENT',0,0);
 
 -- Insertar administradores después de los usuarios y autenticaciones
-INSERT INTO `FOURPARKSDATABASE`.`ADMINISTRATOR` (`USER_IDUSER`, `USER_IDDOCTYPEFK`)
+INSERT INTO `FOURPARKSDATABASE`.`ADMINISTRATOR` (`IDUSER`, `FK_IDDOCTYPE`)
 VALUES
-    ('9876543210987', '2'), -- María Gómez - Pasaporte
-    ('4567890123456', '1'); -- Pedro Martínez - DNI
+    ('9876543210987', 'TI'), -- María Gómez - Tarjeta de identidad
+    ('4567890123456', 'CC'); -- Pedro Martínez - Cedula
+
+-- Insertar clientes después de los usuarios y autenticaciones
+INSERT INTO `FOURPARKSDATABASE`.`CLIENT` (`IDUSER`, `FK_IDDOCTYPE`)
+VALUES
+    ('1234567890123', 'CC'), -- Juan Perez - Cedula
+    ('6543210987654', 'TI'); -- Pedro Martínez - Tarjeta de identidad
 
 -- Insertar ciudades
 ALTER TABLE CITY AUTO_INCREMENT = 1; 
@@ -58,22 +64,76 @@ VALUES
 -- Insertar tipos de estacionamiento
 INSERT INTO `FOURPARKSDATABASE`.`PARKINGTYPE` (`IDPARKINGTYPE`, `DESCPARKINGTYPE`) 
 VALUES 
-    (1, 'Uncovered'),
-    (2, 'SemiCovered'),
-    (3, 'Covered');
+    ('UNC', 'Sin cubrir'), 
+    ('SEC', 'Semi cubierto'), 
+    ('COV', 'Cubierto'); 
 
 -- Insertar horarios
 INSERT INTO `FOURPARKSDATABASE`.`SCHEDULE` (`IDSCHEDULE`, `STARTTIME`, `ENDTIME`, `SCHEDULETYPE`) 
 VALUES 
-    (1, '08:00:00', '18:00:00', 'Weekdays'),
-    (2, '08:00:00', '20:00:00', 'Weekends'),
-    (3, '00:00:00', '23:59:59', 'Full Time');
+    (1, '08:00:00', '18:00:00', 'Días de semana'),
+    (2, '08:00:00', '20:00:00', 'Fines de semana'),
+    (3, '00:00:00', '23:59:59', 'Tiempo completo');
 
 -- Insertar estacionamientos
-INSERT INTO `FOURPARKSDATABASE`.`PARKING` (`NAMEPARK`, `CAPACITY`, `ADDRESS_COORDINATESX`, `ADDRESS_COORDINATESY`, `PARKINGTYPE_IDPARKINGTYPE`, `PHONE`, `EMAIL`, `CITY_IDCITY`, `SCHEDULE_IDSCHEDULE`, `ADMINISTRADOR_USER_IDUSER`, `ADMINISTRADOR_USER_IDDOCTYPEFK`) 
+INSERT INTO `FOURPARKSDATABASE`.`PARKING` (`NAMEPARK`, `CAPACITY`, `FK_COORDINATESX`, `FK_COORDINATESY`, `PHONE`, `EMAIL`, `FK_IDCITY`, `FK_IDSCHEDULE`, `FK_ADMIN_IDUSER`, `FK_ADMIN_IDDOCTYPE`,`FK_IDPARKINGTYPE`) 
 VALUES 
-    ('Parking Lot A', 100, 4.2989, -74.8096, 1, '123-4567', 'parkinglotA@example.com', 1, 1,'9876543210987', '2'),
-    ('Outdoor Park B', 200, 4.3034, -74.8080, 2, '987-6543', 'outdoorparkB@example.com', 2, 2,'9876543210987', '2'),
-    ('Covered Park C', 30, 4.3030, -74.7996, 3, '601-8877', 'parkingexample@example.com', 1, 2,'9876543210987', '2'),
-    ('Outdoor Park A', 56, 4.29792, -74.80894, 2, '312-1233', 'outdorfp@example.com', 1, 1,'4567890123456', '1');
+    ('Parqueadero Cubierto 1', 100, 4.2989, -74.8096, '123-4567', 'parqueaderoA@example.com', 1, 1,'9876543210987', 'TI', 'COV'),
+    ('Parque al aire libre 1', 200, 4.3034, -74.8080, '987-6543', 'parqueairelibreB@example.com', 2, 2,'9876543210987', 'TI', 'UNC'),
+    ('Parqueadero Cubierto 2', 30, 4.3030, -74.7996, '601-8877', 'parqueejemplo@example.com', 1, 2,'9876543210987', 'TI', 'COV'),
+    ('Parqueadero SemiCubierto 1', 56, 4.29792, -74.80894, '312-1233', 'parqueaderoA@example.com', 1, 1,'4567890123456', 'CC', 'SEC');
+    
+-- Insertar Tipos de Vehiculos
+INSERT INTO `FOURPARKSDATABASE`.`VEHICLETYPE` (`IDVEHICLETYPE`,`DESCVEHICLETYPE`) 
+VALUES
+    ('CAR', 'AUTOMOVIL'),
+    ('MOT', 'MOTOCICLETA'),
+    ('BIC', 'BICICLETA');
 
+
+-- Insertar tarifas
+INSERT INTO `FOURPARKSDATABASE`.`RATE` (`HOURCOST`, `RESERVATIONCOST`, `FK_IDPARKING`, `FK_IDCITY`, `FK_IDVEHICLETYPE`, `ISCOVERED`) 
+VALUES 
+    (5000, 10000, 1, 1, 'CAR', 1),    
+    (4000, 6000, 1, 1, 'MOT', 1),
+    (7000, 12000, 2, 2, 'CAR', 0),
+    (3000, 5000, 2, 2, 'MOT', 0),
+    (3000, 5000, 3, 1, 'CAR', 1),
+    (4000, 6000, 3, 1, 'CAR', 0),
+    (3000, 5000, 4, 1, 'CAR', 1),
+    (4000, 6000, 4, 1, 'CAR', 0);
+    
+-- Insertar espacios de estacionamiento
+INSERT INTO `FOURPARKSDATABASE`.`PARKINGSPACE` (`IDPARKINGSPACE`, `FK_IDPARKING`, `FK_IDCITY`, `FK_IDVEHICLETYPE`, `ISAVAILABLE`, `ISCOVERED`) 
+VALUES
+    -- Parqueadero 1 
+    (1, 1, 1, 'CAR', 1, 1),
+    (2, 1, 1, 'CAR', 1, 1),   
+    (3, 1, 1, 'MOT', 1, 1),   
+    (4, 1, 1, 'CAR', 1, 1),
+    -- Parqueadero 2
+    (1, 2, 2, 'CAR', 1, 0),
+    (2, 2, 2, 'CAR', 1, 0),   
+    (3, 2, 2, 'MOT', 1, 0),   
+    (4, 2, 2, 'MOT', 1, 0),
+    -- Parqueadero 3
+    (1, 3, 1, 'CAR', 1, 1),
+    (2, 3, 1, 'CAR', 1, 1),   
+    (3, 3, 1, 'CAR', 1, 1),   
+    (4, 3, 1, 'CAR', 1, 1),
+    -- Parqueadero 4
+    (1, 4, 1, 'CAR', 1, 1),
+    (2, 4, 1, 'CAR', 1, 1),   
+    (3, 4, 1, 'CAR', 1, 0),   
+    (4, 4, 1, 'CAR', 1, 0);
+
+-- Inserción 1
+INSERT INTO `FOURPARKSDATABASE`.`RESERVATION` (`STARTTIMERES`, `ENDTIMERES`, `CREATIONDATERES`, `TOTALRES`, `LICENSEPLATE`, `RESERVATIONCOL`, `FK_IDPARKING`, `FK_IDCITY`, `FK_CLIENT_IDUSER`, `FK_CLIENT_IDDOCTYPE`)
+VALUES
+    ('10:00:00', '12:00:00', '2024-05-01', NULL, 'ABC123', 'Reservación A', 1, 1, '1234567890123', 'CC'),
+    ('14:00:00', '16:00:00', '2024-05-02', NULL, 'DEF456', 'Reservación B', 1, 1, '6543210987654', 'TI'),
+    ('08:00:00', '10:00:00', '2024-05-03', NULL, 'GHI789', 'Reservación C', 2, 2, '1234567890123', 'CC'),
+    ('09:00:00', '11:00:00', '2024-05-04', NULL, 'JKL012', 'Reservación D', 3, 1, '6543210987654', 'TI'),
+    ('13:00:00', '15:00:00', '2024-05-05', NULL, 'MNO345', 'Reservación E', 4, 1, '1234567890123', 'CC');
+
+    

@@ -3,6 +3,7 @@ package com.project.layer.Persistence.Entity;
 import jakarta.persistence.*;
 import java.util.Collection;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -29,12 +30,26 @@ public class UserAuthentication implements UserDetails {
     @Column(name = "PASSWORD", nullable = false)
     private String password;
 
+    @Column(name = "ATTEMPTS", nullable = false)
+    private int attempts;
+    
+    @Column(name = "ISBLOCKED", nullable = false)
+    private boolean isBlocked;
+
     @Column(name = "ROLE", nullable = false)
-    private String role;
+    @Enumerated(EnumType.STRING)
+    private Role role;
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        return List.of(new SimpleGrantedAuthority(role));
+
+        List<GrantedAuthority> authorities = role.getPermissions().stream()
+            .map(permissionsEnum -> new SimpleGrantedAuthority(permissionsEnum.name()))
+            .collect(Collectors.toList());
+
+        authorities.add(new SimpleGrantedAuthority("ROLE_" + role.name()));
+
+        return authorities;
     }
 
     @Override

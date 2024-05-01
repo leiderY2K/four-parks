@@ -9,17 +9,17 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 @Entity
-@Table(name = "PARKINGTYPE")
+@Table(name = "VEHICLETYPE")
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class ParkingType {
+public class VehicleType {
     
     @Id
-    @Column(name = "IDPARKINGTYPE", nullable = false)
-    private String idParkingType;
+    @Column(name = "IDVEHICLETYPE",nullable = false)
+    private String idVehicleType;
 
-    @Column(name= "DESCPARKINGTYPE", nullable = false)
-    private String descParkingType;
+    @Column(name = "DESCVEHICLETYPE")
+    private String descVehicleType;
 
 }

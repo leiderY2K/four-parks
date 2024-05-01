@@ -7,11 +7,10 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.project.layer.Services.Authentication.AuthLoginResponse;
-import com.project.layer.Services.Authentication.AuthResponse;
+import com.project.layer.Controllers.Requests.LoginRequest;
+import com.project.layer.Controllers.Requests.RegisterRequest;
+import com.project.layer.Controllers.Responses.AuthResponse;
 import com.project.layer.Services.Authentication.AuthService;
-import com.project.layer.Services.Authentication.LoginRequest;
-import com.project.layer.Services.Authentication.RegisterRequest;
 
 import lombok.RequiredArgsConstructor;
 
@@ -24,14 +23,12 @@ public class AuthController {
     private final AuthService authService;
 
     @PostMapping(value = "login")
-    public ResponseEntity<AuthLoginResponse> login(@RequestBody LoginRequest request){
-        System.err.println(request.toString());
+    public ResponseEntity<AuthResponse> login(@RequestBody LoginRequest request){
         return ResponseEntity.ok(authService.login(request));
     }
 
     @PostMapping(value = "register")
     public ResponseEntity<AuthResponse> register(@RequestBody RegisterRequest request){
-        System.err.println(request.toString());
         return ResponseEntity.ok(authService.register(request));
     }
 

@@ -1,11 +1,17 @@
 package com.project.layer.Services.Authentication;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import com.project.layer.Controllers.Requests.LoginRequest;
+import com.project.layer.Controllers.Requests.RegisterRequest;
+import com.project.layer.Controllers.Responses.AuthResponse;
+import com.project.layer.Persistence.Entity.Role;
 import com.project.layer.Persistence.Entity.User;
 import com.project.layer.Persistence.Entity.UserAuthentication;
 import com.project.layer.Persistence.Entity.UserId;
@@ -26,28 +32,32 @@ public class AuthService {
 
     private final AuthenticationManager authenticationManager;
 
-    public AuthLoginResponse login(LoginRequest request) {
-        authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(request.getUsername(), request.getPassword()));
-        UserDetails user = userAuthRepository.findByUsername(request.getUsername()).orElseThrow();
+    public AuthResponse login(LoginRequest request) {
         
-        UserId userId = ((UserAuthentication) user).getUserId();
-        String role = ((UserAuthentication) user).getRole();
-        String token = jwtService.getToken(user);
-        return AuthLoginResponse.builder()
-            .userId(userId)
-            .role(role)
+        authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(request.getUsername(), request.getPassword()));
+        UserAuthentication user = userAuthRepository.findByUsername(request.getUsername()).get();
+        
+        String token = jwtService.getToken(generateExtraClaims(user), user);
+        return AuthResponse.builder()
             .token(token)
             .build();             
+    }
+
+    private Map<String, Object> generateExtraClaims(UserAuthentication user) {
+        Map<String, Object> extraClaims = new HashMap<>();
+
+        extraClaims.put("userId", user.getUserId());
+        extraClaims.put("role", user.getRole());
+
+        return extraClaims;
     }
 
     public AuthResponse register(RegisterRequest request) {
 
         UserId userId = UserId.builder()
             .idUser(request.getIdUser())
-            .idDocTypeFk(request.getIdDocTypeFk())
+            .idDocType(request.getIdDocTypeFk())
             .build();
-
-        System.err.println(userId.toString());
         
         // Crear una instancia de User
         User newUser = User.builder()
@@ -66,14 +76,16 @@ public class AuthService {
             .userId(userId)
             .username(request.getUsername())
             .password(passwordEncoder.encode(request.getPassword()))
-            .role(request.getRole())
+            .attempts(0)
+            .isBlocked(false)
+            .role(Role.valueOf(request.getRole()))
             .build();
 
         // Guardar el usuario en la base de datos
         userAuthRepository.save(userAuthentication);
 
         return AuthResponse.builder()
-            .token(jwtService.getToken(userAuthentication))
+            .token(jwtService.getToken(null, userAuthentication))
             .build();
     }
 

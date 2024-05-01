@@ -9,6 +9,7 @@ import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
+import com.project.layer.Persistence.Entity.Role;
 import com.project.layer.Services.JWT.JwtAuthenticationFilter;
 
 import lombok.RequiredArgsConstructor;
@@ -28,11 +29,18 @@ public class SecurityConfig {
                 csrf
                     .disable()
                 )
-            .authorizeHttpRequests(authRequest ->
+            .authorizeHttpRequests(authRequest -> {
                 authRequest
+                    //Peticiones publicas
                     .requestMatchers("/auth/**").permitAll()
-                    .anyRequest().authenticated()
-                )
+                    .requestMatchers("/error").permitAll()
+
+                    //Peticiones privadas
+                    .requestMatchers("/client/**").hasAuthority("ROLE_" + Role.CLIENT.name())
+                    .requestMatchers("/admin/**").hasAuthority("ROLE_" + Role.ADMIN.name())
+
+                    .anyRequest().authenticated();
+                })
             .sessionManagement(sessionManager ->
                     sessionManager
                         .sessionCreationPolicy(SessionCreationPolicy.STATELESS))

@@ -1,25 +1,24 @@
 package com.project.layer.Persistence.Entity;
 
 import jakarta.persistence.Column;
+import jakarta.persistence.EmbeddedId;
 import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
 @Entity
-@Table(name = "PARKINGTYPE")
+@Table(name = "PARKINGSPACE")
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class ParkingType {
+public class ParkingSpace {
     
-    @Id
-    @Column(name = "IDPARKINGTYPE", nullable = false)
-    private String idParkingType;
+    @EmbeddedId
+    private ParkingSpaceId parkingSpaceId;
 
-    @Column(name= "DESCPARKINGTYPE", nullable = false)
-    private String descParkingType;
+    @Column(name = "ISAVAILABLE", nullable = false)
+    private boolean isAvailable;    
 
 }
