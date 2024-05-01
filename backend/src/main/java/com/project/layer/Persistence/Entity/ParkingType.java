@@ -17,7 +17,7 @@ public class ParkingType {
     
     @Id
     @Column(name = "IDPARKINGTYPE", nullable = false)
-    private int idParkingType;
+    private String idParkingType;
 
     @Column(name= "DESCPARKINGTYPE", nullable = false)
     private String descParkingType;

@@ -1,6 +1,4 @@
-package com.project.layer.Services.Authentication;
-
-import com.project.layer.Persistence.Entity.UserId;
+package com.project.layer.Controllers.Responses;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -11,10 +9,6 @@ import lombok.NoArgsConstructor;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class AuthLoginResponse {
-    
-    UserId userId;
-    String role;
+public class AuthResponse {
     String token;
-
 }

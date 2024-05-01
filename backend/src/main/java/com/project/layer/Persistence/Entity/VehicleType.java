@@ -17,7 +17,7 @@ public class VehicleType {
     
     @Id
     @Column(name = "IDVEHICLETYPE",nullable = false)
-    private int idVehicleType;
+    private String idVehicleType;
 
     @Column(name = "DESCVEHICLETYPE")
     private String descVehicleType;

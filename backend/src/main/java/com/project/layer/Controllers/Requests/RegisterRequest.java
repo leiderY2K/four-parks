@@ -1,4 +1,4 @@
-package com.project.layer.Services.Authentication;
+package com.project.layer.Controllers.Requests;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;

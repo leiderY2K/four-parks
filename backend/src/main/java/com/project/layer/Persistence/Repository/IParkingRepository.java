@@ -1,5 +1,6 @@
 package com.project.layer.Persistence.Repository;
 
+import java.sql.Time;
 import java.util.List;
 
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -13,17 +14,17 @@ import com.project.layer.Persistence.Entity.Parking;
 public interface IParkingRepository extends JpaRepository<Parking, Integer>{
     
     @Query(
-        value = "SELECT * FROM PARKING p, CITY c WHERE p.FK_IDCITY = c.IDCITY AND c.NAME = :city",
-        nativeQuery = true
-    )
-    List<Parking> queryParkingsByCity(@Param("city") String city);
-
-    @Query(
-        value = "SELECT * FROM PARKING p, CITY c, PARKINGTYPE pt WHERE p.FK_IDCITY = c.IDCITY AND c.NAME = :city " + 
-                                                                "AND p.FK_IDPARKINGTYPE = pt.IDPARKINGTYPE AND pt.DESCPARKINGTYPE = :type",
-        nativeQuery = true
-    )
-    List<Parking> queryParkingsByCityAndType(@Param("city") String city, @Param("type") String type);
+        value = "SELECT * FROM PARKING p "+
+                    "JOIN CITY c ON p.FK_IDCITY = c.IDCITY "+
+                    "JOIN SCHEDULE st ON p.FK_IDSCHEDULE = st.IDSCHEDULE "+
+                    "LEFT JOIN PARKINGTYPE pt ON p.FK_IDPARKINGTYPE = pt.IDPARKINGTYPE "+
+                "WHERE c.NAME = :city "+
+                    "AND (:endTime IS NULL OR st.ENDTIME >= :endTime) "+
+                    "AND (:startTime IS NULL OR st.STARTTIME <= :startTime) "+
+                    "AND (:scheduleType IS NULL OR st.SCHEDULETYPE = :scheduleType) "+
+                    "AND (:type IS NULL OR p.FK_IDPARKINGTYPE = :type)", 
+        nativeQuery = true)
+    List<Parking> queryParkingsByArgs(@Param("city") String city, @Param("type") String type,@Param("startTime") Time startTime, @Param("endTime") Time endTime, @Param("scheduleType") String scheduleType);
 
     @Query(
         value = "SELECT p.* FROM PARKING p " +

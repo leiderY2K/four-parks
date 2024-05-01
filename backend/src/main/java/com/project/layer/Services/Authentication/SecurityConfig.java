@@ -9,7 +9,7 @@ import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
-import com.project.layer.Persistence.Entity.Permission;
+import com.project.layer.Persistence.Entity.Role;
 import com.project.layer.Services.JWT.JwtAuthenticationFilter;
 
 import lombok.RequiredArgsConstructor;
@@ -36,8 +36,8 @@ public class SecurityConfig {
                     .requestMatchers("/error").permitAll()
 
                     //Peticiones privadas
-                    .requestMatchers("/client/**").hasAuthority(Permission.READ_ALL_PRODUCTS.name())
-                    .requestMatchers("/admin/**").hasAuthority(Permission.READ_ALL_PRODUCTS.name())
+                    .requestMatchers("/client/**").hasAuthority("ROLE_" + Role.CLIENT.name())
+                    .requestMatchers("/admin/**").hasAuthority("ROLE_" + Role.ADMIN.name())
 
                     .anyRequest().authenticated();
                 })

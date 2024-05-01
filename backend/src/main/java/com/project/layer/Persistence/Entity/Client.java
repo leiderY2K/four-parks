@@ -1,6 +1,5 @@
 package com.project.layer.Persistence.Entity;
 
-import jakarta.persistence.Column;
 import jakarta.persistence.EmbeddedId;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Table;
@@ -20,6 +19,4 @@ public class Client {
     @EmbeddedId
     private UserId userId;
 
-    @Column(name = "SCORE", nullable = false)
-    private int score;
 }
