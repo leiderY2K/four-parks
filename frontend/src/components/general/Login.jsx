@@ -1,8 +1,9 @@
-import { useRef, useState } from "react";
+import { useRef, useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import ReCAPTCHA from "react-google-recaptcha";
 import axios from "axios";
 import Swal from 'sweetalert2'
+import { decodeJWT } from "../../javascript/decodeJWT";
 
 export default function Login({url}){
     const [user, setUser] = useState("");
@@ -24,25 +25,7 @@ export default function Login({url}){
             if(captchaState) {
                 axios.post(`${url}/auth/login`, {username: user, password: password})
                 .then(res => {
-                    const userLogged = {
-                        "idNumber": res.data.userId.idUser,
-                        "idType": res.data.userId.idDocTypeFk,
-                        "role": res.data.role
-                    }
-
-                    sessionStorage.setItem("userLogged", JSON.stringify(userLogged));
-                    sessionStorage.setItem("token", JSON.stringify(res.data.token));
-
-                    if(res.data.role == "CLIENT") {
-                        Swal.fire({
-                            icon: 'success',
-                            title: `Bienvenid@ ${user}`
-                        });
-
-                        navigate("/cliente-inicio", {
-                            replace: ("/inicio-sesion", true)
-                        });
-                    }
+                    console.log(res)
                 })
                 .catch(err => {
                     Swal.fire({
@@ -66,7 +49,7 @@ export default function Login({url}){
             setCaptchaState(true)
         }
     }
-    
+
     return(
         <article className="w-11/12 md:w-1/2 xl:w-1/4 2xl:w-1/5 h-2/3 md:h-3/5 xl:h-4/6 2xl:h-3/5 pt-6 md:pt-10 2xl:pt-8 rounded-2xl shadow-xl bg-gradient-to-b from-red-light from-75% to-red-dark">
             <section className="flex flex-col items-center px-6 md:px-10 xl:px-8">

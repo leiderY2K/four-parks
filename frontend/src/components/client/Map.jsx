@@ -14,6 +14,7 @@ const Map = ({ url, city }) => {
 
     useEffect(() => {
         const token = sessionStorage.getItem('token').replace(/"/g, '');
+        
         axios.get(`${url}/client/getParkings`, {
             params: { city: city },
             headers: { Authorization: `Bearer ${token}` }
