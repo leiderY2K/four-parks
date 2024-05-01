@@ -30,7 +30,6 @@ public class ClientController {
     private final MapService mapService;
     private final ReservationService reservationService;
 
-
     @GetMapping("/cityList")
     public List<String> getCityList(){
         return mapService.getCityList();

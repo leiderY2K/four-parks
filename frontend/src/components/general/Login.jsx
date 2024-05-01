@@ -2,8 +2,9 @@ import { useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import ReCAPTCHA from "react-google-recaptcha";
 import axios from "axios";
+import Swal from 'sweetalert2'
 
-export default function Login(){
+export default function Login({url}){
     const [user, setUser] = useState("");
     const [password, setPassword] = useState("");
     const [captchaState, setCaptchaState] = useState(false);
@@ -15,14 +16,47 @@ export default function Login(){
         e.preventDefault();
 
         if(!user || !password) {
-            alert("Por favor llene todos los campos")
+            Swal.fire({
+                icon: 'info',
+                title: `Por favor llene todos los campos`
+            });
         } else {
             if(captchaState) {
-                navigate("/cliente-inicio", {
-                    replace: ("/inicio-sesion", true)
-                });
+                axios.post(`${url}/auth/login`, {username: user, password: password})
+                .then(res => {
+                    const userLogged = {
+                        "idNumber": res.data.userId.idUser,
+                        "idType": res.data.userId.idDocTypeFk,
+                        "role": res.data.role
+                    }
+
+                    sessionStorage.setItem("userLogged", JSON.stringify(userLogged));
+                    sessionStorage.setItem("token", JSON.stringify(res.data.token));
+
+                    if(res.data.role == "CLIENT") {
+                        Swal.fire({
+                            icon: 'success',
+                            title: `Bienvenid@ ${user}`
+                        });
+
+                        navigate("/cliente-inicio", {
+                            replace: ("/inicio-sesion", true)
+                        });
+                    }
+                })
+                .catch(err => {
+                    Swal.fire({
+                        icon: 'error',
+                        title: `Hubo un error al iniciar sesión` ,
+                    });
+
+                    console.log(err);
+                })
             } else {
-                alert("Por favor complete el reCAPTCHA para continuar")
+                Swal.fire({
+                    icon: 'info',
+                    title: `Por favor complete el reCAPTCHA para continuar`
+                });
             }
         }
     }

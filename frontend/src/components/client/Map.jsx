@@ -4,7 +4,7 @@ import "leaflet/dist/leaflet.css";
 import "../../css/map.css";
 
 const Map = () => {
-    const customIcon = new Icon({iconUrl: "../../../public/Cubierto.png", iconSize:[38, 38]})
+    const customIcon = new Icon({iconUrl: "Cubierto.png", iconSize:[38, 38]})
     const markers = [
         {coords: [4.578948, -74.126637],popUp: 'Hola'},
         {coords: [4.597257, -74.122517],popUp: 'Hola'},
