@@ -49,6 +49,10 @@ public class Parking {
     @ManyToOne
     @JoinColumn(name = "FK_IDSCHEDULE")
     private Schedule schedule;
+
+    @ManyToOne
+    @JoinColumn(name = "FK_IDPARKINGTYPE")
+    private ParkingType parkingType;
     
 
 }

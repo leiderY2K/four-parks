@@ -8,6 +8,9 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import com.project.layer.Controllers.Requests.LoginRequest;
+import com.project.layer.Controllers.Requests.RegisterRequest;
+import com.project.layer.Controllers.Responses.AuthResponse;
 import com.project.layer.Persistence.Entity.Role;
 import com.project.layer.Persistence.Entity.User;
 import com.project.layer.Persistence.Entity.UserAuthentication;
@@ -29,12 +32,13 @@ public class AuthService {
 
     private final AuthenticationManager authenticationManager;
 
-    public AuthLoginResponse login(LoginRequest request) {
+    public AuthResponse login(LoginRequest request) {
+        
         authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(request.getUsername(), request.getPassword()));
         UserAuthentication user = userAuthRepository.findByUsername(request.getUsername()).get();
         
         String token = jwtService.getToken(generateExtraClaims(user), user);
-        return AuthLoginResponse.builder()
+        return AuthResponse.builder()
             .token(token)
             .build();             
     }
@@ -54,8 +58,6 @@ public class AuthService {
             .idUser(request.getIdUser())
             .idDocType(request.getIdDocTypeFk())
             .build();
-
-        System.err.println(userId.toString());
         
         // Crear una instancia de User
         User newUser = User.builder()
