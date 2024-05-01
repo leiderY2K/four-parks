@@ -49,10 +49,10 @@ VALUES
 -- Insertar direcciones en la tabla ADDRESS
 INSERT INTO `FOURPARKSDATABASE`.`ADDRESS` (`DESCADDRESS`, `COORDINATESX`, `COORDINATESY`) 
 VALUES 
-    ('Dirección 1', 4.6544, -74.5678),
-    ('Dirección 2', 4.6544, -74.6765),
-    ('Dirección 3', 4.6544, -74.7890),
-    ('Dirección 4', 4.6544, -74.2222);
+    ('Dirección 1', 4.2989, -74.8096),
+    ('Dirección 2', 4.3034, -74.8080),
+    ('Dirección 3', 4.3030, -74.7996),
+    ('Dirección 4', 4.29792, -74.80894);
 
 
 -- Insertar tipos de estacionamiento
@@ -72,8 +72,8 @@ VALUES
 -- Insertar estacionamientos
 INSERT INTO `FOURPARKSDATABASE`.`PARKING` (`NAMEPARK`, `CAPACITY`, `ADDRESS_COORDINATESX`, `ADDRESS_COORDINATESY`, `PARKINGTYPE_IDPARKINGTYPE`, `PHONE`, `EMAIL`, `CITY_IDCITY`, `SCHEDULE_IDSCHEDULE`, `ADMINISTRADOR_USER_IDUSER`, `ADMINISTRADOR_USER_IDDOCTYPEFK`) 
 VALUES 
-    ('Parking Lot A', 100, 4.6544, -74.5678, 1, '123-4567', 'parkinglotA@example.com', 1, 1,'9876543210987', '2'),
-    ('Outdoor Park B', 200, 4.6544, -74.6765, 2, '987-6543', 'outdoorparkB@example.com', 2, 2,'9876543210987', '2'),
-    ('Covered Park C', 30, 4.6544, -74.7890, 3, '601-8877', 'parkingexample@example.com', 1, 2,'9876543210987', '2'),
-    ('Outdoor Park A', 56, 4.6544, -74.2222, 2, '312-1233', 'outdorfp@example.com', 1, 1,'4567890123456', '1');
+    ('Parking Lot A', 100, 4.2989, -74.8096, 1, '123-4567', 'parkinglotA@example.com', 1, 1,'9876543210987', '2'),
+    ('Outdoor Park B', 200, 4.3034, -74.8080, 2, '987-6543', 'outdoorparkB@example.com', 2, 2,'9876543210987', '2'),
+    ('Covered Park C', 30, 4.3030, -74.7996, 3, '601-8877', 'parkingexample@example.com', 1, 2,'9876543210987', '2'),
+    ('Outdoor Park A', 56, 4.29792, -74.80894, 2, '312-1233', 'outdorfp@example.com', 1, 1,'4567890123456', '1');
 

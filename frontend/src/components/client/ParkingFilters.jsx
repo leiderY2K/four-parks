@@ -1,12 +1,4 @@
-import { useState } from "react";
-
-const ParkingFilters = () => {
-  const [city, setCity] = useState("");
-  const [parkingType, setParkingType] = useState("");
-  const [availability, setAvailability] = useState("");
-  const [startTime, setStartTime] = useState("");
-  const [endTime, setEndTime] = useState("");
-
+const ParkingFilters = ({city, setCity, parkingType, setParkingType,availability, setAvailability, startTime, setStartTime, endTime, setEndTime}) => {
   const handleTimeChange = (setter) => (event) => {
     const time = new Date(event.target.valueAsNumber);
     if (time) {
@@ -33,16 +25,16 @@ const ParkingFilters = () => {
       <section className="flex justify-between">
         <select id="parking-city" value={city} className="w-1/2 mr-12 p-4 rounded-md bg-white shadow-md font-paragraph" onChange={(e) => setCity(e.target.value)}>
           <option value="" disabled selected hidden> Ciudad </option>
-          <option value="bogota"> Bogotá </option>
-          <option value="medellin"> Medellín </option>
-          <option value="cali"> Cali </option>
+          <option value="Bogota"> Bogotá </option>
+          <option value="Medellin"> Medellín </option>
+          <option value="Cali"> Cali </option>
         </select>
         
         <select id="parking-type" value={parkingType} className="w-1/2 p-4 rounded-md bg-white shadow-md font-paragraph" onChange={(e) => setParkingType(e.target.value)}>
           <option value="" disabled selected hidden> Tipo de parqueadero </option>
-          <option value="cubierto"> Cubierto </option>
-          <option value="semi-cubierto"> Semi-cubierto </option>
-          <option value="descubierto"> Descubierto </option>
+          <option value="covered"> Cubierto </option>
+          <option value="semicovered"> Semi-cubierto </option>
+          <option value="uncovered"> Descubierto </option>
         </select>
       </section>
       

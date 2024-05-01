@@ -9,6 +9,7 @@ export default {
         'blue-darkest': '#205d7b',
         'red-light': '#d46e51',
         'red-dark': '#9b442b',
+        'red-darkest': '#803520',
         'white': '#f8f6f6',
         'gray-light': '#efefef',
         'gray-dark': '#b2afaf',

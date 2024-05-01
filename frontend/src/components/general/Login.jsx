@@ -68,13 +68,13 @@ export default function Login({url}){
     }
     
     return(
-        <article className="bg-gradient-to-b from-red-light from-75% to-red-dark pt-12 pb-6 relative rounded-2xl shadow-xl">
-            <section className="flex flex-col items-center px-12">
+        <article className="w-11/12 md:w-1/2 xl:w-1/4 2xl:w-1/5 h-2/3 md:h-3/5 xl:h-4/6 2xl:h-3/5 pt-6 md:pt-10 2xl:pt-8 rounded-2xl shadow-xl bg-gradient-to-b from-red-light from-75% to-red-dark">
+            <section className="flex flex-col items-center px-6 md:px-10 xl:px-8">
                 <div className="w-24 h-24 bg-white rounded-full ml-auto mr-auto"></div>
                     
-                <section className="flex flex-col justify-between items-center w-full h-56 mt-12">
+                <section className="flex flex-col justify-between items-center w-full h-56 mt-6 md:mt-10 2xl:mt-8">
                     <input type="text" id="user" value={user} className="w-full p-3 rounded-md bg-white font-paragraph placeholder:text-gray-dark" 
-                    placeholder="Usuario o correo electrónico" onChange={(e) => setUser(e.target.value)} required></input>
+                    placeholder="Usuario" onChange={(e) => setUser(e.target.value)} required></input>
 
                     <input type="password" id="password" value={password} className="w-full p-3 rounded-md bg-white font-paragraph placeholder:text-gray-dark" 
                     placeholder="Contraseña" onChange={(e) => setPassword(e.target.value)} required></input>
@@ -82,11 +82,11 @@ export default function Login({url}){
                     <ReCAPTCHA ref={captcha} sitekey="6LfEr8QpAAAAAHkHnuDZebwy-ZRwIYKLoVA5MmyR" onChange={validateCaptcha} />
                 </section>
 
-                <button className="mt-8 px-20 py-3 bg-blue-dark hover:bg-blue-darkest rounded-xl text-white font-title font-semibold text-xl" 
+                <button className="mt-8 2xl:mt-6  md:px-20 px-16 py-3 bg-blue-dark hover:bg-blue-darkest rounded-xl text-white font-title font-semibold text-xl" 
                 onClick={handleLogin}>Iniciar sesión</button>   
             </section>
 
-            <hr className="h-0.5 mt-8 rounded-full bg-white"></hr>
+            <hr className="h-0.5 mt-8 2xl:mt-6  rounded-full bg-white"></hr>
                     
             <div className="flex justify-center mt-4 font-paragraph text-sm text-white"> ¿Olvidó su contraseña?  
                 <a href="/" className="ml-1 font-semibold text-white hover:text-blue-darkest"> Recuperar </a>

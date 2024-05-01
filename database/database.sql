@@ -75,7 +75,7 @@ DEFAULT CHARACTER SET = UTF8MB3;
 -- -----------------------------------------------------
 -- TABLE `FOURPARKSDATABASE`.`CLIENT`
 -- -----------------------------------------------------
-CREATE TABLE IF NOT EXISTS `FOURPARKSDATno pudo estar presente pero quedo en coordinarse con ABASE`.`CLIENT` (
+CREATE TABLE IF NOT EXISTS `FOURPARKSDATABASE`.`CLIENT` (
   `USER_IDUSER` VARCHAR(13) NOT NULL,
   `USER_IDDOCTYPEFK` VARCHAR(3) NOT NULL,
   `SCORE` INT NOT NULL,

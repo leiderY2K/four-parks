@@ -61,7 +61,7 @@ export default function SignUp({url}) {
             <section className="flex flex-col items-center px-12">
                 <div className="w-24 h-24 bg-white rounded-full ml-auto mr-auto"></div>
 
-                <section className="flex flex-col justify-between items-center w-full h-72 mt-12">
+                <section className="flex flex-col justify-evenly items-center w-full h-72 mt-12">
                     <div className="flex justify-between w-full">
                         <select id="idType" className="w-2/5 p-3 rounded-md bg-white font-paragraph" value={idType} onChange={(e) => setIdType(e.target.value)}>
                             <option value="" disabled hidden> Tipo de documento </option>
