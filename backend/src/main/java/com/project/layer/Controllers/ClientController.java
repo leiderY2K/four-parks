@@ -19,7 +19,6 @@ public class ClientController {
     
     private final MapService mapService;
 
-
     @GetMapping("/cityList")
     public List<String> getCityList(){
         return mapService.getCityList();

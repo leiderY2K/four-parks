@@ -1,5 +1,6 @@
 package com.project.layer.Services.Authentication;
 
+import java.security.SecureRandom;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -69,11 +70,15 @@ public class AuthService {
         // Guardar el usuario en la base de datos
         userRepository.save(newUser);
 
+        // Generar una contraseña aleatoria
+        String randomPassword = generateRandomPassword();
+
+
         // Crear una instancia de UserAuthentication para autenticación
         UserAuthentication userAuthentication = UserAuthentication.builder()
             .userId(userId)
             .username(request.getUsername())
-            .password(passwordEncoder.encode(request.getPassword()))
+            .password(passwordEncoder.encode(randomPassword))
             .attempts(0)
             .isBlocked(false)
             .role(Role.valueOf(request.getRole()))
@@ -84,7 +89,19 @@ public class AuthService {
 
         return AuthResponse.builder()
             .token(jwtService.getToken(null, userAuthentication))
+            .contra(randomPassword) //es para iniciar sesion mientras
             .build();
+    }
+
+    private String generateRandomPassword() {
+        String caracteres = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+        SecureRandom random = new SecureRandom();
+        StringBuilder sb = new StringBuilder(10);
+        for (int i = 0; i < 10; i++) {
+            int index = random.nextInt(caracteres.length());
+            sb.append(caracteres.charAt(index));
+        }
+        return sb.toString();
     }
 
 }

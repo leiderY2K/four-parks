@@ -26,9 +26,9 @@ public class RegisterRequest {
     @JsonProperty("username")
     private String username;
 
-    @NotBlank
-    @JsonProperty("password")
-    private String password;
+    //@NotBlank
+    //@JsonProperty("password")
+    //private String password;
 
     @NotBlank
     @JsonProperty("role")
