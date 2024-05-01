@@ -1,8 +1,9 @@
-import { useRef, useState } from "react";
+import { useRef, useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import ReCAPTCHA from "react-google-recaptcha";
 import axios from "axios";
 import Swal from 'sweetalert2'
+import { decodeJWT } from "../../javascript/decodeJWT";
 
 export default function Login({url}){
     const [user, setUser] = useState("");
@@ -22,6 +23,7 @@ export default function Login({url}){
             });
         } else {
             if(captchaState) {
+                //Alt96
                 axios.post(`${url}/auth/login`, {username: user, password: password})
                 .then(res => {
                     const userLogged = {
@@ -66,7 +68,9 @@ export default function Login({url}){
             setCaptchaState(true)
         }
     }
-    
+
+    console.log(decodeJWT("eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ.SflKxwRJSMeKKF2QT4fwpMeJf36POk6yJV_adQssw5c"))
+
     return(
         <article className="bg-gradient-to-b from-red-light from-75% to-red-dark pt-12 pb-6 relative rounded-2xl shadow-xl">
             <section className="flex flex-col items-center px-12">
