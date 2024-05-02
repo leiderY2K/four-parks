@@ -17,11 +17,11 @@ VALUES
 -- Insertar usuarios después de los tipos de documento
 INSERT INTO `FOURPARKSDATABASE`.`USER` (`IDUSER`, `FIRSTNAME`, `LASTNAME`, `FK_IDDOCTYPE`, `EMAIL`, `PHONE`)
 VALUES
-    ('1234567890123', 'Juan', 'Pérez', 'CC', 'juan@example.com', '123456789'),    -- Cedula
-    ('9876543210987', 'María', 'Gómez', 'TI', 'maria@example.com', '987654321'),    -- Tarjeta de identidad
-    ('4567890123456', 'Pedro', 'Martínez', 'CC', 'pedro@example.com', '456789012'), -- Cedula
-    ('7890123456789', 'Ana', 'López', 'CI', 'ana@example.com', '789012345'),      -- Cedula de extranjeria
-    ('6543210987654', 'Luis', 'Rodríguez', 'TI', 'luis@example.com', '654321098'); -- Tarjeta de identidad
+    ('1234567890123', 'Juan', 'Perez', 'CC', 'juan@example.com', '123456789'),    -- Cedula
+    ('9876543210987', 'Maria', 'Gomez', 'TI', 'maria@example.com', '987654321'),    -- Tarjeta de identidad
+    ('4567890123456', 'Pedro', 'Martinez', 'CC', 'pedro@example.com', '456789012'), -- Cedula
+    ('7890123456789', 'Ana', 'Lopez', 'CI', 'ana@example.com', '789012345'),      -- Cedula de extranjeria
+    ('6543210987654', 'Luis', 'Rodriguez', 'TI', 'luis@example.com', '654321098'); -- Tarjeta de identidad
 
 -- Insertar Autenticacion de usuarios después de los usuarios
 INSERT INTO `FOURPARKSDATABASE`.`USER_AUTHENTICATION` (`IDUSER`, `FK_IDDOCTYPE`, `USERNAME`, `PASSWORD`, `ROLE`, `ATTEMPTS`,`ISBLOCKED`)
@@ -33,26 +33,26 @@ VALUES
     ('6543210987654', 'TI', 'luisrodriguez', '$2a$10$QaazF..XTCslpdfjsNS.ZO3O6VhyG4roY6JJcE9TYc93W5ZbMbfwa','CLIENT',0,0);
 
 -- Insertar ciudades
-INSERT INTO `FOURPARKSDATABASE`.`CITY` (`IDCITY`, `NAME`, `B_TOP`, `B_BOTTOM`, `B_LEFT`, `B_RIGHT`)
+INSERT INTO `FOURPARKSDATABASE`.`CITY` (`IDCITY`, `NAME`, `B_TOP`, `B_BOTTOM`, `B_LEFT`, `B_RIGHT`, `X_CENTER`, `Y_CENTER`)
 VALUES
-    ('CAL', 'Cali', 3.4961, 3.3611, -76.5716, -76.4647),
-    ('BAQ', 'Barranquilla', 11.0405, 10.9231, -74.8785, -74.7571),
-    ('BGT', 'Bogota', 4.7694, 4.4861, -74.2034, -74.0232),
-    ('MED', 'Medellin', 6.3139, 6.1729, -75.6478, -75.5190),
-    ('CTG', 'Cartagena', 10.4494, 10.3931, -75.4338, -75.5619),
-    ('MQR', 'Mosquera', 4.7238, 4.6958, -74.2491, -74.2102),
-    ('VIL', 'Villavicencio', 4.1722, 4.1054, -73.6642, -73.5853),
-    ('BCM', 'Bucaramanga', 7.1521, 7.0861, -73.1455, -73.0790),
-    ('PAS', 'Pasto', 1.2341, 1.1796, -77.3032, -77.2431),
-    ('SOA', 'Soacha', 4.6116, 4.5564, -74.2496, -74.1722);
+    ('CAL', 'Cali', 3.4961, 3.3611, -76.5716, -76.4647, 3.4301, -76.5129),
+    ('BAQ', 'Barranquilla', 11.0405, 10.9231, -74.8785, -74.7571, 10.9725, -74.8018),
+    ('BGT', 'Bogota', 4.7694, 4.4861, -74.2034, -74.0232, 4.6596, -74.0915),
+    ('MED', 'Medellin', 6.3139, 6.1729, -75.6478, -75.5190, 6.2385, -75.5760),
+    ('CTG', 'Cartagena', 10.4494, 10.3931, -75.4338, -75.5619, 10.3956, -75.5008),
+    ('MQR', 'Mosquera', 4.7238, 4.6958, -74.2491, -74.2102, 4.7041, -74.2339),
+    ('VIL', 'Villavicencio', 4.1722, 4.1054, -73.6642, -73.5853, 4.1374, -73.6247),
+    ('BCM', 'Bucaramanga', 7.1521, 7.0861, -73.1455, -73.0790, 7.1244, -73.1183),
+    ('PAS', 'Pasto', 1.2341, 1.1796, -77.3032, -77.2431, 1.2134, -77.2782),
+    ('SOA', 'Soacha', 4.6116, 4.5564, -74.2496, -74.1722, 4.5817, -74.2197);
 
 -- Insertar direcciones en la tabla ADDRESS
 INSERT INTO `FOURPARKSDATABASE`.`ADDRESS` (`COORDINATESX`, `COORDINATESY`, `DESCADDRESS`)
 VALUES
     (3.4433, -76.5248, 'Calle 16, Sucre, Comuna 9, Cali, Sur, Valle del Cauca'),
-    (10.99364, -74.80474, 'Carrera 46, Barrio Colombia, Localidad Norte - Centro Histórico, Barranquilla'),
-    (6.2421, -75.5688, 'Calle 42, Colón, Comuna 10 - La Candelaria, Medellín, Valle de Aburrá, Antioquia'),
-    (10.4238, -75.5453, 'Avenida Daniel Lemaitre, Getsemaní, Cartagena, Dique, Bolívar'),
+    (10.99364, -74.80474, 'Carrera 46, Barrio Colombia, Localidad Norte - Centro Historico, Barranquilla'),
+    (6.2421, -75.5688, 'Calle 42, Colon, Comuna 10 - La Candelaria, Medellin, Valle de Aburra, Antioquia'),
+    (10.4238, -75.5453, 'Avenida Daniel Lemaitre, Getsemani, Cartagena, Dique, Bolivar'),
     (4.7075, -74.2298, 'Calle 5, Centro Mosquera, Mosquera, Sabana Occidente, Cundinamarca'),
     (4.1350, -73.6219, 'Avenida 19, Bello Horizonte, Comuna 5, Villavicencio, Meta'),
     (7.1254, -73.1180, 'Carrera 27, Comuna 13 - Oriental, Bucaramanga, Metropolitana'),
@@ -61,12 +61,12 @@ VALUES
     (4.6514, -74.0676, 'Calle 63A, Localidad Barrios Unidos, Bogota'),
     (4.6478, -74.0622, 'Carrera 9A, Chapinero, Localidad Chapinero'),
     (4.6606, -74.0732, 'Carrera 28, Siete de Agosto, Localidad Barrios Unidos, Bogota'),
-    (4.6645, -74.0914, 'Avenida Calle 63, Parque Simón Bolivar-CAN, Localidad Teusaquillo, Bogota'),
-    (4.6780, -74.1179, 'Carrera 85D, Localidad Engativá, Bogota'),
+    (4.6645, -74.0914, 'Avenida Calle 63, Parque Simon Bolivar-CAN, Localidad Teusaquillo, Bogota'),
+    (4.6780, -74.1179, 'Carrera 85D, Localidad Engativa, Bogota'),
     (4.6301, -74.1551, 'Calle 35 Sur, Ciudad Kennedy Norte, Localidad Kennedy, Bogota'),
     (4.5756, -74.1112, 'Carrera 13B, Gustavo Restrepo, Localidad Rafael Uribe Uribe, Bogota'),
-    (4.5369, -74.0866, 'Transversal 13D Este, Los Pinares, Localidad San Cristóbal, Bogota'),
-    (4.5031, -74.1068, 'Carrera 4, Chicó Sur, Localidad Usme, Bogota'),
+    (4.5369, -74.0866, 'Transversal 13D Este, Los Pinares, Localidad San Cristobal, Bogota'),
+    (4.5031, -74.1068, 'Carrera 4, Chico Sur, Localidad Usme, Bogota'),
     (4.6172, -74.1937, 'Calle 69B Sur, La Esmeralda, Localidad Bosa, Bogota');
 
 -- Insertar tipos de estacionamiento
@@ -79,7 +79,7 @@ VALUES
 -- Insertar horarios
 INSERT INTO `FOURPARKSDATABASE`.`SCHEDULE` (`IDSCHEDULE`, `STARTTIME`, `ENDTIME`, `SCHEDULETYPE`)
 VALUES
-    (1, '08:00:00', '18:00:00', 'Días de semana'),
+    (1, '08:00:00', '18:00:00', 'Dias de semana'),
     (2, '08:00:00', '20:00:00', 'Fines de semana'),
     (3, '00:00:00', '23:59:59', 'Tiempo completo');
 

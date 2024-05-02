@@ -6,7 +6,7 @@ import ParkingInfo from '../../components/client/ParkingInfo.jsx'
 import ReservationTarjet from '../../components/client/ReservationTarjet.jsx'
 
 const Home = ({url}) => {
-  const [city, setCity] = useState("");
+  const [city, setCity] = useState("Bogota");
   const [parkingType, setParkingType] = useState("");
   const [availability, setAvailability] = useState("");
   const [startTime, setStartTime] = useState("");
@@ -17,7 +17,8 @@ const Home = ({url}) => {
     id: 'BGT',
     name: 'Bogota',
     northLim: [4.7694, -74.2034],
-    southLim: [4.4861, -74.0232]
+    southLim: [4.4861, -74.0232],
+    centerCoords: [4.6596, -74.0915]
   });
 
   const [actualParking, setActualParking] = useState();
@@ -31,7 +32,8 @@ const Home = ({url}) => {
             startTime={startTime} setStartTime={setStartTime} endTime={endTime} setEndTime={setEndTime} />
 
             {
-              (onReservationForm == true ? <ReservationTarjet setOnReservationForm={setOnReservationForm} /> : <ParkingInfo setOnReservationForm={setOnReservationForm} />)
+              (onReservationForm == true ? <ReservationTarjet setOnReservationForm={setOnReservationForm} /> : (actualParking !== undefined ? 
+                <ParkingInfo setOnReservationForm={setOnReservationForm} actualParking={actualParking} /> : false ) )
             }
             
           </section>

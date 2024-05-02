@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { MapContainer, TileLayer, Marker, Popup } from 'react-leaflet';
 import { Icon, divIcon, point } from 'leaflet';
 import MarkerClusterGroup from 'react-leaflet-cluster'
@@ -11,6 +11,7 @@ import "../../css/map.css";
 
 const Map = ({ url, city, parkingType, availability, startTime, endTime, actualCity, setActualCity, setActualParking }) => {
     const [parkings, setParkings] = useState([]);
+    const mapRef = useRef(null);
 
     useEffect(() => {
         const token = sessionStorage.getItem('token').replace(/"/g, '');
@@ -21,10 +22,16 @@ const Map = ({ url, city, parkingType, availability, startTime, endTime, actualC
                 id: res.data.idCity,
                 name: res.data.name,
                 northLim: [res.data.btop, res.data.bleft],
-                southLim: [res.data.bbottom, res.data.bright]
+                southLim: [res.data.bbottom, res.data.bright],
+                centerCoords: [res.data.xcenter, res.data.ycenter]
             }
 
             setActualCity(cityObject);
+
+            if (mapRef.current) {
+                mapRef.current.setView(cityObject.centerCoords, 15);  // Cambia la vista del mapa
+                mapRef.current.setBounds([cityObject.northLim, cityObject.southLim]);  // Actualiza los límites
+            }
         })
         .catch(err => {
             console.log(err);
@@ -41,7 +48,7 @@ const Map = ({ url, city, parkingType, availability, startTime, endTime, actualC
         if (endTime) params.endTime = endTime;
         
         axios.get(`${url}/client/getParkings`, {
-            params:params,
+            params: params,
             headers: { Authorization: `Bearer ${token}` }
         })
         .then(res => {
@@ -81,8 +88,24 @@ const Map = ({ url, city, parkingType, availability, startTime, endTime, actualC
         })
     }
 
+    const handleChangeParking = (parking) => {
+        const token = sessionStorage.getItem('token').replace(/"/g, '');
+        
+        axios.get(`${url}/client/getParkingByCoordinates`, {params: {coordinateX: parking.coords[0], coordinateY: parking.coords[1]}, 
+        headers: {Authorization: `Bearer ${token}`}})
+        .then(res => {
+            setActualParking(res.data.parking);
+        })
+        .catch(err => {
+            console.log(err);
+        })
+    }
+
     return (
-        <MapContainer center={[4.6563328, -74.1113856]} zoom={15} minZoom={12} maxBounds={[actualCity.northLim, actualCity.southLim]} className='rounded-2xl shadow-lg '>
+        <MapContainer center={actualCity.centerCoords} zoom={15} minZoom={12} maxBounds={[actualCity.northLim, actualCity.southLim]} className='rounded-2xl shadow-lg' 
+        whenCreated={mapInstance => {
+            console.log("Mapa creado", mapInstance);
+        }}>
             <TileLayer 
                 attribution='&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>'
                 url='https://tile.openstreetmap.org/{z}/{x}/{y}.png'
@@ -90,7 +113,7 @@ const Map = ({ url, city, parkingType, availability, startTime, endTime, actualC
 
             <MarkerClusterGroup chunkedLoading iconCreateFunction={createCustomClusterIcon}>
                 {parkings.map(parking => (
-                    <Marker key={parking.id} position={parking.coords} icon={getIcon(parking.type)} eventHandlers={{click: () => setActualParking(parking)}}> 
+                    <Marker key={parking.id} position={parking.coords} icon={getIcon(parking.type)} eventHandlers={{click: () => handleChangeParking(parking)}}> 
                         <Popup>{parking.name}</Popup>
                     </Marker>
                 ))}

@@ -62,7 +62,7 @@ const ParkingFilters = ({city, setCity, parkingType, setParkingType,availability
         <select id="parking-availability" value={availability} className="w-1/2 mr-12 p-4 rounded-md bg-white shadow-md font-paragraph" onChange={(e) => setAvailability(e.target.value)}>
           <option value="" disabled selected hidden> Disponibilidad </option>
           <option value=""></option>
-          <option value="D├¡as de semana"> Lunes a viernes </option>
+          <option value="Dias de semana"> Lunes a viernes </option>
           <option value="Fines de semana"> Fines de semana </option>
           <option value="Tiempo completo"> 24/7 </option>
           <option value="Tiempo completo"> 24/7 </option>
