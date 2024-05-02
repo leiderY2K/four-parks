@@ -4,7 +4,7 @@ import axios from "axios";
 import Swal from 'sweetalert2'
 import coveredIcon from '../../assets/CoveredIcon.png';
 
-export default function ReservationTarjet({url, setOnReservationForm}) {
+export default function ReservationTarjet({url, setOnReservationForm, actualParking, actualCity}) {
     const [resDate, setResDate]= useState('');
     const [resStart, setResStart] = useState('');
     const [resEnd, setResEnd] = useState('');
@@ -15,9 +15,11 @@ export default function ReservationTarjet({url, setOnReservationForm}) {
     const [resPayMethod, setResPayMethod] = useState('');
 
     const navigate = useNavigate();
-    const idNumber = sessionStorage.getItem('userLogged').idNumber;
-    const idType = sessionStorage.getItem('userLogged').idType;
-    
+
+    const idCiudad = actualCity.id
+    const idParqueadero = actualParking.id
+
+
     const handleTimeChange = (setter) => (event) => {
         const time = new Date(event.target.valueAsNumber);
         if (time) {
@@ -28,27 +30,37 @@ export default function ReservationTarjet({url, setOnReservationForm}) {
       };
 
     const handleReservation = (e) => {
+        const token = sessionStorage.getItem('token').replace(/"/g, '');
         e.preventDefault();
-
+        const user =JSON.parse(sessionStorage.getItem('userLogged'));
+        console.log(user)
+        const idNumber = user.idNumber;
+        
+        const idType = user.idType;
+        console.log(idNumber)
         if(!resDate || !resStart || !resEnd || !licensePlate || !vehicleType || !resPayMethod) {
             Swal.fire({
                 icon: 'info',
                 title: `Por favor llene todos los campos`
             });
         } else {
+            console.log(resDate,resStart,resEnd,licensePlate,idNumber,idType,idCiudad,idParqueadero)
             axios.post(`${url}/client/startReservation`, {
                 dateRes: resDate, 
                 startTimeRes: resStart, 
                 endTimeRes: resEnd, 
                 licensePlate: licensePlate,
-                clientId:{idUser:idNumber,idDocType:idType},
-                
+                clientId:{
+                    idUser:idNumber,idDocType:idType
+                },
+                cityId:idCiudad,
+                parkingId:idParqueadero
                 //creationDateRes: 'Hoy',
                 //totalRes: "0", 
                 //vehicleType: vehicleType, 
                 //username: resPayMethod, 
                 
-            })
+            },{headers: {Authorization: `Bearer ${token}`}})
             .then(res => {
                 console.log(res);
                 
@@ -103,8 +115,11 @@ export default function ReservationTarjet({url, setOnReservationForm}) {
                         <select id="vehicleType" className="w-2/5 p-3 rounded-md bg-white font-paragraph placeholder:text-gray-dark" placeholder="Tipo de vehiculo"
                         value={vehicleType} onChange={(e) => setVehicleType(e.target.value)}>
                             <option value="" disabled hidden> Tipo de vehiculo </option>
+                            <option value=""></option>
                             <option value="Moto">Moto</option>
                             <option value="Carro">Carro</option>
+                            
+
                             
                         </select>
                         
@@ -115,7 +130,8 @@ export default function ReservationTarjet({url, setOnReservationForm}) {
                     <div className="w-full">
                         <select id="resPayMethod" className="w-full p-3 rounded-md bg-white font-paragraph placeholder:text-gray-dark" placeholder="Metodo de pago"
                         value={resPayMethod} onChange={(e) => setResPayMethod(e.target.value)}>
-                            <ption value="" disabled hidden> Metodo de pago </ption>
+                            <option value="" disabled hidden> Metodo de pago </option>
+                            <option value=""></option>
                             <option value="Mastercard">Mastercard</option>
                             <option value="Nequi">Nequi</option>
                         </select>
