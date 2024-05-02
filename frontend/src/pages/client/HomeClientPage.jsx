@@ -32,8 +32,8 @@ const Home = ({url}) => {
             startTime={startTime} setStartTime={setStartTime} endTime={endTime} setEndTime={setEndTime} />
 
             {
-              (onReservationForm == true ? <ReservationTarjet setOnReservationForm={setOnReservationForm} /> : (actualParking !== undefined ? 
-                <ParkingInfo setOnReservationForm={setOnReservationForm} actualParking={actualParking} /> : false ) )
+              (actualParking !== undefined ? (onReservationForm == true ? <ReservationTarjet url={url} setOnReservationForm={setOnReservationForm} actualCity={actualCity} 
+              actualParking={actualParking}/> : <ParkingInfo setOnReservationForm={setOnReservationForm} actualParking={actualParking} />) : false)
             }
             
           </section>

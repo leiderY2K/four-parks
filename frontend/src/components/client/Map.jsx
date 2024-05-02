@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef } from 'react';
+import { useState, useEffect } from 'react';
 import { MapContainer, TileLayer, Marker, Popup } from 'react-leaflet';
 import { Icon, divIcon, point } from 'leaflet';
 import MarkerClusterGroup from 'react-leaflet-cluster'
@@ -11,7 +11,6 @@ import "../../css/map.css";
 
 const Map = ({ url, city, parkingType, availability, startTime, endTime, actualCity, setActualCity, setActualParking }) => {
     const [parkings, setParkings] = useState([]);
-    const mapRef = useRef(null);
 
     useEffect(() => {
         const token = sessionStorage.getItem('token').replace(/"/g, '');
@@ -27,11 +26,6 @@ const Map = ({ url, city, parkingType, availability, startTime, endTime, actualC
             }
 
             setActualCity(cityObject);
-
-            if (mapRef.current) {
-                mapRef.current.setView(cityObject.centerCoords, 15);  // Cambia la vista del mapa
-                mapRef.current.setBounds([cityObject.northLim, cityObject.southLim]);  // Actualiza los límites
-            }
         })
         .catch(err => {
             console.log(err);
@@ -69,13 +63,13 @@ const Map = ({ url, city, parkingType, availability, startTime, endTime, actualC
     const getIcon = (type) => {
         switch (type) {
             case 'COV':
-                return new Icon({iconUrl: coveredIcon, iconSize: [35, 35]});
+                return new Icon({iconUrl: coveredIcon, iconSize: [45, 45]});
             case 'UNC':
-                return new Icon({iconUrl: uncoveredIcon, iconSize: [35, 35]});
+                return new Icon({iconUrl: uncoveredIcon, iconSize: [45, 45]});
             case 'SEC':
-                return new Icon({iconUrl: semicoveredIcon, iconSize: [35, 35]});
+                return new Icon({iconUrl: semicoveredIcon, iconSize: [45, 45]});
             default:
-                return new Icon({iconUrl: coveredIcon, iconSize: [35, 35]});
+                return new Icon({iconUrl: coveredIcon, iconSize: [45, 45]});
         }
     };
 
