@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import cubiertoIcon from '../../assets/Cubierto.png';
+import coveredIcon from '../../assets/CoveredIcon.png';
 
 const ParkingInfo = ({setOnReservationForm}) => {
     const [parkingName, setParkingName] = useState('');
@@ -21,7 +21,7 @@ const ParkingInfo = ({setOnReservationForm}) => {
             <article className="w-1/2 rounded-md shadow-md bg-blue-light">
                 <section className="flex items-center m-5">
                     <div className="w-1/3 h-16 flex justify-center rounded-md border-2 border-black">
-                        <img src={cubiertoIcon} alt="Imagen que identifica el tipo de parqueadero"/>
+                        <img src={coveredIcon} alt="Imagen que identifica el tipo de parqueadero"/>
                     </div>
 
                     <section className="flex flex-col justify-evenly items-center w-4/5 h-16 ml-4">

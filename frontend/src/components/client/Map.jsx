@@ -3,14 +3,33 @@ import { MapContainer, TileLayer, Marker, Popup } from 'react-leaflet';
 import { Icon, divIcon, point } from 'leaflet';
 import MarkerClusterGroup from 'react-leaflet-cluster'
 import axios from "axios";
-import coveredIcon from '../../assets/Cubierto.png';
-import uncoveredIcon from '../../assets/Descubierto.png';
-import semicoveredIcon from '../../assets/Semidescubierto.png';
+import coveredIcon from '../../assets/CoveredIcon.png';
+import uncoveredIcon from '../../assets/UncoveredIcon.png';
+import semicoveredIcon from '../../assets/SemicoveredIcon.png';
 import "leaflet/dist/leaflet.css";
 import "../../css/map.css";
 
-const Map = ({ url, city, parkingType, availability, startTime, endTime }) => {
+const Map = ({ url, city, parkingType, availability, startTime, endTime, actualCity, setActualCity, setActualParking }) => {
     const [parkings, setParkings] = useState([]);
+
+    useEffect(() => {
+        const token = sessionStorage.getItem('token').replace(/"/g, '');
+
+        axios.get(`http://localhost:8080/client/getCity`,  {params: {city: city}, headers: {Authorization: `Bearer ${token}`}})
+        .then(res => {
+            const cityObject = {
+                id: res.data.idCity,
+                name: res.data.name,
+                northLim: [res.data.btop, res.data.bleft],
+                southLim: [res.data.bbottom, res.data.bright]
+            }
+
+            setActualCity(cityObject);
+        })
+        .catch(err => {
+            console.log(err);
+        })
+    }, [city]);
 
     useEffect(() => {
         const token = sessionStorage.getItem('token').replace(/"/g, '');
@@ -30,7 +49,7 @@ const Map = ({ url, city, parkingType, availability, startTime, endTime }) => {
                 id: parking.idParking,
                 name: parking.namePark,
                 coords: [parking.addressCoordinatesX, parking.addressCoordinatesY],
-                type: parking.parkingType.descParkingType
+                type: parking.parkingType.idParkingType
             }));
 
             setParkings(parkingArray);
@@ -63,7 +82,7 @@ const Map = ({ url, city, parkingType, availability, startTime, endTime }) => {
     }
 
     return (
-        <MapContainer center={[4.6563328, -74.1113856]} zoom={15} minZoom={13} maxBounds={[[4.7691, -74.2425], [4.4967, -74.0262]]} className='rounded-2xl shadow-lg '>
+        <MapContainer center={[4.6563328, -74.1113856]} zoom={15} minZoom={12} maxBounds={[actualCity.northLim, actualCity.southLim]} className='rounded-2xl shadow-lg '>
             <TileLayer 
                 attribution='&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>'
                 url='https://tile.openstreetmap.org/{z}/{x}/{y}.png'
@@ -71,7 +90,7 @@ const Map = ({ url, city, parkingType, availability, startTime, endTime }) => {
 
             <MarkerClusterGroup chunkedLoading iconCreateFunction={createCustomClusterIcon}>
                 {parkings.map(parking => (
-                    <Marker key={parking.id} position={parking.coords} icon={getIcon(parking.type)} > 
+                    <Marker key={parking.id} position={parking.coords} icon={getIcon(parking.type)} eventHandlers={{click: () => setActualParking(parking)}}> 
                         <Popup>{parking.name}</Popup>
                     </Marker>
                 ))}

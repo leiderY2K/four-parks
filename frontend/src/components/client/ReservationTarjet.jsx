@@ -2,7 +2,7 @@ import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import Swal from 'sweetalert2'
-import cubiertoIcon from '../../assets/Cubierto.png';
+import coveredIcon from '../../assets/CoveredIcon.png';
 
 export default function ReservationTarjet({url, setOnReservationForm}) {
     const [resDate, setResDate]= useState('');
@@ -77,7 +77,7 @@ export default function ReservationTarjet({url, setOnReservationForm}) {
             <section className="flex flex-col items-center px-5">
                 <div className="w-full flex justify-between">
                     <div className="w-1/5 flex justify-center rounded-md border-2 border-black h-14 mr-4">
-                            <img className="mb-1 "src={cubiertoIcon} alt="Imagen que identifica el tipo de parqueadero"/>
+                            <img className="mb-1 "src={coveredIcon} alt="Imagen que identifica el tipo de parqueadero"/>
                     </div>
                     <div className="w-4/5 font-semibold text-lg mt-4"> Nombre del parqueadero
                         <hr className="h-0.5 mt-2 rounded-full bg-black"></hr>    

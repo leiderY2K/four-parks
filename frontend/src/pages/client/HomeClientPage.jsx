@@ -13,6 +13,15 @@ const Home = ({url}) => {
   const [endTime, setEndTime] = useState("");
   const [onReservationForm, setOnReservationForm] = useState(false);
 
+  const [actualCity, setActualCity] = useState({
+    id: 'BGT',
+    name: 'Bogota',
+    northLim: [4.7694, -74.2034],
+    southLim: [4.4861, -74.0232]
+  });
+
+  const [actualParking, setActualParking] = useState();
+
   return (
     <>
         <Header />
@@ -28,7 +37,8 @@ const Home = ({url}) => {
           </section>
 
           <div className="w-1/2 ml-44 rounded-2xl z-0"> 
-            <Map url={url} city={city} parkingType={parkingType} availability={availability} startTime={startTime} endTime={endTime}/>
+            <Map url={url} city={city} parkingType={parkingType} availability={availability} startTime={startTime} endTime={endTime} actualCity={actualCity} 
+            setActualCity={setActualCity} setActualParking={setActualParking} />
           </div>
         </div>
     </>
