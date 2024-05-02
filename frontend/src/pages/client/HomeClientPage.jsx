@@ -3,6 +3,7 @@ import Header from '../../components/client/Header.jsx'
 import Map from '../../components/client/Map.jsx'
 import ParkingFilters from '../../components/client/ParkingFilters.jsx'
 import ParkingInfo from '../../components/client/ParkingInfo.jsx'
+import ReservationTarjet from "../../components/client/ReservationTarjet.jsx";
 
 const Home = ({url}) => {
   const [city, setCity] = useState("");
