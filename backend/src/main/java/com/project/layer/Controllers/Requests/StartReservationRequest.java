@@ -1,6 +1,7 @@
 package com.project.layer.Controllers.Requests;
 
-import java.sql.Timestamp;
+import java.sql.Date;
+import java.sql.Time;
 
 import com.project.layer.Persistence.Entity.UserId;
 
@@ -15,20 +16,18 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class StartReservationRequest {
 
-    private Timestamp startTimeRes;
+    private Date dateRes;
 
-    private Timestamp endTimeRes;
+    private Time startTimeRes;
+
+    private Time endTimeRes;
 
     private String licensePlate;
-
-    private String reservationCol;
 
     private UserId clientId;
 
     private String cityId;
 
     private String parkingId;
-
-    private String parkingSpaceId;
 
 }

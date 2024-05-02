@@ -13,7 +13,7 @@ import com.project.layer.Persistence.Entity.Reservation;
 public interface IReservationRepository extends JpaRepository<Reservation, Integer>{
 
     @Query(
-        value = "SELECT * FROM RESERVATION r, CLIENT c " + 
+        value = "SELECT * FROM RESERVATION r, USER c " + 
                     "WHERE r.FK_CLIENT_IDUSER = c.IDUSER " +
                         "AND r.FK_CLIENT_IDDOCTYPE = c.FK_IDDOCTYPE "+
                         "AND c.IDUSER = :clientId "+

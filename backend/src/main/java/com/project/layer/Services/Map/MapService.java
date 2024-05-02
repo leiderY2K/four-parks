@@ -26,7 +26,11 @@ public class MapService {
 
     public MapService(){}
 
-    public List<Parking> getParkingsFilter(String city, String type , Time startTime, Time endTime, String scheduleType){
+    public List<Parking> getParkingsFilter(String city, String type, Time startTime, Time endTime, String scheduleType){
+
+        if(city==null){
+            return null;
+        }
 
         List<Parking> parkings = null;
         Time endTemp = null;    
@@ -35,12 +39,9 @@ public class MapService {
         } else{            
             endTemp = endTime;
         }        
-
-        if(city==null){
-            return null;
-        }else{
-            parkings = parkingRepository.queryParkingsByArgs(city, type, startTime, endTemp, scheduleType);
-        }                
+        
+        parkings = parkingRepository.queryParkingsByArgs(city, type, startTime, endTemp, scheduleType);
+                        
         return parkings;
     }
 
