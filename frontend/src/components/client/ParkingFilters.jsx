@@ -65,6 +65,7 @@ const ParkingFilters = ({city, setCity, parkingType, setParkingType,availability
           <option value="D├¡as de semana"> Lunes a viernes </option>
           <option value="Fines de semana"> Fines de semana </option>
           <option value="Tiempo completo"> 24/7 </option>
+          <option value="Tiempo completo"> 24/7 </option>
         </select>
 
         <section className="flex justify-between items-center w-1/2">
