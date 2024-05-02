@@ -9,14 +9,21 @@ import semicoveredIcon from '../../assets/Semidescubierto.png';
 import "leaflet/dist/leaflet.css";
 import "../../css/map.css";
 
-const Map = ({ url, city }) => {
+const Map = ({ url, city, parkingType, availability, startTime, endTime }) => {
     const [parkings, setParkings] = useState([]);
 
     useEffect(() => {
         const token = sessionStorage.getItem('token').replace(/"/g, '');
+        const params = { city };
+
+        if (parkingType) params.parkingType = parkingType;
+        //if (availability) params.availability = availability;
+        if (startTime) params.startTime = startTime;
+        if (endTime) params.endTime = endTime;
         
+        console.log(params)
         axios.get(`${url}/client/getParkings`, {
-            params: { city: city },
+            params:params,
             headers: { Authorization: `Bearer ${token}` }
         })
         .then(res => {
@@ -27,11 +34,13 @@ const Map = ({ url, city }) => {
                 type: parking.parkingType.descParkingType
             }));
             setParkings(parkingArray);
+            console.log(parkingType)
+            console.log(parkingArray)
         })
         .catch(err => {
             console.error(err.response || err);
         });
-    }, [city]);
+    }, [city, parkingType, availability, startTime, endTime]);
 
     const getIcon = (type) => {
         switch (type) {

@@ -10,7 +10,7 @@ const Home = ({url}) => {
   const [availability, setAvailability] = useState("");
   const [startTime, setStartTime] = useState("");
   const [endTime, setEndTime] = useState("");
-
+//PASAR USESTATE AL MAPA, Recibirlos, añadirlos al usefect y validarlos  API: Detectar ubicación 
   return (
     <>
         <Header />
@@ -22,7 +22,7 @@ const Home = ({url}) => {
           </section>
 
           <div className="w-1/2 ml-44 rounded-2xl z-0"> 
-            <Map url={url} city={city} />
+            <Map url={url} city={city} parkingType={parkingType} availability={availability} startTime={startTime} endTime={endTime}/>
           </div>
         </div>
     </>

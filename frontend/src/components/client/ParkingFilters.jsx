@@ -1,3 +1,6 @@
+import { useEffect } from "react";
+import axios from "axios";
+
 const ParkingFilters = ({city, setCity, parkingType, setParkingType,availability, setAvailability, startTime, setStartTime, endTime, setEndTime}) => {
   const handleTimeChange = (setter) => (event) => {
     const time = new Date(event.target.valueAsNumber);
@@ -7,6 +10,20 @@ const ParkingFilters = ({city, setCity, parkingType, setParkingType,availability
       setter(time.toISOString().substr(11, 5));
     }
   };
+/*  useEffect(() => {
+
+    const token = sessionStorage.getItem('token').replace(/"/g, '');
+    axios.get(`http://localhost:8080/client/cityList`,  {
+      headers: { Authorization: `Bearer ${token}`}})
+
+    .then(res=>{
+      //Filtros de parqueadero. Mirarlos en el front. Ya filtra por ciudad pero faltan los demas tipo, hora, etc. 
+    })
+    .catch(err=>{
+
+    }) 
+    
+  },[]); */
 
   return (
     <section className="flex flex-col justify-between w-full h-36">
@@ -32,9 +49,9 @@ const ParkingFilters = ({city, setCity, parkingType, setParkingType,availability
         
         <select id="parking-type" value={parkingType} className="w-1/2 p-4 rounded-md bg-white shadow-md font-paragraph" onChange={(e) => setParkingType(e.target.value)}>
           <option value="" disabled selected hidden> Tipo de parqueadero </option>
-          <option value="covered"> Cubierto </option>
-          <option value="semicovered"> Semi-cubierto </option>
-          <option value="uncovered"> Descubierto </option>
+          <option value="COV"> Cubierto </option>
+          <option value="SEC"> Semi-cubierto </option>
+          <option value="UNC"> Descubierto </option>
         </select>
       </section>
       

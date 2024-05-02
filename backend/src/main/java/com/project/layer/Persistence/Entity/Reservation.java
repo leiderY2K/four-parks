@@ -24,7 +24,7 @@ public class Reservation {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "IDRESERVATION", nullable = false)
-    private Integer idReservation;
+    private String idReservation;
 
     @Column(name = "STARTTIMERES", nullable = false)
     private Timestamp startTimeRes;
