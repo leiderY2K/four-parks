@@ -13,7 +13,6 @@ import com.project.layer.Persistence.Entity.City;
 import com.project.layer.Persistence.Entity.Parking;
 import com.project.layer.Persistence.Repository.ICityRepository;
 import com.project.layer.Persistence.Repository.IParkingRepository;
-import com.project.layer.Persistence.Repository.IParkingSpaceRepository;
 
 @Service
 public class MapService {
@@ -24,20 +23,25 @@ public class MapService {
     @Autowired
     ICityRepository cityRepository;
 
-    @Autowired
-    IParkingSpaceRepository parkingSpaceRepository;
-
 
     public MapService(){}
 
-    public List<Parking> getParkingsFilter(String city, String type , Time startTime, Time endTime, String scheduleType){
+    public List<Parking> getParkingsFilter(String city, String type, Time startTime, Time endTime, String scheduleType){
 
-        List<Parking> parkings = null; 
         if(city==null){
             return null;
-        }else{
-            parkings = parkingRepository.queryParkingsByArgs(city, type, startTime, endTime, scheduleType);
-        }                
+        }
+
+        List<Parking> parkings = null;
+        Time endTemp = null;    
+        if(endTime != null && endTime.toString().equals(Time.valueOf("00:00:00").toString()) ){    
+            endTemp = Time.valueOf("23:59:59");            
+        } else{            
+            endTemp = endTime;
+        }        
+        
+        parkings = parkingRepository.queryParkingsByArgs(city, type, startTime, endTemp, scheduleType);
+                        
         return parkings;
     }
 
@@ -50,7 +54,7 @@ public class MapService {
             return null;
         }
 
-        List<String> vehiculos = parkingSpaceRepository.getTypeVehicleByParking(parking.getIdParking());
+        List<String> vehiculos = parkingRepository.getTypeVehicleByParking(parking.getIdParking());
 
         System.out.println(vehiculos.toString());
         Map<String, Object> tipoVehiculo = new HashMap<>();
@@ -61,11 +65,11 @@ public class MapService {
     
             System.out.println(parking.toString());
             if(parking.getParkingType().getIdParkingType().equals("COV") || parking.getParkingType().getIdParkingType().equals("SEC")) {
-                capacity.put("covered", parkingSpaceRepository.countByCoveredAndParkingAndVehicleType(
+                capacity.put("covered", parkingRepository.countByCoveredAndParkingAndVehicleType(
                     parking.getIdParking(), true, vehiculo));
             }
             if(parking.getParkingType().getIdParkingType().equals("UNC") || parking.getParkingType().getIdParkingType().equals("SEC")) {
-                capacity.put("uncovered", parkingSpaceRepository.countByCoveredAndParkingAndVehicleType(
+                capacity.put("uncovered", parkingRepository.countByCoveredAndParkingAndVehicleType(
                     parking.getIdParking(), false, vehiculo));
             }
 

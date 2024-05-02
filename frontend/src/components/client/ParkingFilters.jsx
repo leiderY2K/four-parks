@@ -58,9 +58,9 @@ const ParkingFilters = ({city, setCity, parkingType, setParkingType,availability
       <section className="flex justify-between">
         <select id="parking-availability" value={availability} className="w-1/2 mr-12 p-4 rounded-md bg-white shadow-md font-paragraph" onChange={(e) => setAvailability(e.target.value)}>
           <option value="" disabled selected hidden> Disponibilidad </option>
-          <option value="lunes-viernes"> Lunes a viernes </option>
+          <option value="Días de semana"> Lunes a viernes </option>
           <option value="Fines de semana"> Fines de semana </option>
-          <option value="todo-dia"> 24/7 </option>
+          <option value="Tiempo completo"> 24/7 </option>
         </select>
 
         <section className="flex justify-between items-center w-1/2">

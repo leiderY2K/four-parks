@@ -5,10 +5,12 @@ import java.util.Collection;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import jakarta.validation.constraints.NotBlank;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.hibernate.validator.constraints.Length;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -24,6 +26,7 @@ public class UserAuthentication implements UserDetails {
     @EmbeddedId
     private UserId userId;
 
+    @Length(min = 6, max = 10, message = "El nombre de usuario debe tener  entre 6 y 10 caracteres")
     @Column(name = "USERNAME", nullable = false, unique = true)
     private String username;
 
@@ -32,7 +35,7 @@ public class UserAuthentication implements UserDetails {
 
     @Column(name = "ATTEMPTS", nullable = false)
     private int attempts;
-    
+
     @Column(name = "ISBLOCKED", nullable = false)
     private boolean isBlocked;
 
@@ -59,7 +62,7 @@ public class UserAuthentication implements UserDetails {
 
     @Override
     public boolean isAccountNonLocked() {
-        return true;
+        return true; //retorna el estado, pero debo hacer el trigger
     }
 
     @Override
