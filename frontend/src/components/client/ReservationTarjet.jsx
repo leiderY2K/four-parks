@@ -5,14 +5,72 @@ import Swal from 'sweetalert2'
 import cubiertoIcon from '../../assets/Cubierto.png';
 
 export default function ReservationTarjet({url, setOnReservationForm}) {
-    const [idType, setIdType] = useState('');
-    const [idNumber, setIdNumber] = useState('');
-    const [name, setName] = useState('');
-    const [lastName, setLastName] = useState('');
-    const [phone, setPhone] = useState('');
-    const [username, setUsername] = useState('');
-    const [email, setEmail] = useState('');
-    const [payMethod, setPayMethod] = useState('');
+    const [resDate, setResDate]= useState('');
+    const [resStart, setResStart] = useState('');
+    const [resEnd, setResEnd] = useState('');
+    const [resCreationDate, setResCreationDate] = useState('');
+    const [resTotal, setResTotal] = useState('');
+    const [licensePlate, setLicensePlate] = useState('');
+    const [vehicleType, setVehicleType] = useState('');
+    const [resPayMethod, setResPayMethod] = useState('');
+
+    const navigate = useNavigate();
+    const idNumber = sessionStorage.getItem('userLogged').idNumber;
+    const idType = sessionStorage.getItem('userLogged').idType;
+    
+    const handleTimeChange = (setter) => (event) => {
+        const time = new Date(event.target.valueAsNumber);
+        if (time) {
+          time.setMinutes(0);
+          time.setSeconds(0);
+          setter(time.toISOString().substr(11, 8));
+        }
+      };
+
+    const handleReservation = (e) => {
+        e.preventDefault();
+
+        if(!resDate || !resStart || !resEnd || !licensePlate || !vehicleType || !resPayMethod) {
+            Swal.fire({
+                icon: 'info',
+                title: `Por favor llene todos los campos`
+            });
+        } else {
+            axios.post(`${url}/client/startReservation`, {
+                dateRes: resDate, 
+                startTimeRes: resStart, 
+                endTimeRes: resEnd, 
+                licensePlate: licensePlate,
+                clientId:{idUser:idNumber,idDocType:idType},
+                
+                //creationDateRes: 'Hoy',
+                //totalRes: "0", 
+                //vehicleType: vehicleType, 
+                //username: resPayMethod, 
+                
+            })
+            .then(res => {
+                console.log(res);
+                
+                Swal.fire({
+                    icon: 'success',
+                    title: `Reserva exitosa`
+                });
+
+                //navigate("/inicio-sesion");
+            })
+            .catch(err => {
+                //console.log(res);
+                Swal.fire({
+                    icon: 'error',
+                    title: `Hubo un error al realizar la reserva` ,
+                });
+
+                console.log(err);
+            })
+        }
+    }
+
 
     return (
         <article className="bg-blue-light pt-5 pb-6 relative rounded-2xl shadow-xl">
@@ -30,38 +88,36 @@ export default function ReservationTarjet({url, setOnReservationForm}) {
                     
                 
                     <div className="flex justify-between w-full mb-5">
-                        <input type="date" id="name" className="w-2/5 p-3 rounded-md bg-white font-paragraph placeholder:text-gray-dark mr-4" placeholder="Día"
-                        value={name} onChange={(e) => setName(e.target.value)}></input>
-
-                        <input type="time" id="name" className="w-2/5 p-3 rounded-md bg-white font-paragraph placeholder:text-gray-dark mr-4" placeholder="Nombre"
-                        value={name} onChange={(e) => setName(e.target.value)}></input>
-                        
-                        <input type="time" id="lastName"className="w-2/5 p-3 rounded-md bg-white font-paragraph placeholder:text-gray-dark" placeholder="Apellido"
-                        value={lastName} onChange={(e) => setLastName(e.target.value)}></input>
+                        <input type="date" id="resDate" className="w-2/5 p-3 rounded-md bg-white font-paragraph placeholder:text-gray-dark mr-4" placeholder="Día"
+                        value={resDate} onChange={(e) => setResDate(e.target.value)}></input>
+                        {console.log(resDate)}
+                        <input type="time" id="resStart" className="w-2/5 p-3 rounded-md bg-white font-paragraph placeholder:text-gray-dark mr-4" placeholder="Hora inicio"
+                        value={resStart} onChange={handleTimeChange(setResStart)}></input>
+                        {console.log(resStart)}
+                        <input type="time" id="resEnd"className="w-2/5 p-3 rounded-md bg-white font-paragraph placeholder:text-gray-dark" placeholder="Hora fin"
+                        value={resEnd} onChange={handleTimeChange(setResEnd)}></input>
+                        {console.log(resEnd)}
                     </div>
                 
                     <div className="flex justify-between w-full mb-5">
-                        <select id="phone" className="w-2/5 p-3 rounded-md bg-white font-paragraph placeholder:text-gray-dark" placeholder="Tipo de vehiculo"
-                        value={phone} onChange={(e) => setPhone(e.target.value)}>
+                        <select id="vehicleType" className="w-2/5 p-3 rounded-md bg-white font-paragraph placeholder:text-gray-dark" placeholder="Tipo de vehiculo"
+                        value={vehicleType} onChange={(e) => setVehicleType(e.target.value)}>
                             <option value="" disabled hidden> Tipo de vehiculo </option>
-                            <option value="1">Moto</option>
-                            <option value="2">Carro</option>
-                            <option value="3">etc</option>
-                            <option value="4">Pasaporte</option>
+                            <option value="Moto">Moto</option>
+                            <option value="Carro">Carro</option>
+                            
                         </select>
                         
-                        <input id="username" className="w-2/5 p-3 rounded-md bg-white font-paragraph placeholder:text-gray-dark" placeholder="Matricula del vehiculo"
-                        value={username} onChange={(e) => setUsername(e.target.value)}></input>
+                        <input id="licensePlate" className="w-2/5 p-3 rounded-md bg-white font-paragraph placeholder:text-gray-dark" placeholder="Matricula del vehiculo"
+                        value={licensePlate} onChange={(e) => setLicensePlate(e.target.value)}></input>
                     </div>
                 
                     <div className="w-full">
-                        <select id="email" className="w-full p-3 rounded-md bg-white font-paragraph placeholder:text-gray-dark" placeholder="Metodo de pago"
-                        value={email} onChange={(e) => setEmail(e.target.value)}>
+                        <select id="resPayMethod" className="w-full p-3 rounded-md bg-white font-paragraph placeholder:text-gray-dark" placeholder="Metodo de pago"
+                        value={resPayMethod} onChange={(e) => setResPayMethod(e.target.value)}>
                             <ption value="" disabled hidden> Metodo de pago </ption>
-                            <option value="1">Mastercard</option>
-                            <option value="2">Nequi</option>
-                            <option value="3">CE</option>
-                            <option value="4">Pasaporte</option>
+                            <option value="Mastercard">Mastercard</option>
+                            <option value="Nequi">Nequi</option>
                         </select>
                     </div>
                     <div className="flex justify-between w-full mt-5">
@@ -71,7 +127,7 @@ export default function ReservationTarjet({url, setOnReservationForm}) {
                     
                 </section>  
                 <div className="flex justify-between">
-                    <button className="mt-8 px-10 py-3 mr-8 bg-blue-dark hover:bg-blue-darkest rounded-xl text-white font-title font-semibold " 
+                    <button className="mt-8 px-10 py-3 mr-8 bg-blue-dark hover:bg-blue-darkest rounded-xl text-white font-title font-semibold " onClick={handleReservation} 
                     > Realizar reserva </button>
                 <button className="mt-8 px-10 py-3 bg-red-dark hover:bg-red-darkest rounded-xl text-white font-title font-semibold" onClick={() => setOnReservationForm(false)}> 
                 Cancelar </button>
