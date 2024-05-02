@@ -104,7 +104,7 @@ export default function Login({url}){
     }
 
     return(
-        <article id="loginCard" className="w-11/12 md:w-1/2 h-2/3 md:h-3/5 pt-6 md:pt-10 2xl:pt-6 rounded-2xl shadow-xl bg-gradient-to-b 
+        <article id="loginCard" className="pt-6 md:pt-10 2xl:pt-6 rounded-2xl shadow-xl bg-gradient-to-b 
         from-red-light from-75% to-red-dark">
             <section className="flex flex-col items-center px-6 md:px-10 xl:px-8">
                 <img src={logo} alt="Logo de Four Parks" className="w-24 h-24"/>
