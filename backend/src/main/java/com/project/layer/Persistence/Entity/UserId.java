@@ -11,6 +11,7 @@ import jakarta.persistence.Column;
 import jakarta.persistence.Embeddable;
 import jakarta.persistence.AttributeOverride;
 import jakarta.persistence.AttributeOverrides;
+import org.hibernate.validator.constraints.Length;
 
 
 @Data
@@ -29,7 +30,7 @@ import jakarta.persistence.AttributeOverrides;
     )
 })
 public class UserId implements Serializable {
-
+    @Length(min = 7, max = 12, message = "El numero de documento debe tener entre 7 y 12 caracteres")
     private String idUser;
 
     private String idDocType;
