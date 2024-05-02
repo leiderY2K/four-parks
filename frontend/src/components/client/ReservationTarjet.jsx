@@ -22,8 +22,9 @@ export default function ReservationTarjet({url, setOnReservationForm}) {
                             <img className="mb-1 "src={cubiertoIcon} alt="Imagen que identifica el tipo de parqueadero"/>
                     </div>
                     <div className="w-4/5 font-semibold text-lg mt-4"> Nombre del parqueadero
-                        <hr className="h-0.5 mt-2 rounded-full bg-black"></hr>
+                        <hr className="h-0.5 mt-2 rounded-full bg-black"></hr>    
                     </div>
+                    
                 </div>
                 <section className="flex flex-col justify-evenly items-center w-full h-22 mt-8">
                     
