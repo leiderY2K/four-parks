@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import cubiertoIcon from '../../assets/Cubierto.png';
 
-const ParkingInfo = () => {
+const ParkingInfo = ({setOnReservationForm}) => {
     const [parkingName, setParkingName] = useState('');
     const [city, setCity] = useState('');
     const [availability, setAvailability] = useState('');
@@ -57,8 +57,8 @@ const ParkingInfo = () => {
                 </section>
             </article>
 
-            <button className="w-1/3 mt-6 px-2 py-3 rounded-2xl bg-blue-dark shadow-md font-title font-semibold text-lg text-white hover:bg-blue-darkest"> 
-            Realizar reserva </button>
+            <button className="w-1/3 mt-6 px-2 py-3 rounded-2xl bg-blue-dark shadow-md font-title font-semibold text-lg text-white hover:bg-blue-darkest"
+            onClick={() => setOnReservationForm(true)}> Realizar reserva </button>
         </section>
     )
 }

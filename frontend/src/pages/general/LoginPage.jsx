@@ -21,7 +21,7 @@ function useWindowSize() {
 
 const LoginPage = ({ url }) => {
   const [width] = useWindowSize();
-  const backgroundImage = width <= 768 ? bgImageMobile : bgImagePC;
+  const backgroundImage = width <= 414 ? bgImageMobile : bgImagePC;
 
   useEffect(() => {
     sessionStorage.removeItem("userLogged");

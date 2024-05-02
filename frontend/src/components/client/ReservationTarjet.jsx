@@ -4,7 +4,7 @@ import axios from "axios";
 import Swal from 'sweetalert2'
 import cubiertoIcon from '../../assets/Cubierto.png';
 
-export default function ReservationTarjet({url}) {
+export default function ReservationTarjet({url, setOnReservationForm}) {
     const [idType, setIdType] = useState('');
     const [idNumber, setIdNumber] = useState('');
     const [name, setName] = useState('');
@@ -14,49 +14,6 @@ export default function ReservationTarjet({url}) {
     const [email, setEmail] = useState('');
     const [payMethod, setPayMethod] = useState('');
 
-    const navigate = useNavigate();
-
-    const handleSignUp = (e) => {
-        e.preventDefault();
-
-        if(!idType || !idNumber || !name || !lastName || !phone || !username || !email) {
-            Swal.fire({
-                icon: 'info',
-                title: `Por favor llene todos los campos`
-            });
-        } else {
-            axios.post(`${url}/auth/register`, {
-                idUser: idNumber, 
-                idDocTypeFk: idType, 
-                firstName: name, 
-                role: 'CLIENT',
-                lastName: lastName, 
-                email: email, 
-                phone: phone, 
-                username: username, 
-                password: 'temporal'
-            })
-            .then(res => {
-                console.log(res);
-                
-                Swal.fire({
-                    icon: 'success',
-                    title: `Registro exitoso`
-                });
-
-                navigate("/inicio-sesion");
-            })
-            .catch(err => {
-                Swal.fire({
-                    icon: 'error',
-                    title: `Hubo un error al registrar el usuario` ,
-                });
-
-                console.log(err);
-            })
-        }
-    }
-    //
     return (
         <article className="bg-blue-light pt-5 pb-6 relative rounded-2xl shadow-xl">
             <section className="flex flex-col items-center px-5">
@@ -73,7 +30,7 @@ export default function ReservationTarjet({url}) {
                     
                 
                     <div className="flex justify-between w-full mb-5">
-                        <input type="date" id="name" className="w-2/5 p-3 rounded-md bg-white font-paragraph placeholder:text-gray-dark mr-4" placeholder="Calendario(?"
+                        <input type="date" id="name" className="w-2/5 p-3 rounded-md bg-white font-paragraph placeholder:text-gray-dark mr-4" placeholder="Día"
                         value={name} onChange={(e) => setName(e.target.value)}></input>
 
                         <input type="time" id="name" className="w-2/5 p-3 rounded-md bg-white font-paragraph placeholder:text-gray-dark mr-4" placeholder="Nombre"
@@ -114,9 +71,9 @@ export default function ReservationTarjet({url}) {
                     
                 </section>  
                 <div className="flex justify-between">
-                    <button className="mt-8 px-10 py-3 mr-8 bg-blue-dark hover:bg-blue-darkest rounded-xl text-white font-title font-semibold " onClick={handleSignUp}> 
-                Realizar reserva </button>
-                <button className="mt-8 px-10 py-3 bg-red-dark hover:bg-red-darkest rounded-xl text-white font-title font-semibold" onClick={handleSignUp}> 
+                    <button className="mt-8 px-10 py-3 mr-8 bg-blue-dark hover:bg-blue-darkest rounded-xl text-white font-title font-semibold " 
+                    > Realizar reserva </button>
+                <button className="mt-8 px-10 py-3 bg-red-dark hover:bg-red-darkest rounded-xl text-white font-title font-semibold" onClick={() => setOnReservationForm(false)}> 
                 Cancelar </button>
                 </div>
             </section>

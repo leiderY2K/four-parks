@@ -21,7 +21,6 @@ const Map = ({ url, city, parkingType, availability, startTime, endTime }) => {
         if (startTime) params.startTime = startTime;
         if (endTime) params.endTime = endTime;
         
-        console.log(params)
         axios.get(`${url}/client/getParkings`, {
             params:params,
             headers: { Authorization: `Bearer ${token}` }
@@ -33,9 +32,8 @@ const Map = ({ url, city, parkingType, availability, startTime, endTime }) => {
                 coords: [parking.addressCoordinatesX, parking.addressCoordinatesY],
                 type: parking.parkingType.descParkingType
             }));
+
             setParkings(parkingArray);
-            console.log(parkingType)
-            console.log(parkingArray)
         })
         .catch(err => {
             console.error(err.response || err);
@@ -44,11 +42,11 @@ const Map = ({ url, city, parkingType, availability, startTime, endTime }) => {
 
     const getIcon = (type) => {
         switch (type) {
-            case 'Covered':
+            case 'COV':
                 return new Icon({iconUrl: coveredIcon, iconSize: [35, 35]});
-            case 'Uncovered':
+            case 'UNC':
                 return new Icon({iconUrl: uncoveredIcon, iconSize: [35, 35]});
-            case 'Semi-covered':
+            case 'SEC':
                 return new Icon({iconUrl: semicoveredIcon, iconSize: [35, 35]});
             default:
                 return new Icon({iconUrl: coveredIcon, iconSize: [35, 35]});
