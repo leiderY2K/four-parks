@@ -16,8 +16,8 @@ const Map = ({ url, city, parkingType, availability, startTime, endTime }) => {
         const token = sessionStorage.getItem('token').replace(/"/g, '');
         const params = { city };
 
-        if (parkingType) params.parkingType = parkingType;
-        //if (availability) params.availability = availability;
+        if (parkingType) params.type = parkingType;
+        if (availability) params.scheduleType = availability;
         if (startTime) params.startTime = startTime;
         if (endTime) params.endTime = endTime;
         
@@ -65,7 +65,7 @@ const Map = ({ url, city, parkingType, availability, startTime, endTime }) => {
     }
 
     return (
-        <MapContainer center={[4.2992, -74.7952]} zoom={15} minZoom={14} maxBounds={[[4.3145, -74.8185], [4.2839, -74.7744]]} className='rounded-2xl shadow-lg '>
+        <MapContainer center={[4.6563328, -74.1113856]} zoom={15} minZoom={13} maxBounds={[[4.7691, -74.2425], [4.4967, -74.0262]]} className='rounded-2xl shadow-lg '>
             <TileLayer 
                 attribution='&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>'
                 url='https://tile.openstreetmap.org/{z}/{x}/{y}.png'

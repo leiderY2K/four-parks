@@ -7,7 +7,7 @@ const ParkingFilters = ({city, setCity, parkingType, setParkingType,availability
     if (time) {
       time.setMinutes(0);
       time.setSeconds(0);
-      setter(time.toISOString().substr(11, 5));
+      setter(time.toISOString().substr(11, 8));
     }
   };
 /*  useEffect(() => {
@@ -59,7 +59,7 @@ const ParkingFilters = ({city, setCity, parkingType, setParkingType,availability
         <select id="parking-availability" value={availability} className="w-1/2 mr-12 p-4 rounded-md bg-white shadow-md font-paragraph" onChange={(e) => setAvailability(e.target.value)}>
           <option value="" disabled selected hidden> Disponibilidad </option>
           <option value="lunes-viernes"> Lunes a viernes </option>
-          <option value="fines-semana"> Fines de semana </option>
+          <option value="Fines de semana"> Fines de semana </option>
           <option value="todo-dia"> 24/7 </option>
         </select>
 
@@ -71,6 +71,7 @@ const ParkingFilters = ({city, setCity, parkingType, setParkingType,availability
           
           <input type="time" id="parking-endTime" value={endTime} className="p-4 rounded-md bg-white shadow-md font-paragraph" 
           onChange={handleTimeChange(setEndTime)}/>
+          
         </section>
       </section>
     </section>

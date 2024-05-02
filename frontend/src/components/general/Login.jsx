@@ -26,8 +26,6 @@ export default function Login({url}){
         console.warn(`ERROR(${err.code}): ${err.message}`); 
     }
     
-
-
     useEffect(() => { 
         if (navigator.geolocation) { 
             navigator.permissions .query({ name: "geolocation" }) 
