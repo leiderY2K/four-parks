@@ -59,7 +59,7 @@ public class UserAuthentication implements UserDetails {
 
     @Override
     public boolean isAccountNonLocked() {
-        return true;
+        return true; //retorna el estado, pero debo hacer el trigger
     }
 
     @Override

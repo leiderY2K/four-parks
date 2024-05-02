@@ -33,4 +33,26 @@ public interface IParkingRepository extends JpaRepository<Parking, Integer>{
         nativeQuery = true)
     Parking queryParkingByCoordinates(@Param("coordinateX") float coordinateX, @Param("coordinateY") float coordinateY);
 
+    @Query(
+       value = "SELECT COUNT(*) FROM PARKINGSPACE AS ps WHERE ps.FK_IDPARKING = :parkingId " +
+                     "AND ps.ISCOVERED = :isCovered " +
+                     "AND ps.FK_IDVEHICLETYPE = :vehicleType",
+       nativeQuery = true
+       )
+    int countByCoveredAndParkingAndVehicleType(@Param("parkingId") int parkingId,
+                                    @Param("isCovered") Boolean isCovered,                                
+                                    @Param("vehicleType") String vehicleType);
+   
+    @Query(
+      value = "SELECT DISTINCT V.IDVEHICLETYPE " + 
+               "FROM FOURPARKSDATABASE.PARKINGSPACE PS " + 
+               "INNER JOIN FOURPARKSDATABASE.VEHICLETYPE V ON PS.FK_IDVEHICLETYPE = V.IDVEHICLETYPE " + 
+               "WHERE PS.FK_IDPARKING = :parkingId",
+      nativeQuery = true
+    )
+    List<String> getTypeVehicleByParking(@Param("parkingId") int parkingId);
+
+    
+
+
 }

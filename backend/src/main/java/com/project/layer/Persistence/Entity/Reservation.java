@@ -1,6 +1,7 @@
 package com.project.layer.Persistence.Entity;
 
-import java.sql.Timestamp;
+import java.sql.Date;
+import java.sql.Time;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -24,13 +25,19 @@ public class Reservation {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "IDRESERVATION", nullable = false)
-    private String idReservation;
+    private Integer idReservation;
+
+    @Column(name = "DATERES", nullable = false)
+    private Date dateRes;
 
     @Column(name = "STARTTIMERES", nullable = false)
-    private Timestamp startTimeRes;
+    private Time startTimeRes;
 
     @Column(name = "ENDTIMERES", nullable = false)
-    private Timestamp endTimeRes;
+    private Time endTimeRes;
+
+    @Column(name = "CREATIONDATERES", nullable = false)
+    private Date creationDateRes;
 
     @Column(name = "TOTALRES", nullable = false)
     private Integer totalRes;
@@ -38,13 +45,21 @@ public class Reservation {
     @Column(name = "LICENSEPLATE", nullable = false)
     private String licensePlate;
 
-    @Column(name = "RESERVATIONCOL", nullable = false)
-    private String reservationCol;
+    @ManyToOne
+    //@JoinColumns({
+        @JoinColumn(name = "FK_IDPARKINGSPACE", referencedColumnName = "IDPARKINGSPACE")
+        @JoinColumn(name = "FK_IDPARKING", referencedColumnName = "FK_IDPARKING")
+        @JoinColumn(name = "FK_IDCITY", referencedColumnName = "FK_IDCITY")
+        @JoinColumn(name = "FK_IDVEHICLETYPE", referencedColumnName = "FK_IDVEHICLETYPE")
+    //})
+    private ParkingSpace parkingSpace;
 
     // Relación con la tabla de clientes
     @ManyToOne
-    @JoinColumn(name = "FK_CLIENT_IDUSER", referencedColumnName = "IDUSER", insertable = false, updatable = false)
-    @JoinColumn(name = "FK_CLIENT_IDDOCTYPE", referencedColumnName = "FK_IDDOCTYPE", insertable = false, updatable = false)
+    //@JoinColumns({
+        @JoinColumn(name = "FK_CLIENT_IDUSER", referencedColumnName = "IDUSER")
+        @JoinColumn(name = "FK_CLIENT_IDDOCTYPE", referencedColumnName = "FK_IDDOCTYPE")
+    //})
     private Client client;
 
 }

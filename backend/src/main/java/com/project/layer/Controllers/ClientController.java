@@ -30,7 +30,6 @@ public class ClientController {
     private final MapService mapService;
     private final ReservationService reservationService;
 
-
     @GetMapping("/cityList")
     public List<String> getCityList(){
         return mapService.getCityList();
@@ -63,8 +62,8 @@ public class ClientController {
         return reservationService.startParkingSpace(reservationRequest);
     }
 
-    @PostMapping("/getReservations")
-    public List<Reservation> getReservations(@RequestBody UserId clientId){
+    @PostMapping("/postReservations")
+    public List<Reservation> postReservations(@RequestBody UserId clientId){
         System.out.println(clientId.toString());
         return reservationService.getReservationsByClientId(clientId);
     }
