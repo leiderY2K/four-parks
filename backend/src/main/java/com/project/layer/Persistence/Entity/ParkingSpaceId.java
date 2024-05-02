@@ -26,16 +26,11 @@ import lombok.NoArgsConstructor;
     @AttributeOverride(
         name = "idCity",
         column = @Column(name = "FK_IDCITY")
-    ),
-    @AttributeOverride(
-        name = "idVehicleType",
-        column = @Column(name = "FK_IDVEHICLETYPE")
     )
 })
 public class ParkingSpaceId implements Serializable {
-    private String idParkingSpace;
+    private int idParkingSpace;
     private int idParking;
-    private int idCity;
-    private String idVehicleType;
+    private String idCity;
 
 }

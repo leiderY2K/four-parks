@@ -1,9 +1,11 @@
-import { useRef, useState, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
-import ReCAPTCHA from "react-google-recaptcha";
-import axios from "axios";
+import { useRef, useState, useEffect } from "react"
+import { useNavigate } from "react-router-dom"
+import ReCAPTCHA from "react-google-recaptcha"
+import axios from "axios"
 import Swal from 'sweetalert2'
-import { decodeJWT } from "../../javascript/decodeJWT";
+import { decodeJWT } from "../../javascript/decodeJWT"
+import logo  from '../../assets/Logo4.png'
+import '../../css/login.css'
 
 export default function Login({url}){
     const [user, setUser] = useState("");
@@ -14,6 +16,7 @@ export default function Login({url}){
     const captcha = useRef(null);
 
     var options = { enableHighAccuracy: true, timeout: 5000, maximumAge: 0, };
+
     function success(pos) { 
         var crd = pos.coords; 
         console.log("Your current position is:"); 
@@ -29,14 +32,19 @@ export default function Login({url}){
     useEffect(() => { 
         if (navigator.geolocation) { 
             navigator.permissions .query({ name: "geolocation" }) 
-            .then(function (result) { console.log(result); 
+            .then(function (result) { 
                 if (result.state === "granted") { 
                     navigator.geolocation.getCurrentPosition(success, errors, options)
                 } else if (result.state === "prompt") { 
                     navigator.geolocation.getCurrentPosition(success, errors, options)
                 } else if (result.state === "denied") { 
                     //If denied then you have to show instructions to enable location 
-                } }); } else { console.log("Geolocation is not supported by this browser."); } }, []);
+                }
+            }); 
+        } else { 
+            console.log("Geolocation is not supported by this browser."); 
+        } 
+    }, []);
 
     const handleLogin = (e) => {
         e.preventDefault();
@@ -51,7 +59,6 @@ export default function Login({url}){
                 axios.post(`${url}/auth/login`, {username: user, password: password})
                 .then(res => {
                     const tokenDecoded = decodeJWT(res.data.token);
-                    console.log(tokenDecoded)
 
                     const userLogged = {
                         "idNumber": tokenDecoded.userId.idUser,
@@ -97,9 +104,10 @@ export default function Login({url}){
     }
 
     return(
-        <article className="w-11/12 md:w-1/2 xl:w-1/4 2xl:w-1/5 h-2/3 md:h-3/5 xl:h-4/6 2xl:h-3/5 pt-6 md:pt-10 2xl:pt-8 rounded-2xl shadow-xl bg-gradient-to-b from-red-light from-75% to-red-dark">
+        <article id="loginCard" className="w-11/12 md:w-1/2 h-2/3 md:h-3/5 pt-6 md:pt-10 2xl:pt-6 rounded-2xl shadow-xl bg-gradient-to-b 
+        from-red-light from-75% to-red-dark">
             <section className="flex flex-col items-center px-6 md:px-10 xl:px-8">
-                <div className="w-24 h-24 bg-white rounded-full ml-auto mr-auto"></div>
+                <img src={logo} alt="Logo de Four Parks" className="w-24 h-24"/>
                     
                 <section className="flex flex-col justify-between items-center w-full h-56 mt-6 md:mt-10 2xl:mt-8">
                     <input type="text" id="user" value={user} className="w-full p-3 rounded-md bg-white font-paragraph placeholder:text-gray-dark" 

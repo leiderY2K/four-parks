@@ -3,6 +3,7 @@ import Header from '../../components/client/Header.jsx'
 import Map from '../../components/client/Map.jsx'
 import ParkingFilters from '../../components/client/ParkingFilters.jsx'
 import ParkingInfo from '../../components/client/ParkingInfo.jsx'
+import ReservationTarjet from '../../components/client/ReservationTarjet.jsx'
 
 const Home = ({url}) => {
   const [city, setCity] = useState("");
@@ -10,7 +11,8 @@ const Home = ({url}) => {
   const [availability, setAvailability] = useState("");
   const [startTime, setStartTime] = useState("");
   const [endTime, setEndTime] = useState("");
-//PASAR USESTATE AL MAPA, Recibirlos, añadirlos al usefect y validarlos  API: Detectar ubicación 
+  const [onReservationForm, setOnReservationForm] = useState(false);
+
   return (
     <>
         <Header />
@@ -18,7 +20,11 @@ const Home = ({url}) => {
           <section className='w-2/5'>
             <ParkingFilters city={city} setCity={setCity} parkingType={parkingType} setParkingType={setParkingType} availability={availability} setAvailability={setAvailability}
             startTime={startTime} setStartTime={setStartTime} endTime={endTime} setEndTime={setEndTime} />
-            <ParkingInfo />
+
+            {
+              (onReservationForm == true ? <ReservationTarjet setOnReservationForm={setOnReservationForm} /> : <ParkingInfo setOnReservationForm={setOnReservationForm} />)
+            }
+            
           </section>
 
           <div className="w-1/2 ml-44 rounded-2xl z-0"> 
