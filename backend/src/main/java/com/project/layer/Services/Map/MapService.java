@@ -26,7 +26,11 @@ public class MapService {
 
     public MapService(){}
 
-    public List<Parking> getParkingsFilter(String city, String type , Time startTime, Time endTime, String scheduleType){
+    public List<Parking> getParkingsFilter(String city, String type, Time startTime, Time endTime, String scheduleType){
+
+        if(city==null){
+            return null;
+        }
 
         List<Parking> parkings = null;
         Time endTemp = null;    
@@ -35,12 +39,9 @@ public class MapService {
         } else{            
             endTemp = endTime;
         }        
-
-        if(city==null){
-            return null;
-        }else{
-            parkings = parkingRepository.queryParkingsByArgs(city, type, startTime, endTemp, scheduleType);
-        }                
+        
+        parkings = parkingRepository.queryParkingsByArgs(city, type, startTime, endTemp, scheduleType);
+                        
         return parkings;
     }
 
@@ -60,19 +61,25 @@ public class MapService {
 
         for (String vehiculo : vehiculos) {
             
-            Map<String, Integer> capacity = new HashMap<>();
+            Map<String, Integer> vehicleType = new HashMap<>();
     
-            System.out.println(parking.toString());
             if(parking.getParkingType().getIdParkingType().equals("COV") || parking.getParkingType().getIdParkingType().equals("SEC")) {
-                capacity.put("covered", parkingRepository.countByCoveredAndParkingAndVehicleType(
+                vehicleType.put("covered", parkingRepository.countByCoveredAndParkingAndVehicleType(
                     parking.getIdParking(), true, vehiculo));
+                vehicleType.put("rate-covered", parkingRepository.getRateByVehicleType(
+                    parking.getIdParking(), true, vehiculo
+                ));
             }
             if(parking.getParkingType().getIdParkingType().equals("UNC") || parking.getParkingType().getIdParkingType().equals("SEC")) {
-                capacity.put("uncovered", parkingRepository.countByCoveredAndParkingAndVehicleType(
-                    parking.getIdParking(), false, vehiculo));
+                vehicleType.put("uncovered", parkingRepository.countByCoveredAndParkingAndVehicleType(
+                    parking.getIdParking(), false, vehiculo
+                ));
+                vehicleType.put("rate-uncovered", parkingRepository.getRateByVehicleType(
+                    parking.getIdParking(), false, vehiculo
+                ));
             }
 
-            tipoVehiculo.put(vehiculo, capacity);
+            tipoVehiculo.put(vehiculo, vehicleType);
 
         }
 

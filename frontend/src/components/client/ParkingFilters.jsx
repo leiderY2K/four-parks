@@ -1,18 +1,28 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import axios from "axios";
 
-const ParkingFilters = () => {
-  const [city, setCity] = useState("");
-  const [parkingType, setParkingType] = useState("");
-  const [availability, setAvailability] = useState("");
-  const [startTime, setStartTime] = useState("");
-  const [endTime, setEndTime] = useState("");
+const ParkingFilters = ({city, setCity, parkingType, setParkingType,availability, setAvailability, startTime, setStartTime, endTime, setEndTime}) => {
+  const [cities, setCities] = useState([]);
+
+  useEffect(() => {
+    const token = sessionStorage.getItem('token').replace(/"/g, '');
+
+    axios.get(`http://localhost:8080/client/cityList`,  {headers: {Authorization: `Bearer ${token}`}})
+    .then(res=>{
+      const cityArray = res.data.map(city => (city))
+      setCities(cityArray);
+    })
+    .catch(err=>{
+      console.log(err);
+    }) 
+  },[]); 
 
   const handleTimeChange = (setter) => (event) => {
     const time = new Date(event.target.valueAsNumber);
     if (time) {
       time.setMinutes(0);
       time.setSeconds(0);
-      setter(time.toISOString().substr(11, 5));
+      setter(time.toISOString().substr(11, 8));
     }
   };
 
@@ -33,25 +43,29 @@ const ParkingFilters = () => {
       <section className="flex justify-between">
         <select id="parking-city" value={city} className="w-1/2 mr-12 p-4 rounded-md bg-white shadow-md font-paragraph" onChange={(e) => setCity(e.target.value)}>
           <option value="" disabled selected hidden> Ciudad </option>
-          <option value="bogota"> Bogotá </option>
-          <option value="medellin"> Medellín </option>
-          <option value="cali"> Cali </option>
+          <option value=""></option>
+          {cities.map(city => (
+            <option value={city}> {city} </option>
+          ))}
         </select>
         
         <select id="parking-type" value={parkingType} className="w-1/2 p-4 rounded-md bg-white shadow-md font-paragraph" onChange={(e) => setParkingType(e.target.value)}>
           <option value="" disabled selected hidden> Tipo de parqueadero </option>
-          <option value="cubierto"> Cubierto </option>
-          <option value="semi-cubierto"> Semi-cubierto </option>
-          <option value="descubierto"> Descubierto </option>
+          <option value=""></option>
+          <option value="COV"> Cubierto </option>
+          <option value="SEC"> Semi-cubierto </option>
+          <option value="UNC"> Descubierto </option>
         </select>
       </section>
       
       <section className="flex justify-between">
         <select id="parking-availability" value={availability} className="w-1/2 mr-12 p-4 rounded-md bg-white shadow-md font-paragraph" onChange={(e) => setAvailability(e.target.value)}>
           <option value="" disabled selected hidden> Disponibilidad </option>
-          <option value="lunes-viernes"> Lunes a viernes </option>
-          <option value="fines-semana"> Fines de semana </option>
-          <option value="todo-dia"> 24/7 </option>
+          <option value=""></option>
+          <option value="Dias de semana"> Lunes a viernes </option>
+          <option value="Fines de semana"> Fines de semana </option>
+          <option value="Tiempo completo"> 24/7 </option>
+          <option value="Tiempo completo"> 24/7 </option>
         </select>
 
         <section className="flex justify-between items-center w-1/2">

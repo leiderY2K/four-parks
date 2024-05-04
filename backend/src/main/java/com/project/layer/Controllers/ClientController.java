@@ -1,4 +1,5 @@
 package com.project.layer.Controllers;
+import java.sql.Date;
 import java.sql.Time;
 import java.util.List;
 
@@ -14,7 +15,6 @@ import com.project.layer.Controllers.Requests.StartReservationRequest;
 import com.project.layer.Controllers.Responses.ParkingResponse;
 import com.project.layer.Persistence.Entity.City;
 import com.project.layer.Persistence.Entity.Parking;
-import com.project.layer.Persistence.Entity.ParkingSpace;
 import com.project.layer.Persistence.Entity.Reservation;
 import com.project.layer.Persistence.Entity.UserId;
 import com.project.layer.Services.Map.MapService;
@@ -44,6 +44,7 @@ public class ClientController {
     public List<Parking> getParkingsInMap(
         @RequestParam(required = true) String city,
         @RequestParam(required = false) String type,
+        @RequestParam(required = false) Date dateRest,
         @RequestParam(required = false) Time startTime,
         @RequestParam(required = false) Time endTime,
         @RequestParam(required = false) String scheduleType
@@ -57,9 +58,9 @@ public class ClientController {
     }
 
     @PostMapping("/startReservation")
-    public ParkingSpace startParkingSpace(@RequestBody StartReservationRequest reservationRequest){
+    public String startParkingSpace(@RequestBody StartReservationRequest reservationRequest){
 
-        return reservationService.startParkingSpace(reservationRequest);
+        return reservationService.startReservation(reservationRequest);
     }
 
     @PostMapping("/postReservations")
@@ -69,9 +70,9 @@ public class ClientController {
     }
 
     @PostMapping("/endReservation")
-    public ParkingSpace endParkingSpace(@RequestBody EndReservationRequest reservationRequest){
+    public String endParkingSpace(@RequestBody EndReservationRequest reservationRequest){
 
-        return reservationService.endParkingSpace(reservationRequest);
+        return reservationService.endReservation(reservationRequest);
     }
     
 }

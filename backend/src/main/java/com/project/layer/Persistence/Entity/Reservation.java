@@ -9,15 +9,18 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
+import jakarta.persistence.JoinColumns;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
 @Entity
 @Table(name = "RESERVATION")
 @Data
+@Builder
 @AllArgsConstructor
 @NoArgsConstructor
 public class Reservation {
@@ -45,13 +48,15 @@ public class Reservation {
     @Column(name = "LICENSEPLATE", nullable = false)
     private String licensePlate;
 
+    @Column(name = "FK_IDVEHICLETYPE", nullable = false)
+    private String vehicleType;
+
     @ManyToOne
-    //@JoinColumns({
-        @JoinColumn(name = "FK_IDPARKINGSPACE", referencedColumnName = "IDPARKINGSPACE")
-        @JoinColumn(name = "FK_IDPARKING", referencedColumnName = "FK_IDPARKING")
-        @JoinColumn(name = "FK_IDCITY", referencedColumnName = "FK_IDCITY")
-        @JoinColumn(name = "FK_IDVEHICLETYPE", referencedColumnName = "FK_IDVEHICLETYPE")
-    //})
+    @JoinColumns({
+        @JoinColumn(name = "FK_IDPARKINGSPACE", referencedColumnName = "IDPARKINGSPACE"),
+        @JoinColumn(name = "FK_IDPARKING", referencedColumnName = "FK_IDPARKING"),
+        @JoinColumn(name = "FK_IDCITY", referencedColumnName = "FK_IDCITY"),
+    })
     private ParkingSpace parkingSpace;
 
     // Relación con la tabla de clientes
@@ -60,6 +65,6 @@ public class Reservation {
         @JoinColumn(name = "FK_CLIENT_IDUSER", referencedColumnName = "IDUSER")
         @JoinColumn(name = "FK_CLIENT_IDDOCTYPE", referencedColumnName = "FK_IDDOCTYPE")
     //})
-    private Client client;
+    private User client;
 
 }

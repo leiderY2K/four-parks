@@ -30,6 +30,9 @@ public class Parking {
     @Column(name = "CAPACITY", nullable = false)
     private int capacity;
 
+    @Column(name = "DISPONIBILITY", nullable = false)
+    private int disponibility;
+
     @Column(name = "FK_COORDINATESX", nullable = false) // Nueva columna para las coordenadas X
     private float addressCoordinatesX;
 
