@@ -16,10 +16,6 @@ import lombok.NoArgsConstructor;
 public class Rate {
     
     @Id
-    @Column(name = "IDRATE", nullable = false)
-    private int idRate;
-
-    @Id
     @Column(name = "FK_IDPARKING", nullable = false)
     private int idParking;
 
@@ -32,11 +28,11 @@ public class Rate {
     private String idVehicleType;
 
     @Id
-    @Column(name = "FK_IDPARKINGTYPE", nullable = false)
-    private String idParkingType;
+    @Column(name = "ISCOVERED", nullable = false)
+    private boolean isCovered;
 
     @Column(name = "HOURCOST", nullable = false)
-    private int costRate;
+    private int hourCost;
 
     @Column(name = "RESERVATIONCOST", nullable = false)
     private int reservationCost;

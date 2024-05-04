@@ -1,8 +1,6 @@
 package com.project.layer.Persistence.Repository;
 
-import com.project.layer.Persistence.Entity.Parking;
 import com.project.layer.Persistence.Entity.User;
-import com.project.layer.Persistence.Entity.UserAuthentication;
 import com.project.layer.Persistence.Entity.UserId;
 
 
@@ -11,7 +9,6 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
-import java.util.List;
 import java.util.Optional;
 
 @Repository

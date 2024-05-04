@@ -1,12 +1,8 @@
 package com.project.layer.Controllers.Requests;
 
-import com.project.layer.Persistence.Entity.UserId;
-import com.project.layer.Persistence.Repository.IUserRepository;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
-import lombok.NoArgsConstructor;
-
 import javax.validation.constraints.*;
 
 import com.fasterxml.jackson.annotation.JsonProperty;

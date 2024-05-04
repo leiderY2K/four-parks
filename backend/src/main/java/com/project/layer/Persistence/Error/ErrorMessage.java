@@ -2,7 +2,6 @@ package com.project.layer.Persistence.Error;
 
 
 import lombok.*;
-import org.springframework.http.HttpStatus;
 
 @Data
 @Builder

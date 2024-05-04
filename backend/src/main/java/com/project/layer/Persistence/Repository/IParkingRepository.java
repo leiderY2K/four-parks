@@ -87,6 +87,19 @@ public interface IParkingRepository extends JpaRepository<Parking, Integer>{
         @Param("endTimeRes") Time endTimeRes
     );
 
+    @Query(
+    value = "SELECT rt.HOURCOST FROM RATE AS rt " +
+            "WHERE rt.FK_IDPARKING = :idParking " +
+            "AND rt.ISCOVERED = :isCovered " +
+            "AND rt.FK_IDVEHICLETYPE = :vehicleType",
+    nativeQuery = true
+    )
+    Integer getRateByVehicleType(
+        @Param("idParking") int idParking,
+        @Param("isCovered") boolean isCovered,
+        @Param("vehicleType") String vehicleType
+    );
+
 
 
 

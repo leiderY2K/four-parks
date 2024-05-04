@@ -64,9 +64,8 @@ public class ReservationService {
         return "¡La reserva se realizo exitosamente!";
     }
 
-    public ParkingSpace endReservation(EndReservationRequest reservationRequest) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'endParkingSpace'");
+    public String endReservation(EndReservationRequest reservationRequest) {
+        return "El precio final de su pago es:";
     }
 
     public List<Reservation> getReservationsByClientId(UserId clientPK) {

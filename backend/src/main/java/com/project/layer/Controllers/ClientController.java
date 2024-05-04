@@ -15,7 +15,6 @@ import com.project.layer.Controllers.Requests.StartReservationRequest;
 import com.project.layer.Controllers.Responses.ParkingResponse;
 import com.project.layer.Persistence.Entity.City;
 import com.project.layer.Persistence.Entity.Parking;
-import com.project.layer.Persistence.Entity.ParkingSpace;
 import com.project.layer.Persistence.Entity.Reservation;
 import com.project.layer.Persistence.Entity.UserId;
 import com.project.layer.Services.Map.MapService;
@@ -71,7 +70,7 @@ public class ClientController {
     }
 
     @PostMapping("/endReservation")
-    public ParkingSpace endParkingSpace(@RequestBody EndReservationRequest reservationRequest){
+    public String endParkingSpace(@RequestBody EndReservationRequest reservationRequest){
 
         return reservationService.endReservation(reservationRequest);
     }
