@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { Link } from "react-router-dom";
+import logo  from '../../assets/Logo4.png';
 
 const Header = () => {
     const [onToggle, setOnToggle] = useState(false);
@@ -7,7 +8,7 @@ const Header = () => {
     return (
         <header> 
             <nav className="flex items-center justify-between flex-wrap fixed top-0 p-6 z-10 w-full bg-red-light">
-                <div className="flex items-center flex-no-shrink ml-2 md:ml-6 lg:ml-6 text-white text-3xl font-paragraph font-semibold" id="nav-logo"> 4P </div>
+                <img src={logo} alt="Logo de Four Parks" className="w-14 h-14 ml-8"/>    
 
                 <div className={`w-full flex-grow lg:items-center lg:w-auto lg:block pt-6 lg:pt-0 ${onToggle ? "" : "hidden"}`} id="nav-content">
                     <ul className="list-reset lg:flex justify-end flex-1 items-center text-xl">

@@ -33,5 +33,11 @@ public class City {
 
     @Column(name = "B_RIGHT", nullable = false)
     private String bRight;
+    
+    @Column(name = "X_CENTER", nullable = false)
+    private String xCenter;
+   
+    @Column(name = "Y_CENTER", nullable = false)
+    private String yCenter;
 
 }
