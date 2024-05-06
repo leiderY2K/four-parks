@@ -2,7 +2,9 @@ import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import Swal from 'sweetalert2'
-import coveredIcon from '../../assets/CoveredIcon.png';
+import coveredIcon from '../../assets/Parking Icons/Covered-Transparent.png';
+import uncoveredIcon from '../../assets/Parking Icons/Uncovered-Transparent.png';
+import semicoveredIcon from '../../assets/Parking Icons/Semicovered-Transparent.png';
 
 export default function ReservationTarjet({url, setOnReservationForm, actualParking, actualCity}) {
     const [resDate, setResDate]= useState('');
