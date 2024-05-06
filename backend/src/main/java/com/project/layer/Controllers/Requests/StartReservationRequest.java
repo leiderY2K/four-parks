@@ -1,6 +1,6 @@
 package com.project.layer.Controllers.Requests;
 
-import java.sql.Date;
+import java.util.Date;
 import java.sql.Time;
 
 import com.project.layer.Persistence.Entity.UserId;
@@ -28,6 +28,8 @@ public class StartReservationRequest {
 
     private String cityId;
 
-    private String parkingId;
+    private int parkingId;
+
+    private String vehicleType;
 
 }
