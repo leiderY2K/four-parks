@@ -4,6 +4,7 @@ import Map from '../../components/client/Map.jsx'
 import ParkingFilters from '../../components/client/ParkingFilters.jsx'
 import ParkingInfo from '../../components/client/ParkingInfo.jsx'
 import ReservationTarjet from '../../components/client/ReservationTarjet.jsx'
+import Login from "../../components/general/Login.jsx";
 
 const Home = ({url}) => {
   const [city, setCity] = useState("Bogota");
@@ -12,6 +13,8 @@ const Home = ({url}) => {
   const [startTime, setStartTime] = useState("");
   const [endTime, setEndTime] = useState("");
   const [onReservationForm, setOnReservationForm] = useState(false);
+
+  console.log()
 
   const [actualCity, setActualCity] = useState({
     id: 'BGT',

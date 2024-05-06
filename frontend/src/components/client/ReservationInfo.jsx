@@ -1,4 +1,21 @@
+import React, { useState, useEffect } from 'react';
+//import showCountdown from '../../javascript/temporizador';
+
 function ReservationInfo() {
+
+    /*const [timeRemaining, setTimeRemaining] = useState("");
+
+    useEffect(() => {
+        const startTempTime = "2:00";
+        const endTempTime = "20:00";
+    
+        
+        showCountdown(startTime, endTime, setTimeRemaining);
+    
+        
+        return () => clearInterval();
+      }, []);*/
+
     return(
         //Preguntar tema sombras 
         <section className="flex flex-col items-center w-full mt-16 pl-12">
@@ -8,7 +25,7 @@ function ReservationInfo() {
                             <div className="w-auto font-semibold text-lg"> Nombre del parqueadero 
                              </div>
                              <div className="h-9 w-20 bg-transparent border-black border-2">   
-                                <div className="flex justify-center font-semibold text-xl">10:30</div>
+                                <div className="flex justify-center font-semibold text-xl">{timeRemaining}</div>
                              </div>
                             
                         </div>
