@@ -3,6 +3,7 @@ import java.sql.Date;
 import java.sql.Time;
 import java.util.List;
 
+import com.project.layer.Services.Payment.PaymentService;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -29,6 +30,7 @@ public class ClientController {
     
     private final MapService mapService;
     private final ReservationService reservationService;
+    private final PaymentService paymentService;
 
     @GetMapping("/cityList")
     public List<String> getCityList(){
@@ -73,6 +75,12 @@ public class ClientController {
     public String endParkingSpace(@RequestBody EndReservationRequest reservationRequest){
 
         return reservationService.endReservation(reservationRequest);
+    }
+
+    @PostMapping("/makePayment")
+    public String makePayment(@RequestParam float amount){
+
+        return paymentService.getToken();
     }
     
 }

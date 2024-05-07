@@ -35,20 +35,24 @@ public class AuthController {
     }
 
     @PostMapping(value = "register")
-    public ResponseEntity<AuthResponse> register(@Valid @RequestBody RegisterRequest request, BindingResult bindingResult) throws CustomException {
+    public ResponseEntity<AuthResponse> register(@RequestBody @Valid RegisterRequest request) throws CustomException {
 
         String tempEmail = request.getEmail();
-        String tempUserId = request.getEmail();
+        String tempUserId = request.getIdUser();
         String tempPhone = request.getPhone();
         String tempUsername = request.getUsername();
 
         if(request.hasEmptyParameters()){
             throw new CustomException(("Todos los campos son obligatorios"));
-        }if(userRepository.findByEmail(tempEmail).isPresent()) {
+        }
+        //if(request.isEmail(tempEmail)){
+        //    throw new CustomException(("El email es invalido"));
+        //}
+        if(userRepository.findByEmail(tempEmail).isPresent()) {
             throw new CustomException(("El email ya se encuentra registrado"));
         }if(userAuthRepository.findByUsername(tempUserId).isPresent()){
             throw new CustomException(("El  id usuario ya se encuentra registrado"));
-        }if(userRepository.findByUserId(tempPhone).isPresent()){
+        }if(userRepository.findByPhone(tempPhone).isPresent()){
             throw new CustomException(("El  numero de telefono ya se encuentra registrado"));
         }if(userAuthRepository.findByUsername(tempUsername).isPresent()){
             throw new CustomException(("El  nombre de usuario ya se encuentra registrado"));
