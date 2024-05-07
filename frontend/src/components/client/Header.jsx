@@ -13,7 +13,7 @@ const Header = () => {
                 <div className={`w-full flex-grow lg:items-center lg:w-auto lg:block pt-6 lg:pt-0 ${onToggle ? "" : "hidden"}`} id="nav-content">
                     <ul className="list-reset lg:flex justify-end flex-1 items-center text-xl">
                         <li className="mr-16 relative">
-                            <Link to="/hacer-reserva" className="inline-block font-title font-medium text-white hover:scale-105 py-2 px-4" 
+                            <Link to="/cliente-inicio" className="inline-block font-title font-medium text-white hover:scale-105 py-2 px-4" 
                             onClick={() => {setOnToggle(false);}}>Hacer reserva</Link>
                         </li>
                         
@@ -34,7 +34,7 @@ const Header = () => {
                             {onToggle && (
                                 <ul className="absolute bg-white shadow-md mt-2 py-2 w-52">
                                     <li><Link to="/editar-perfil" className="text-black hover:text-white hover:bg-red-light py-2 px-4 block">Editar perfil</Link></li>
-                                    <li><Link to="/cerrar-sesion" className="text-black hover:text-white hover:bg-red-light py-2 px-4 block">Cerrar sesión</Link></li>
+                                    <li><Link to="/" className="text-black hover:text-white hover:bg-red-light py-2 px-4 block">Cerrar sesión</Link></li>
                                 </ul>
                             )}
                         </li>
