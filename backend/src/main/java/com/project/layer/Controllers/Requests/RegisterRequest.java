@@ -47,12 +47,10 @@ public class RegisterRequest {
     @JsonProperty("email")
     private String email;
 
-
     @Length(min = 10, max = 10, message = "El numero de telefono debe tener 10 caracteres")
     @NotBlank()
     @JsonProperty("phone")
     private String phone;
-
 
     public boolean hasEmptyParameters() {
         return idDocTypeFk == null || idDocTypeFk.isEmpty() ||
