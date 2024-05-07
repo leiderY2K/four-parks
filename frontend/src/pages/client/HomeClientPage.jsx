@@ -13,6 +13,8 @@ const Home = ({url}) => {
   const [endTime, setEndTime] = useState("");
   const [onReservationForm, setOnReservationForm] = useState(false);
 
+  console.log()
+
   const [actualCity, setActualCity] = useState({
     id: 'BGT',
     name: 'Bogota',

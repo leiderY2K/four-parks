@@ -1,4 +1,21 @@
+import React, { useState, useEffect } from 'react';
+//import showCountdown from '../../javascript/temporizador';
+
 function ReservationInfo() {
+
+    /*const [timeRemaining, setTimeRemaining] = useState("");
+
+    useEffect(() => {
+        const startTempTime = "2:00";
+        const endTempTime = "20:00";
+    
+        
+        showCountdown(startTime, endTime, setTimeRemaining);
+    
+        
+        return () => clearInterval();
+      }, []);*/
+
     return(
         <article className="flex flex-col items-center w-96 mt-12 px-6 py-5 rounded-md shadow-md bg-blue-light">
             <section className="flex justify-between w-full h-16 mb-5">
@@ -7,7 +24,7 @@ function ReservationInfo() {
                         <div className="mb-2 text-title font-semibold"> Ciudad </div> 
                     </div>
                     
-                    <div className="flex justify-center w-20 h-8 mt-2 bg-transparent border-black border-2 rounded-sm shadow-md font-semibold text-lg"> 10:30 </div>                     
+                    <div className="flex justify-center w-20 h-8 mt-2 bg-transparent border-black border-2 rounded-sm shadow-md font-semibold text-lg"> {timeRemaining} </div>                     
             </section> 
 
             <section className="w-full mb-5">

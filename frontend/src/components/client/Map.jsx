@@ -15,6 +15,8 @@ import "../../css/map.css";
 const Map = ({ url, city, parkingType, availability, startTime, endTime, actualCity, setActualCity, setActualParking }) => {
     const [parkings, setParkings] = useState([]);
 
+
+
     useEffect(() => {
         const token = sessionStorage.getItem('token').replace(/"/g, '');
 
@@ -114,7 +116,7 @@ const Map = ({ url, city, parkingType, availability, startTime, endTime, actualC
     }
 
     return (
-        <MapContainer center={actualCity.centerCoords} zoom={15} minZoom={12} maxBounds={[actualCity.northLim, actualCity.southLim]} className='rounded-2xl shadow-lg' 
+        <MapContainer center={[4.6430382, -74.0730269]} zoom={18} minZoom={12} maxBounds={[actualCity.northLim, actualCity.southLim]} className='rounded-2xl shadow-lg' 
         whenCreated={mapInstance => {
             console.log("Mapa creado", mapInstance);
         }}>
