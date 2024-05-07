@@ -1,16 +1,21 @@
 import { useState, useEffect } from 'react';
-import { MapContainer, TileLayer, Marker, Popup } from 'react-leaflet';
+import { MapContainer, TileLayer, Marker, Popup, useMap } from 'react-leaflet';
 import { Icon, divIcon, point } from 'leaflet';
 import MarkerClusterGroup from 'react-leaflet-cluster'
 import axios from "axios";
-import coveredIcon from '../../assets/CoveredIcon.png';
-import uncoveredIcon from '../../assets/UncoveredIcon.png';
-import semicoveredIcon from '../../assets/SemicoveredIcon.png';
+import coveredWhiteIcon from '../../assets/Parking Icons/Covered-White.png';
+import coveredRedIcon from '../../assets/Parking Icons/Covered-Red.png';
+import uncoveredWhiteIcon from '../../assets/Parking Icons/Uncovered-White.png';
+import uncoveredRedIcon from '../../assets/Parking Icons/Uncovered-Red.png';
+import semicoveredWhiteIcon from '../../assets/Parking Icons/Semicovered-White.png';
+import semicoveredRedIcon from '../../assets/Parking Icons/Semicovered-Red.png';
 import "leaflet/dist/leaflet.css";
 import "../../css/map.css";
 
 const Map = ({ url, city, parkingType, availability, startTime, endTime, actualCity, setActualCity, setActualParking }) => {
     const [parkings, setParkings] = useState([]);
+
+
 
     useEffect(() => {
         const token = sessionStorage.getItem('token').replace(/"/g, '');
@@ -50,7 +55,9 @@ const Map = ({ url, city, parkingType, availability, startTime, endTime, actualC
                 id: parking.idParking,
                 name: parking.namePark,
                 coords: [parking.addressCoordinatesX, parking.addressCoordinatesY],
-                type: parking.parkingType.idParkingType
+                type: parking.parkingType.idParkingType,
+                capacity: parking.capacity,
+                disponibility: parking.disponibility
             }));
 
             setParkings(parkingArray);
@@ -60,16 +67,18 @@ const Map = ({ url, city, parkingType, availability, startTime, endTime, actualC
         });
     }, [city, parkingType, availability, startTime, endTime]);
 
-    const getIcon = (type) => {
+    const getIcon = (type, capacity, disponibility) => {
+        const availabilityPerc = disponibility / capacity;
+
         switch (type) {
             case 'COV':
-                return new Icon({iconUrl: coveredIcon, iconSize: [45, 45]});
+                return new Icon({iconUrl: (availabilityPerc >= 0.8 ? coveredRedIcon : coveredWhiteIcon), iconSize: [50, 50]});
             case 'UNC':
-                return new Icon({iconUrl: uncoveredIcon, iconSize: [45, 45]});
+                return new Icon({iconUrl: (availabilityPerc >= 0.8 ? uncoveredRedIcon : uncoveredWhiteIcon), iconSize: [50, 50]});
             case 'SEC':
-                return new Icon({iconUrl: semicoveredIcon, iconSize: [45, 45]});
+                return new Icon({iconUrl: (availabilityPerc >= 0.8 ? semicoveredRedIcon : semicoveredWhiteIcon), iconSize: [50, 50]});
             default:
-                return new Icon({iconUrl: coveredIcon, iconSize: [45, 45]});
+                return new Icon({iconUrl: (availabilityPerc >= 0.8 ? coveredRedIcon : coveredWhiteIcon), iconSize: [50, 50]});
         }
     };
 
@@ -94,9 +103,20 @@ const Map = ({ url, city, parkingType, availability, startTime, endTime, actualC
             console.log(err);
         })
     }
+    
+    const UpdateMap = ({center, bounds}) => {
+        const map = useMap();
+
+        useEffect(() => {
+            map.setView(center,  15); 
+            map.setMaxBounds([bounds[0], bounds[1]]); 
+        }, [center, map]);
+
+        return null;
+    }
 
     return (
-        <MapContainer center={actualCity.centerCoords} zoom={15} minZoom={12} maxBounds={[actualCity.northLim, actualCity.southLim]} className='rounded-2xl shadow-lg' 
+        <MapContainer center={[4.6430382, -74.0730269]} zoom={18} minZoom={12} maxBounds={[actualCity.northLim, actualCity.southLim]} className='rounded-2xl shadow-lg' 
         whenCreated={mapInstance => {
             console.log("Mapa creado", mapInstance);
         }}>
@@ -105,9 +125,12 @@ const Map = ({ url, city, parkingType, availability, startTime, endTime, actualC
                 url='https://tile.openstreetmap.org/{z}/{x}/{y}.png'
             />
 
+            <UpdateMap center={actualCity.centerCoords} bounds={[actualCity.northLim, actualCity.southLim]} />
+
             <MarkerClusterGroup chunkedLoading iconCreateFunction={createCustomClusterIcon}>
                 {parkings.map(parking => (
-                    <Marker key={parking.id} position={parking.coords} icon={getIcon(parking.type)} eventHandlers={{click: () => handleChangeParking(parking)}}> 
+                    <Marker key={parking.id} position={parking.coords} icon={getIcon(parking.type, parking.disponibility, parking.disponibility)} 
+                    eventHandlers={{click: () => handleChangeParking(parking)}}> 
                         <Popup>{parking.name}</Popup>
                     </Marker>
                 ))}
