@@ -33,7 +33,7 @@ export default function SignUp({url}) {
                 email: email, 
                 phone: phone, 
                 username: username, 
-                password: 'temporal'
+                password: 'temporal',
             })
             .then(res => {
                 console.log(res);

@@ -47,7 +47,6 @@ public class MapService {
         
         date = (date == null) ? Date.valueOf(LocalDate.now()) : date;
 
-        startTime = (startTime == null) ? Time.valueOf(LocalTime.now()) : startTime;
         
         List<Parking> parkings = null;
         Time endTemp = null;    
@@ -59,6 +58,7 @@ public class MapService {
         System.out.println("----------------------- La fecha es: "+ date + " " + startTime + " " +endTime);
         
         parkings = parkingRepository.queryParkingsByArgs(city, type, startTime, endTemp, scheduleType);
+        startTime = (startTime == null) ? Time.valueOf(LocalTime.now()) : startTime;
         endTime = (endTime == null) ? Time.valueOf(LocalTime.of(23, 59, 59)) : endTime;
 
         for (Parking parking : parkings) {

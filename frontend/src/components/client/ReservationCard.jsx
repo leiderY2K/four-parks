@@ -99,23 +99,23 @@ function ReservationCard({url, setOnReservationForm, actualParking, actualCity})
                     
                 
                     <div className="flex justify-between w-full mb-5">
-                        <input type="date" id="resDate" className="w-2/5 p-3 rounded-md bg-white font-paragraph placeholder:text-gray-dark mr-4" placeholder="Día"
-                        value={resDate} onChange={(e) => setResDate(e.target.value)}></input>
+                        <input type="date" id="resDate" className="w-2/5 p-3 rounded-md bg-white font-paragraph mr-4" value={resDate} 
+                        onChange={(e) => setResDate(e.target.value)}></input>
 
-                        <input type="time" id="resStart" className="w-2/5 p-3 rounded-md bg-white font-paragraph placeholder:text-gray-dark mr-4" placeholder="Hora inicio"
-                        value={resStart} onChange={handleTimeChange(setResStart)}></input>
+                        <input type="time" id="resStart" className="w-2/5 p-3 rounded-md bg-white font-paragraph mr-4" value={resStart} 
+                        onChange={handleTimeChange(setResStart)}></input>
 
-                        <input type="time" id="resEnd"className="w-2/5 p-3 rounded-md bg-white font-paragraph placeholder:text-gray-dark" placeholder="Hora fin"
-                        value={resEnd} onChange={handleTimeChange(setResEnd)}></input>
+                        <input type="time" id="resEnd"className="w-2/5 p-3 rounded-md bg-white font-paragraph" placeholder="Hora fin" value={resEnd} 
+                        onChange={handleTimeChange(setResEnd)}></input>
                     </div>
                 
                     <div className="flex justify-between w-full mb-5">
-                        <select id="vehicleType" className="w-2/5 p-3 rounded-md bg-white font-paragraph placeholder:text-gray-dark" placeholder="Tipo de vehiculo"
-                        value={vehicleType} onChange={(e) => setVehicleType(e.target.value)}>
+                        <select id="vehicleType" className="w-2/5 p-3 rounded-md bg-white font-paragraph" value={vehicleType} onChange={(e) => setVehicleType(e.target.value)}>
                             <option value="" disabled hidden> Tipo de vehiculo </option>
                             <option value=""></option>
-                            <option value="Moto">Moto</option>
-                            <option value="Carro">Carro</option>
+                            <option value="CAR"> Automóvil </option>
+                            <option value="MOT"> Motocicleta </option>
+                            <option value="BIC"> Bicicleta </option>
                         </select>
                         
                         <input id="licensePlate" className="w-2/5 p-3 rounded-md bg-white font-paragraph placeholder:text-gray-dark" placeholder="Matricula del vehiculo"
@@ -123,8 +123,8 @@ function ReservationCard({url, setOnReservationForm, actualParking, actualCity})
                     </div>
                 
                     <div className="w-full">
-                        <select id="resPayMethod" className="w-full p-3 rounded-md bg-white font-paragraph placeholder:text-gray-dark" placeholder="Metodo de pago"
-                        value={resPayMethod} onChange={(e) => setResPayMethod(e.target.value)}>
+                        <select id="resPayMethod" className="w-full p-3 rounded-md bg-white font-paragraph placeholder:text-gray-dark" value={resPayMethod} 
+                        onChange={(e) => setResPayMethod(e.target.value)}>
                             <option value="" disabled hidden> Metodo de pago </option>
                             <option value=""></option>
                             <option value="Mastercard">Mastercard</option>
