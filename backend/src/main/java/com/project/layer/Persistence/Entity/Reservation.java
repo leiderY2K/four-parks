@@ -1,6 +1,6 @@
 package com.project.layer.Persistence.Entity;
 
-import java.sql.Date;
+import java.util.Date;
 import java.sql.Time;
 
 import jakarta.persistence.Column;
@@ -61,10 +61,10 @@ public class Reservation {
 
     // Relación con la tabla de clientes
     @ManyToOne
-    //@JoinColumns({
-        @JoinColumn(name = "FK_CLIENT_IDUSER", referencedColumnName = "IDUSER")
+    @JoinColumns({
+        @JoinColumn(name = "FK_CLIENT_IDUSER", referencedColumnName = "IDUSER"),
         @JoinColumn(name = "FK_CLIENT_IDDOCTYPE", referencedColumnName = "FK_IDDOCTYPE")
-    //})
+    })
     private User client;
 
 }
