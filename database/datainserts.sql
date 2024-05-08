@@ -84,27 +84,27 @@ VALUES
     (3, '00:00:00', '23:59:59', 'Tiempo completo');
 
 -- Insertar estacionamientos
-INSERT INTO `FOURPARKSDATABASE`.`PARKING` (`NAMEPARK`, `CAPACITY`, `DISPONIBILITY`, `PHONE`, `EMAIL`, `FK_COORDINATESX`, `FK_COORDINATESY`, `FK_IDCITY`, `FK_IDSCHEDULE`, `FK_ADMIN_IDUSER`, `FK_ADMIN_IDDOCTYPE`, `FK_IDPARKINGTYPE`)
+INSERT INTO `FOURPARKSDATABASE`.`PARKING` (`NAMEPARK`, `CAPACITY`, `OCUPABILITY`, `PHONE`, `EMAIL`, `FK_COORDINATESX`, `FK_COORDINATESY`, `FK_IDCITY`, `FK_IDSCHEDULE`, `FK_ADMIN_IDUSER`, `FK_ADMIN_IDDOCTYPE`, `FK_IDPARKINGTYPE`)
 VALUES
-    ('Parqueadero 1', 50, 30, '1234567890', 'parqueadero1@example.com', 3.4433, -76.5248, 'CAL', 1, '9876543210987', 'TI', 'UNC'),
-    ('Parqueadero 2', 100, 80, '1234567890', 'parqueadero2@example.com', 10.9936, -74.8047, 'BAQ', 2, '4567890123456', 'CC', 'SEC'),
-    ('Parqueadero 3', 70, 50, '1234567890', 'parqueadero3@example.com', 6.2421, -75.5688, 'MED', 2, '9876543210987', 'TI', 'COV'),
-    ('Parqueadero 4', 80, 60, '1234567890', 'parqueadero4@example.com', 10.4238, -75.5453, 'CTG', 3, '4567890123456', 'CC', 'UNC'),
-    ('Parqueadero 5', 6, 5, '1234567890', 'parqueadero_a@example.com', 4.7075, -74.2298, 'MQR', 3, '9876543210987', 'TI', 'UNC'),
-    ('Parqueadero 6', 7, 6, '1234567890', 'parqueadero_b@example.com', 4.1350, -73.6219, 'VIL', 1, '4567890123456', 'CC', 'SEC'),
-    ('Parqueadero 7', 8, 7, '1234567890', 'parqueadero_c@example.com', 7.1254, -73.1180, 'BCM', 1, '9876543210987', 'TI', 'COV'),
-    ('Parqueadero 8', 9, 8, '1234567890', 'parqueadero_d@example.com', 1.2138, -77.2820, 'PAS', 2, '4567890123456', 'CC', 'UNC'),
-    ('Parqueadero 9', 10, 9, '1234567890', 'parqueadero_e@example.com', 4.5804, -74.2183, 'SOA', 3, '9876543210987', 'TI', 'SEC'),
-    ('Parqueadero 10', 10, 8, '1234567890', 'parqueadero10@example.com', 4.6514, -74.0676, 'BGT', 3, '9876543210987', 'TI', 'COV'),
-    ('Parqueadero 11', 10, 8, '1234567890', 'parqueadero11@example.com', 4.6478, -74.0622, 'BGT', 2, '4567890123456', 'CC', 'UNC'),
-    ('Parqueadero 12', 10, 8, '1234567890', 'parqueadero12@example.com', 4.6606, -74.0732, 'BGT', 2, '9876543210987', 'TI', 'SEC'),
-    ('Parqueadero 13', 10, 8, '1234567890', 'parqueadero13@example.com', 4.6645, -74.0914, 'BGT', 1, '4567890123456', 'CC', 'COV'),
-    ('Parqueadero 14', 10, 8, '1234567890', 'parqueadero14@example.com', 4.6780, -74.1179, 'BGT', 1, '9876543210987', 'TI', 'UNC'),
-    ('Parqueadero 15', 10, 8, '1234567890', 'parqueadero15@example.com', 4.6301, -74.1551, 'BGT', 1, '4567890123456', 'CC', 'SEC'),
-    ('Parqueadero 16', 10, 8, '1234567890', 'parqueadero16@example.com', 4.5756, -74.1112, 'BGT', 2, '9876543210987', 'TI', 'COV'),
-    ('Parqueadero 17', 10, 8, '1234567890', 'parqueadero17@example.com', 4.5369, -74.0866, 'BGT', 2, '4567890123456', 'CC', 'UNC'),
-    ('Parqueadero 18', 10, 8, '1234567890', 'parqueadero18@example.com', 4.5031, -74.1068, 'BGT', 2, '9876543210987', 'TI', 'SEC'),
-    ('Parqueadero 19', 10, 8, '1234567890', 'parqueadero19@example.com', 4.6172, -74.1937, 'BGT', 1, '4567890123456', 'CC', 'COV');
+    ('Parqueadero 1', 50, 1, '1234567890', 'parqueadero1@example.com', 3.4433, -76.5248, 'CAL', 1, '9876543210987', 'TI', 'UNC'),
+    ('Parqueadero 2', 100, 1, '1234567890', 'parqueadero2@example.com', 10.9936, -74.8047, 'BAQ', 2, '4567890123456', 'CC', 'SEC'),
+    ('Parqueadero 3', 70, 1, '1234567890', 'parqueadero3@example.com', 6.2421, -75.5688, 'MED', 2, '9876543210987', 'TI', 'COV'),
+    ('Parqueadero 4', 80, 1, '1234567890', 'parqueadero4@example.com', 10.4238, -75.5453, 'CTG', 3, '4567890123456', 'CC', 'UNC'),
+    ('Parqueadero 5', 6, 1,'1234567890', 'parqueadero_a@example.com', 4.7075, -74.2298, 'MQR', 3, '9876543210987', 'TI', 'UNC'),
+    ('Parqueadero 6', 7, 1, '1234567890', 'parqueadero_b@example.com', 4.1350, -73.6219, 'VIL', 1, '4567890123456', 'CC', 'SEC'),
+    ('Parqueadero 7', 8, 1, '1234567890', 'parqueadero_c@example.com', 7.1254, -73.1180, 'BCM', 1, '9876543210987', 'TI', 'COV'),
+    ('Parqueadero 8', 9, 1, '1234567890', 'parqueadero_d@example.com', 1.2138, -77.2820, 'PAS', 2, '4567890123456', 'CC', 'UNC'),
+    ('Parqueadero 9', 10, 1, '1234567890', 'parqueadero_e@example.com', 4.5804, -74.2183, 'SOA', 3, '9876543210987', 'TI', 'SEC'),
+    ('Parqueadero 10', 10, 1, '1234567890', 'parqueadero10@example.com', 4.6514, -74.0676, 'BGT', 3, '9876543210987', 'TI', 'COV'),
+    ('Parqueadero 11', 10, 1, '1234567890', 'parqueadero11@example.com', 4.6478, -74.0622, 'BGT', 2, '4567890123456', 'CC', 'UNC'),
+    ('Parqueadero 12', 10, 1, '1234567890', 'parqueadero12@example.com', 4.6606, -74.0732, 'BGT', 2, '9876543210987', 'TI', 'SEC'),
+    ('Parqueadero 13', 10, 1, '1234567890', 'parqueadero13@example.com', 4.6645, -74.0914, 'BGT', 1, '4567890123456', 'CC', 'COV'),
+    ('Parqueadero 14', 10, 1, '1234567890', 'parqueadero14@example.com', 4.6780, -74.1179, 'BGT', 1, '9876543210987', 'TI', 'UNC'),
+    ('Parqueadero 15', 10, 1, '1234567890', 'parqueadero15@example.com', 4.6301, -74.1551, 'BGT', 1, '4567890123456', 'CC', 'SEC'),
+    ('Parqueadero 16', 10, 1, '1234567890', 'parqueadero16@example.com', 4.5756, -74.1112, 'BGT', 2, '9876543210987', 'TI', 'COV'),
+    ('Parqueadero 17', 10, 1, '1234567890', 'parqueadero17@example.com', 4.5369, -74.0866, 'BGT', 2, '4567890123456', 'CC', 'UNC'),
+    ('Parqueadero 18', 10, 1, '1234567890', 'parqueadero18@example.com', 4.5031, -74.1068, 'BGT', 2, '9876543210987', 'TI', 'SEC'),
+    ('Parqueadero 19', 10, 1, '1234567890', 'parqueadero19@example.com', 4.6172, -74.1937, 'BGT', 1, '4567890123456', 'CC', 'COV');
     
 -- Insertar Tipos de Vehiculos
 INSERT INTO `FOURPARKSDATABASE`.`VEHICLETYPE` (`IDVEHICLETYPE`,`DESCVEHICLETYPE`)
@@ -114,7 +114,7 @@ VALUES
     ('BIC', 'BICICLETA');
     
 -- Insertar espacios de estacionamiento
-INSERT INTO `FOURPARKSDATABASE`.`PARKINGSPACE` (`IDPARKINGSPACE`, `FK_IDPARKING`, `FK_IDCITY`, `FK_IDVEHICLETYPE`, `ISCOVERED`) 
+INSERT INTO `FOURPARKSDATABASE`.`PARKINGSPACE` (`IDPARKINGSPACE`, `FK_IDPARKING`, `FK_IDCITY`, `FK_IDVEHICLETYPE`, `ISUNCOVERED`) 
 VALUES
     -- Parqueadero 1 
     (1, 1, 'CAL', 'CAR', 1),
@@ -124,27 +124,48 @@ VALUES
     -- Parqueadero 2
     (1, 2, 'BAQ', 'CAR', 0),
     (2, 2, 'BAQ', 'CAR', 0),   
-    (3, 2, 'BAQ', 'MOT', 0),   
-    (4, 2, 'BAQ', 'MOT', 0),
+    (3, 2, 'BAQ', 'CAR', 0),   
+    (4, 2, 'BAQ', 'CAR', 1),
+    (5, 2, 'BAQ', 'CAR', 1),
+    (6, 2, 'BAQ', 'CAR', 1),   
+    (7, 2, 'BAQ', 'MOT', 0),   
+    (8, 2, 'BAQ', 'MOT', 0),
+    (9, 2, 'BAQ', 'MOT', 0),
+    (10, 2, 'BAQ', 'MOT', 0),
+    (11, 2, 'BAQ', 'MOT', 1),
+    (12, 2, 'BAQ', 'MOT', 1),
+    (13, 2, 'BAQ', 'MOT', 1),
+    (14, 2, 'BAQ', 'MOT', 1),
     -- Parqueadero 3
-    (1, 3, 'MED', 'CAR', 1),
-    (2, 3, 'MED', 'CAR', 1),   
-    (3, 3, 'MED', 'CAR', 1),   
-    (4, 3, 'MED', 'CAR', 1),
+    (1, 3, 'MED', 'CAR', 0),
+    (2, 3, 'MED', 'CAR', 0),   
+    (3, 3, 'MED', 'CAR', 0),   
+    (4, 3, 'MED', 'CAR', 0),
     -- Parqueadero 4
     (1, 4, 'CTG', 'CAR', 1),
     (2, 4, 'CTG', 'CAR', 1),   
-    (3, 4, 'CTG', 'CAR', 0),   
-    (4, 4, 'CTG', 'CAR', 0);
+    (3, 4, 'CTG', 'CAR', 1),   
+    (4, 4, 'CTG', 'CAR', 1);
+    
+-- Insertar estados de reserva
+INSERT INTO `FOURPARKSDATABASE`.`RESERVATIONSTATUS` (`IDRESSTATUS`, `DESCRESSTATUS`) 
+VALUES
+    ('PEN', 'Pendiente'),
+    ('CON', 'Confirmada'),
+    ('CAN', 'Cancelada'),
+    ('CUR', 'En curso'),
+    ('COM', 'Completada'),
+    ('NPR', 'No presentado');
+
 
 -- Insertar Reservaciones de prueba
-INSERT INTO `FOURPARKSDATABASE`.`RESERVATION` (`DATERES`, `STARTTIMERES`, `ENDTIMERES`, `CREATIONDATERES`, `TOTALRES`, `LICENSEPLATE`, `FK_IDPARKINGSPACE`, `FK_IDPARKING`, `FK_IDCITY`, `FK_IDVEHICLETYPE`, `FK_CLIENT_IDUSER`, `FK_CLIENT_IDDOCTYPE`)
+INSERT INTO `FOURPARKSDATABASE`.`RESERVATION` (`DATERES`, `STARTTIMERES`, `ENDTIMERES`, `CREATIONDATERES`, `TOTALRES`, `LICENSEPLATE`, `FK_IDPARKINGSPACE`, `FK_IDPARKING`, `FK_IDCITY`, `FK_IDVEHICLETYPE`, `FK_CLIENT_IDUSER`, `FK_CLIENT_IDDOCTYPE`,`FK_IDRESSTATUS`)
 VALUES
-    ('2024-05-01', '10:00:00', '12:00:00', '2024-05-01', NULL, 'ABC123', 1, 1, 'CAL', 'CAR', '1234567890123', 'CC'),
-    ('2024-05-02', '14:00:00', '16:00:00', '2024-05-01', NULL, 'DEF456', 2, 1, 'CAL', 'CAR', '6543210987654', 'TI'),
-    ('2024-05-03', '08:00:00', '10:00:00', '2024-05-01', NULL, 'GHI789', 3, 2, 'BAQ', 'MOT', '1234567890123', 'CC'),
-    ('2024-05-04', '09:00:00', '11:00:00', '2024-05-01', NULL, 'JKL012', 4, 3, 'MED', 'CAR', '6543210987654', 'TI'),
-    ('2024-05-05', '13:00:00', '15:00:00', '2024-05-01', NULL, 'MNO345', 2, 4, 'CTG', 'CAR', '1234567890123', 'CC');
+    ('2024-05-01', '10:00:00', '12:00:00', '2024-05-01', 0, 'ABC123', 1, 1, 'CAL', 'CAR', '1234567890123', 'CC', 'CON'),
+    ('2024-05-01', '14:00:00', '16:00:00', '2024-05-01', 0, 'DEF456', 2, 1, 'CAL', 'CAR', '6543210987654', 'TI', 'CON'),
+    ('2024-05-03', '08:00:00', '10:00:00', '2024-05-01', 0, 'GHI789', 3, 1, 'CAL', 'MOT', '1234567890123', 'CC', 'CON'),
+    ('2024-05-04', '09:00:00', '11:00:00', '2024-05-01', 0, 'JKL012', 4, 1, 'CAL', 'CAR', '6543210987654', 'TI', 'CON'),
+    ('2024-05-05', '13:00:00', '15:00:00', '2024-05-01', 0, 'MNO345', 2, 1, 'CAL', 'CAR', '1234567890123', 'CC', 'CON');
 
 
     
