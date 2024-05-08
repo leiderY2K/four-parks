@@ -10,7 +10,7 @@ import org.springframework.stereotype.Repository;
 import com.project.layer.Persistence.Entity.City;
 
 @Repository
-public interface ICityRepository extends JpaRepository<City, Integer>{
+public interface ICityRepository extends JpaRepository<City, String>{
 
     @Query(
         value = "SELECT * FROM CITY c WHERE c.NAME = :city",

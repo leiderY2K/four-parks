@@ -43,11 +43,8 @@ public class MapService {
         if(city == null){
             return null;
         }
-
         
         date = (date == null) ? Date.valueOf(LocalDate.now()) : date;
-
-        startTime = (startTime == null) ? Time.valueOf(LocalTime.now()) : startTime;
         
         List<Parking> parkings = null;
         Time endTemp = null;    
@@ -56,10 +53,14 @@ public class MapService {
         } else{            
             endTemp = endTime;
         }        
-        System.out.println("----------------------- La fecha es: "+ date + " " + startTime + " " +endTime);
         
         parkings = parkingRepository.queryParkingsByArgs(city, type, startTime, endTemp, scheduleType);
+        startTime = (startTime == null) ? Time.valueOf(LocalTime.now()) : startTime;
         endTime = (endTime == null) ? Time.valueOf(LocalTime.of(23, 59, 59)) : endTime;
+        //startTime = Time.valueOf(startTime.toLocalTime().minusMinutes(59));
+        //endTime = Time.valueOf(endTime.toLocalTime().plusMinutes(59));
+
+        System.out.println("----------------------- La fecha es: "+ date + " " + startTime + " " +endTime);
 
         for (Parking parking : parkings) {
             System.out.println("El parqueadero: " + parking.getIdParking());

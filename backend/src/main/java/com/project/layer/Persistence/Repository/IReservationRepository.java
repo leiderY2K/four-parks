@@ -32,17 +32,13 @@ public interface IReservationRepository extends JpaRepository<Reservation, Integ
     );
 
     @Query(
-        value = "SELECT COUNT(r.FK_IDPARKINGSPACE) FROM RESERVATION r " +
+        value = "SELECT r.FK_IDPARKINGSPACE FROM RESERVATION r " +
                     "WHERE " +
                         "r.FK_IDCITY = :cityId " +
                         "AND r.FK_IDPARKING = :parkingId " +
                         "AND r.FK_IDVEHICLETYPE = :vehicleType " +
                         "AND r.DATERES = :dateRes " +
-                        "AND ( " +
-                            "(r.STARTTIMERES <= ADDTIME(:startTimeRes, '-59:00') AND r.ENDTIMERES > ADDTIME(:startTimeRes, '-59:00')) " +
-                            "OR (r.STARTTIMERES < ADDTIME(:endTimeRes, '59:00') AND r.ENDTIMERES >= ADDTIME(:endTimeRes, '59:00')) " +
-                            "OR (r.STARTTIMERES >= ADDTIME(:startTimeRes, '-59:00') AND r.ENDTIMERES <= ADDTIME(:endTimeRes, '59:00'))" +
-                        ")",
+                        "AND (r.STARTTIMERES <= :endTimeRes AND r.ENDTIMERES >= :startTimeRes)",
         nativeQuery = true
     )
     List<Integer> findBusyParkingSpaces(
@@ -55,17 +51,14 @@ public interface IReservationRepository extends JpaRepository<Reservation, Integ
     );
 
     @Query(
-        value = "SELECT COUNT(*) FROM RESERVATION r " +
-                    "WHERE " +
-                        "r.FK_IDCITY = :cityId " +
-                        "AND r.FK_IDPARKING = :parkingId " +
-                        "AND (:vehicleType IS NULL OR r.FK_IDVEHICLETYPE = :vehicleType) " +
-                        "AND (:dateRes IS NULL OR r.DATERES = :dateRes) " +
-                        "AND ((:startTimeRes IS NULL AND :endTimeRes IS NULL) OR (" +
-                            "(r.STARTTIMERES <= ADDTIME(:startTimeRes, '-59:00') AND r.ENDTIMERES > ADDTIME(:startTimeRes, '-59:00')) " +
-                            "OR (r.STARTTIMERES < ADDTIME(:endTimeRes, '59:00') AND r.ENDTIMERES >= ADDTIME(:endTimeRes, '59:00')) " +
-                            "OR (r.STARTTIMERES >= ADDTIME(:startTimeRes, '-59:00') AND r.ENDTIMERES <= ADDTIME(:endTimeRes, '59:00'))" +
-                        "))",
+        value = "SELECT COUNT(DISTINCT r.FK_IDPARKINGSPACE) " +
+                "FROM RESERVATION r " +
+                "LEFT JOIN PARKINGSPACE ps ON r.FK_IDPARKINGSPACE = ps.IDPARKINGSPACE " +
+                "WHERE r.FK_IDCITY = :cityId " +
+                "AND r.FK_IDPARKING = :parkingId " +
+                "AND (:vehicleType IS NULL OR r.FK_IDVEHICLETYPE = :vehicleType) " +
+                "AND (:dateRes IS NULL OR r.DATERES = :dateRes) " +
+                "AND (r.STARTTIMERES <= :endTimeRes AND r.ENDTIMERES >= :startTimeRes)",
         nativeQuery = true
     )
     Integer findCountOfBusyParkingSpaces(
@@ -76,6 +69,7 @@ public interface IReservationRepository extends JpaRepository<Reservation, Integ
         @Param("startTimeRes") Time startTimeRes,
         @Param("endTimeRes") Time endTimeRes
     );
+
 
 
 }

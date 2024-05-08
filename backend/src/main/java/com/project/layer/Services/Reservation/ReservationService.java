@@ -37,24 +37,22 @@ public class ReservationService {
     @Transactional
     public String startReservation(StartReservationRequest reservationRequest) {
         
-        // Obtener la fecha actual
-        LocalDate currentDate = LocalDate.now();
-        
-        // Convertir LocalDate a Date
-        Date sqlDate = Date.valueOf(currentDate);
+        Date sqlDate = Date.valueOf(LocalDate.now());
 
         System.out.println("La fecha: "+reservationRequest.getDateRes());
 
+        Time startTime = Time.valueOf(reservationRequest.getStartTimeRes().toLocalTime().minusMinutes(59));
+        Time entTime = Time.valueOf(reservationRequest.getEndTimeRes().toLocalTime().plusMinutes(59));
         List<Integer> busyParkingSpaces = reservationRepository.findBusyParkingSpaces(
             reservationRequest.getCityId(),
             reservationRequest.getParkingId(),
             reservationRequest.getVehicleType(),
             reservationRequest.getDateRes(),
-            reservationRequest.getStartTimeRes(),
-            reservationRequest.getEndTimeRes()
+            startTime,
+            entTime
         );
 
-        System.out.println(busyParkingSpaces.toString());
+        System.out.println("Numero de parqueaderos ocupados en ese intervalo de tiempo: " + busyParkingSpaces.toString());
         List<ParkingSpace> parkingSpaces = parkingSpaceRepository.findAllByParking(reservationRequest.getParkingId(), reservationRequest.getCityId());
 
         ParkingSpace selectedParkingSpace = null;
@@ -98,7 +96,13 @@ public class ReservationService {
         return "El precio final de su pago es:";
     }
 
-    public String cancelReservation(EndReservationRequest reservationRequest) {
+    public String cancelReservation(int idReservation) {
+        Optional<Reservation> optionalReservation = reservationRepository.findById(idReservation);
+
+        if (optionalReservation.isPresent()) {
+            Reservation reservation = optionalReservation.get();
+            reservation.setStatus(ResStatus.CANCELLED.getId());
+        }
         return "El precio final de su pago es:";
     }
 
