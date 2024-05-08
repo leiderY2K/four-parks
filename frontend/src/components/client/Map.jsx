@@ -12,7 +12,7 @@ import semicoveredRedIcon from '../../assets/Parking Icons/Semicovered-Red.png';
 import "leaflet/dist/leaflet.css";
 import "../../css/map.css";
 
-const Map = ({ url, city, parkingType, availability, startTime, endTime, actualCity, setActualCity, setActualParking }) => {
+const Map = ({ url, city, parkingType, availability, vehicleType, date, startTime, endTime, actualCity, setActualCity, setActualParking }) => {
     const [parkings, setParkings] = useState([]);
 
 
@@ -43,6 +43,8 @@ const Map = ({ url, city, parkingType, availability, startTime, endTime, actualC
 
         if (parkingType) params.type = parkingType;
         if (availability) params.scheduleType = availability;
+        if (vehicleType) params.vehicleType = vehicleType;
+        if (date) params.date = date;
         if (startTime) params.startTime = startTime;
         if (endTime) params.endTime = endTime;
         
@@ -56,8 +58,7 @@ const Map = ({ url, city, parkingType, availability, startTime, endTime, actualC
                 name: parking.namePark,
                 coords: [parking.addressCoordinatesX, parking.addressCoordinatesY],
                 type: parking.parkingType.idParkingType,
-                capacity: parking.capacity,
-                disponibility: parking.disponibility
+                ocupability: parking.ocupability
             }));
 
             setParkings(parkingArray);
@@ -65,20 +66,18 @@ const Map = ({ url, city, parkingType, availability, startTime, endTime, actualC
         .catch(err => {
             console.error(err.response || err);
         });
-    }, [city, parkingType, availability, startTime, endTime]);
+    }, [city, parkingType, availability, vehicleType, date, startTime, endTime]);
 
-    const getIcon = (type, capacity, disponibility) => {
-        const availabilityPerc = disponibility / capacity;
-
+    const getIcon = (type, ocupability) => {
         switch (type) {
             case 'COV':
-                return new Icon({iconUrl: (availabilityPerc >= 0.8 ? coveredRedIcon : coveredWhiteIcon), iconSize: [50, 50]});
+                return new Icon({iconUrl: (ocupability >= 0.8 ? coveredRedIcon : coveredWhiteIcon), iconSize: [50, 50]});
             case 'UNC':
-                return new Icon({iconUrl: (availabilityPerc >= 0.8 ? uncoveredRedIcon : uncoveredWhiteIcon), iconSize: [50, 50]});
+                return new Icon({iconUrl: (ocupability >= 0.8 ? uncoveredRedIcon : uncoveredWhiteIcon), iconSize: [50, 50]});
             case 'SEC':
-                return new Icon({iconUrl: (availabilityPerc >= 0.8 ? semicoveredRedIcon : semicoveredWhiteIcon), iconSize: [50, 50]});
+                return new Icon({iconUrl: (ocupability >= 0.8 ? semicoveredRedIcon : semicoveredWhiteIcon), iconSize: [50, 50]});
             default:
-                return new Icon({iconUrl: (availabilityPerc >= 0.8 ? coveredRedIcon : coveredWhiteIcon), iconSize: [50, 50]});
+                return new Icon({iconUrl: (ocupability >= 0.8 ? coveredRedIcon : coveredWhiteIcon), iconSize: [50, 50]});
         }
     };
 
@@ -104,19 +103,19 @@ const Map = ({ url, city, parkingType, availability, startTime, endTime, actualC
         })
     }
     
-    const UpdateMap = ({center, bounds}) => {
+    const UpdateMap = ({ city, center, bounds }) => {
         const map = useMap();
-
+    
         useEffect(() => {
-            map.setView(center,  15); 
-            map.setMaxBounds([bounds[0], bounds[1]]); 
-        }, [center, map]);
-
+            map.setView(center, 15); 
+            map.setMaxBounds([bounds[0], bounds[1]]);
+        }, [city]);
+    
         return null;
     }
 
     return (
-        <MapContainer center={[4.6430382, -74.0730269]} zoom={18} minZoom={12} maxBounds={[actualCity.northLim, actualCity.southLim]} className='rounded-2xl shadow-lg' 
+        <MapContainer center={[4.6430382, -74.0730269]} zoom={14} minZoom={12} maxBounds={[actualCity.northLim, actualCity.southLim]} className='rounded-2xl shadow-lg' 
         whenCreated={mapInstance => {
             console.log("Mapa creado", mapInstance);
         }}>
@@ -125,11 +124,12 @@ const Map = ({ url, city, parkingType, availability, startTime, endTime, actualC
                 url='https://tile.openstreetmap.org/{z}/{x}/{y}.png'
             />
 
-            <UpdateMap center={actualCity.centerCoords} bounds={[actualCity.northLim, actualCity.southLim]} />
+            <UpdateMap city={city} center={actualCity.centerCoords} bounds={[actualCity.northLim, actualCity.southLim]} />
+
 
             <MarkerClusterGroup chunkedLoading iconCreateFunction={createCustomClusterIcon}>
                 {parkings.map(parking => (
-                    <Marker key={parking.id} position={parking.coords} icon={getIcon(parking.type, parking.disponibility, parking.disponibility)} 
+                    <Marker key={parking.id} position={parking.coords} icon={getIcon(parking.type, parking.ocupability)} 
                     eventHandlers={{click: () => handleChangeParking(parking)}}> 
                         <Popup>{parking.name}</Popup>
                     </Marker>

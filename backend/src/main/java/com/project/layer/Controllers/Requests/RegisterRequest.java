@@ -4,17 +4,20 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import javax.validation.constraints.*;
+import java.util.regex.Pattern;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import org.hibernate.validator.constraints.Length;
+
+import java.util.regex.Matcher;
 
 @Data
 @Builder
 @AllArgsConstructor
 //@NoArgsConstructor
 public class RegisterRequest {
-    //private final IUserRepository userRepository;
 
-    @NotBlank
+    @Length(min = 7, max = 12, message = "El numero de documento debe tener entre 7 y 12 caracteres")
     @JsonProperty("idUser")
     private String idUser;
 
@@ -22,7 +25,7 @@ public class RegisterRequest {
     @JsonProperty("idDocTypeFk")
     private String idDocTypeFk;
 
-    @NotBlank(message = "please as the username")
+    @Length(min = 6, max = 12, message = "El nombre de usuario debe tener  entre 6 y 10 caracteres")
     @JsonProperty("username")
     private String username;
 
@@ -30,20 +33,21 @@ public class RegisterRequest {
     @JsonProperty("role")
     private String role;
 
-    @NotBlank
+    @Length(min = 3, message = "El nombre debe tener minimo 3 caracteres")
     @JsonProperty("firstName")
     private String firstName;
 
-    @NotBlank
+    @Length(min = 4, message = "El apellido debe tener minimo 4 caracteres")
     @JsonProperty("lastName")
     private String lastName;
 
-    @NotBlank
+    @Length(min = 14, message = "El correo electronico no es valido")
+    @Email
     @JsonProperty("email")
-    @Email(message = "El correo electrónico debe ser válido")
     private String email;
 
-    @Pattern(regexp = "\\d{10}", message = "El número de teléfono debe tener 10 dígitos")
+    @Length(min = 10, max = 10, message = "El numero de telefono debe tener 10 caracteres")
+    @NotBlank()
     @JsonProperty("phone")
     private String phone;
 
@@ -57,9 +61,10 @@ public class RegisterRequest {
                 role == null || role.isEmpty();
     }
 
-    //public boolean doesUserExist(UserId userId) {
-    //    return userRepository.existsById(userId);
-    //}
-
+    public boolean isEmail(String tempEmail) {
+        Pattern pattern = Pattern.compile("^[_A-Za-z0-9-\\+]+(\\.[_A-Za-z0-9-]+)*@[A-Za-z0-9-]+(\\.[A-Za-z0-9]+)*(\\.[A-Za-z]{2,})$");
+        Matcher mather = pattern.matcher(email);
+        return mather.find();
+    }
 }
 
