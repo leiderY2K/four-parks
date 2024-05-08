@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Contraseña Temporal</title>
+<style>
+body {
+	background-color: #f2f2f2;
+	font-family: Arial, sans-serif;
+}
+
+.container {
+	background-color: #fff;
+	border-radius: 5px;
+	box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+	margin: 50px auto;
+	padding: 30px;
+	max-width: 600px;
+	text-align: center;
+}
+
+h1 {
+	color: #4a86e8;
+	font-size: 2rem;
+	margin-bottom: 20px;
+}
+
+p {
+	color: #333;
+	font-size: 1.1rem;
+	margin-bottom: 10px;
+}
+
+.code {
+    background-color: #f0f0f0;
+    padding: 10px;
+    margin-bottom: 20px;
+    border-radius: 5px;
+}
+
+.code p {
+    font-size: 16px;
+    font-weight: bold;
+    color: #333;
+}
+</style>
+</head>
+<body>
+	<div class="container">
+		<h1>Bienvenido a Four-Parks</h1>
+		<p>Para terminar tu registro profavor usa esta contraseña temporal y dirigete al link que encontraras abajo:</p>
+        <div class="code">
+            <p th:text="${message}"></p>
+        </div>
+		<p>Este codigo es de un solo uso. por favor no responda a este mensaje</p>
+		<p>Este mensaje ha sido enviado desde una direccion exclusivamente para envios.</p>
+	</div>
+</body>
+</html>
