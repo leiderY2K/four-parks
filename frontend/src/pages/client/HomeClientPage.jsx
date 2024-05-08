@@ -39,7 +39,8 @@ const Home = ({url}) => {
 
             {
               (actualParking !== undefined ? (onReservationForm == true ? <ReservationCard url={url} setOnReservationForm={setOnReservationForm} actualCity={actualCity} 
-              actualParking={actualParking}/> : <ParkingInfo setOnReservationForm={setOnReservationForm} actualParking={actualParking} />) : false)
+              actualParking={actualParking}/> : <ParkingInfo parkingType={parkingType} vehicleType={vehicleType} setOnReservationForm={setOnReservationForm} 
+              actualParking={actualParking} />) : false)
             }
             
           </section>

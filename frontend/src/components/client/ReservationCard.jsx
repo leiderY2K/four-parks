@@ -19,8 +19,7 @@ function ReservationCard({url, setOnReservationForm, actualParking, actualCity})
     const navigate = useNavigate();
 
     const idCiudad = actualCity.id;
-    const idParqueadero = actualParking.idParking;
-
+    const idParqueadero = actualParking[0].idParking;
 
     const handleTimeChange = (setter) => (event) => {
         const time = new Date(event.target.valueAsNumber);
@@ -92,15 +91,27 @@ function ReservationCard({url, setOnReservationForm, actualParking, actualCity})
         }
     }
 
+    const getIcon = () => {
+        switch (actualParking[0].parkingType.idParkingType) {
+            case 'COV':
+                return coveredIcon;
+            case 'UNC':
+                return uncoveredIcon;
+            case 'SEC':
+                return semicoveredIcon;
+            default:
+                return coveredIcon;
+        }
+    };
 
     return (
         <article className="bg-blue-light mt-12 pt-5 pb-6 relative rounded-2xl shadow-xl">
             <section className="flex flex-col items-center px-5">
                 <div className="w-full flex justify-between">
-                    <div className="w-1/5 flex justify-center rounded-md h-14 mr-4">
-                            <img className="mb-1 "src={coveredIcon} alt="Imagen que identifica el tipo de parqueadero"/>
+                    <div className="w-1/5 flex justify-center rounded-md h-14 mr-4 border-2 border-black">
+                            <img className="mb-1 "src={getIcon()} alt="Imagen que identifica el tipo de parqueadero"/>
                     </div>
-                    <div className="w-4/5 font-semibold text-lg mt-4"> {actualParking.namePark}
+                    <div className="w-4/5 font-semibold text-lg mt-4"> {actualParking[0].namePark}
                         <hr className="h-0.5 mt-2 rounded-full bg-black"></hr>    
                     </div>
                     

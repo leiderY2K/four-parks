@@ -96,7 +96,7 @@ const Map = ({ url, city, parkingType, availability, vehicleType, date, startTim
         axios.get(`${url}/client/getParkingByCoordinates`, {params: {coordinateX: parking.coords[0], coordinateY: parking.coords[1]}, 
         headers: {Authorization: `Bearer ${token}`}})
         .then(res => {
-            setActualParking(res.data.parking);
+            setActualParking([res.data.parking, res.data.capacity]);
         })
         .catch(err => {
             console.log(err);
