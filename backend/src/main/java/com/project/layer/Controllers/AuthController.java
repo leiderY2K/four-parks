@@ -38,7 +38,6 @@ public class AuthController {
 
     @PostMapping(value = "login")
     public ResponseEntity<AuthResponse> login(@RequestBody LoginRequest request) throws MessagingException {
-        List<String> messages = Arrays.asList("dskafaduih");
         return ResponseEntity.ok(authService.login(request));
     }
 
