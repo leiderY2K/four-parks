@@ -3,8 +3,7 @@ import Header from '../../components/client/Header.jsx'
 import Map from '../../components/client/Map.jsx'
 import ParkingFilters from '../../components/client/ParkingFilters.jsx'
 import ParkingInfo from '../../components/client/ParkingInfo.jsx'
-import ReservationTarjet from '../../components/client/ReservationTarjet.jsx'
-import Login from "../../components/general/Login.jsx";
+import ReservationCard from '../../components/client/ReservationCard.jsx'
 
 const Home = ({url}) => {
   const [city, setCity] = useState("Bogota");
@@ -26,6 +25,7 @@ const Home = ({url}) => {
 
   const [actualParking, setActualParking] = useState();
 
+
   return (
     <>
         <Header />
@@ -35,7 +35,7 @@ const Home = ({url}) => {
             startTime={startTime} setStartTime={setStartTime} endTime={endTime} setEndTime={setEndTime} />
 
             {
-              (actualParking !== undefined ? (onReservationForm == true ? <ReservationTarjet url={url} setOnReservationForm={setOnReservationForm} actualCity={actualCity} 
+              (actualParking !== undefined ? (onReservationForm == true ? <ReservationCard url={url} setOnReservationForm={setOnReservationForm} actualCity={actualCity} 
               actualParking={actualParking}/> : <ParkingInfo setOnReservationForm={setOnReservationForm} actualParking={actualParking} />) : false)
             }
             
