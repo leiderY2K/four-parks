@@ -49,6 +49,31 @@ public class MailService{
         }
 
     }
+    public void sendReservationMail(String receiver,String subject, List<String> messages) throws MessagingException {
+
+        try {
+
+            MimeMessage message = javaMailSender.createMimeMessage();
+            MimeMessageHelper helper = new MimeMessageHelper(message, true, "UTF-8");
+
+            helper.setTo(receiver);
+            helper.setSubject(subject);
+
+            Context context = new Context();
+            for (int i = 0; i < messages.size(); i++) {
+                context.setVariable("message", messages.get(i));
+            }
+            String contentHTML = templateEngine.process("Registro", context);
+
+            helper.setText(contentHTML, true);
+
+            javaMailSender.send(message);
+
+        } catch (Exception e) {
+            throw new RuntimeException("Error al enviar el correo: " + e.getMessage(), e);
+        }
+
+    }
 
 }
 
