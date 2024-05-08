@@ -10,13 +10,12 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.project.layer.Controllers.Requests.EndReservationRequest;
 import com.project.layer.Controllers.Requests.StartReservationRequest;
+import com.project.layer.Controllers.Requests.UserReservationRequest;
 import com.project.layer.Controllers.Responses.ParkingResponse;
 import com.project.layer.Persistence.Entity.City;
 import com.project.layer.Persistence.Entity.Parking;
 import com.project.layer.Persistence.Entity.Reservation;
-import com.project.layer.Persistence.Entity.UserId;
 import com.project.layer.Services.Map.MapService;
 import com.project.layer.Services.Reservation.ReservationService;
 
@@ -44,12 +43,13 @@ public class ClientController {
     public List<Parking> getParkingsInMap(
         @RequestParam(required = true) String city,
         @RequestParam(required = false) String type,
-        @RequestParam(required = false) Date dateRest,
+        @RequestParam(required = false) Date date,
         @RequestParam(required = false) Time startTime,
         @RequestParam(required = false) Time endTime,
-        @RequestParam(required = false) String scheduleType
+        @RequestParam(required = false) String scheduleType,
+        @RequestParam(required = false) String vehicleType
     ) {
-        return mapService.getParkingsFilter(city, type, startTime, endTime, scheduleType);
+        return mapService.getParkingsFilter(city, type, date, startTime, endTime, scheduleType, vehicleType);
     }
 
     @GetMapping("/getParkingByCoordinates")
@@ -64,15 +64,14 @@ public class ClientController {
     }
 
     @PostMapping("/postReservations")
-    public List<Reservation> postReservations(@RequestBody UserId clientId){
-        System.out.println(clientId.toString());
-        return reservationService.getReservationsByClientId(clientId);
+    public List<Reservation> postReservations(@RequestBody UserReservationRequest urRequest){
+        return reservationService.getReservationsByClientId(urRequest);
     }
 
-    @PostMapping("/endReservation")
-    public String endParkingSpace(@RequestBody EndReservationRequest reservationRequest){
+    @GetMapping("/endReservation")
+    public String endReservation(@RequestParam int idReservation){
 
-        return reservationService.endReservation(reservationRequest);
+        return reservationService.checkOutReservation(idReservation);
     }
     
 }

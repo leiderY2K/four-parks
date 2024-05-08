@@ -1,6 +1,9 @@
 package com.project.layer.Services.Map;
 
 import java.sql.Time;
+import java.time.LocalDate;
+import java.time.LocalTime;
+import java.sql.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -13,25 +16,39 @@ import com.project.layer.Persistence.Entity.City;
 import com.project.layer.Persistence.Entity.Parking;
 import com.project.layer.Persistence.Repository.ICityRepository;
 import com.project.layer.Persistence.Repository.IParkingRepository;
+import com.project.layer.Persistence.Repository.IParkingSpaceRepository;
+import com.project.layer.Persistence.Repository.IRateRepository;
+import com.project.layer.Persistence.Repository.IReservationRepository;
+
+import lombok.RequiredArgsConstructor;
 
 @Service
+@RequiredArgsConstructor
 public class MapService {
     
     @Autowired
     IParkingRepository parkingRepository;
-
     @Autowired
-    ICityRepository cityRepository;
+    IParkingSpaceRepository parkingspaceRepository;
+    @Autowired
+    ICityRepository cityRepository;  
+    @Autowired
+    IRateRepository rateRepository;
+    @Autowired
+    IReservationRepository reservationRepository;
+   
 
+    public List<Parking> getParkingsFilter(String city, String type, Date date, Time startTime, Time endTime, String scheduleType, String vehicleType){
 
-    public MapService(){}
-
-    public List<Parking> getParkingsFilter(String city, String type, Time startTime, Time endTime, String scheduleType){
-
-        if(city==null){
+        if(city == null){
             return null;
         }
 
+        
+        date = (date == null) ? Date.valueOf(LocalDate.now()) : date;
+
+        startTime = (startTime == null) ? Time.valueOf(LocalTime.now()) : startTime;
+        
         List<Parking> parkings = null;
         Time endTemp = null;    
         if(endTime != null && endTime.toString().equals(Time.valueOf("00:00:00").toString()) ){    
@@ -39,9 +56,39 @@ public class MapService {
         } else{            
             endTemp = endTime;
         }        
+        System.out.println("----------------------- La fecha es: "+ date + " " + startTime + " " +endTime);
         
         parkings = parkingRepository.queryParkingsByArgs(city, type, startTime, endTemp, scheduleType);
-                        
+        endTime = (endTime == null) ? Time.valueOf(LocalTime.of(23, 59, 59)) : endTime;
+
+        for (Parking parking : parkings) {
+            System.out.println("El parqueadero: " + parking.getIdParking());
+            
+            System.out.println("El tipo de vehiculo: "+vehicleType);
+            float busySpaces = reservationRepository.findCountOfBusyParkingSpaces(
+                parking.getCity().getIdCity(),
+                parking.getIdParking(),
+                vehicleType,
+                date,
+                startTime,
+                endTime
+            );
+            
+            System.out.println("Ocupabilidad en el parqueadero " + parking.getIdParking() +" Y vehiculo " +vehicleType+": "+ busySpaces);
+            
+            parking.setCapacity(parkingspaceRepository.countByParkingAndVehicleType(parking.getIdParking(), parking.getCity().getIdCity(), vehicleType));
+            
+            float totalSpaces = parking.getCapacity();
+
+            System.out.println("El total de parqueaderos para "+vehicleType+" es: " + totalSpaces);          
+            
+            if(totalSpaces != 0){
+                float percentSpaces = busySpaces/totalSpaces;
+                parking.setOcupability(percentSpaces);
+            }
+            System.out.println("Por lo que el porcentaje de ocupacion es: " + parking.getOcupability());
+        }
+
         return parkings;
     }
 
@@ -54,32 +101,32 @@ public class MapService {
             return null;
         }
 
-        List<String> vehiculos = parkingRepository.getTypeVehicleByParking(parking.getIdParking());
+        List<String> vehicleListType = parkingRepository.getTypeVehicleByParking(parking.getIdParking());
 
-        System.out.println(vehiculos.toString());
+        System.out.println(vehicleListType.toString());
         Map<String, Object> tipoVehiculo = new HashMap<>();
 
-        for (String vehiculo : vehiculos) {
+        for (String vehicle : vehicleListType) {
             
             Map<String, Integer> vehicleType = new HashMap<>();
     
             if(parking.getParkingType().getIdParkingType().equals("COV") || parking.getParkingType().getIdParkingType().equals("SEC")) {
                 vehicleType.put("covered", parkingRepository.countByCoveredAndParkingAndVehicleType(
-                    parking.getIdParking(), true, vehiculo));
-                vehicleType.put("rate-covered", parkingRepository.getRateByVehicleType(
-                    parking.getIdParking(), true, vehiculo
+                    parking.getIdParking(), false, vehicle));
+                vehicleType.put("rate-covered", rateRepository.getHourCostByParkingSpace(
+                    parking.getIdParking(), parking.getCity().getIdCity(), vehicle, false
                 ));
             }
             if(parking.getParkingType().getIdParkingType().equals("UNC") || parking.getParkingType().getIdParkingType().equals("SEC")) {
                 vehicleType.put("uncovered", parkingRepository.countByCoveredAndParkingAndVehicleType(
-                    parking.getIdParking(), false, vehiculo
+                    parking.getIdParking(), true, vehicle
                 ));
-                vehicleType.put("rate-uncovered", parkingRepository.getRateByVehicleType(
-                    parking.getIdParking(), false, vehiculo
+                vehicleType.put("rate-uncovered", rateRepository.getHourCostByParkingSpace(
+                    parking.getIdParking(), parking.getCity().getIdCity(), vehicle, true
                 ));
             }
 
-            tipoVehiculo.put(vehiculo, vehicleType);
+            tipoVehiculo.put(vehicle, vehicleType);
 
         }
 

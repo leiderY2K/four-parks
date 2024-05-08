@@ -20,16 +20,16 @@ public class ParkingSpace {
     @EmbeddedId
     private ParkingSpaceId parkingSpaceId;
  
-    @Column(name = "ISCOVERED", nullable = false)
-    private boolean isCovered;
+    @Column(name = "ISUNCOVERED", nullable = false)
+    private boolean isUncovered;
 
     @Column(name = "FK_IDVEHICLETYPE", nullable = false)
     private String idVehicleType;
 
     // Constructor que acepta todos los parámetros
-    public ParkingSpace(int idParkingSpace, int idParking, String idCity, boolean isCovered, String idVehicleType) {
+    public ParkingSpace(int idParkingSpace, int idParking, String idCity, boolean isUncovered, String idVehicleType) {
         this.parkingSpaceId = new ParkingSpaceId(idParkingSpace, idParking, idCity);
-        this.isCovered = isCovered;
+        this.isUncovered = isUncovered;
         this.idVehicleType = idVehicleType;
     }
 }
