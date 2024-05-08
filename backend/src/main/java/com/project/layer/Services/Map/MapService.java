@@ -13,16 +13,20 @@ import com.project.layer.Persistence.Entity.City;
 import com.project.layer.Persistence.Entity.Parking;
 import com.project.layer.Persistence.Repository.ICityRepository;
 import com.project.layer.Persistence.Repository.IParkingRepository;
+import com.project.layer.Persistence.Repository.IRateRepository;
 
 @Service
 public class MapService {
     
     @Autowired
     IParkingRepository parkingRepository;
-
+    
     @Autowired
     ICityRepository cityRepository;
-
+    
+    @Autowired
+    IRateRepository rateRepository;
+   
 
     public MapService(){}
 
@@ -65,17 +69,17 @@ public class MapService {
     
             if(parking.getParkingType().getIdParkingType().equals("COV") || parking.getParkingType().getIdParkingType().equals("SEC")) {
                 vehicleType.put("covered", parkingRepository.countByCoveredAndParkingAndVehicleType(
-                    parking.getIdParking(), true, vehiculo));
-                vehicleType.put("rate-covered", parkingRepository.getRateByVehicleType(
-                    parking.getIdParking(), true, vehiculo
+                    parking.getIdParking(), false, vehiculo));
+                vehicleType.put("rate-covered", rateRepository.getRateByVehicleType(
+                    parking.getIdParking(), parking.getCity().getIdCity(), vehiculo, false
                 ));
             }
             if(parking.getParkingType().getIdParkingType().equals("UNC") || parking.getParkingType().getIdParkingType().equals("SEC")) {
                 vehicleType.put("uncovered", parkingRepository.countByCoveredAndParkingAndVehicleType(
-                    parking.getIdParking(), false, vehiculo
+                    parking.getIdParking(), true, vehiculo
                 ));
-                vehicleType.put("rate-uncovered", parkingRepository.getRateByVehicleType(
-                    parking.getIdParking(), false, vehiculo
+                vehicleType.put("rate-uncovered", rateRepository.getRateByVehicleType(
+                    parking.getIdParking(), parking.getCity().getIdCity(), vehiculo, true
                 ));
             }
 

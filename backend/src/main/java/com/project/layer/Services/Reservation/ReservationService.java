@@ -12,10 +12,11 @@ import com.project.layer.Persistence.Entity.ParkingSpace;
 import com.project.layer.Persistence.Entity.Reservation;
 import com.project.layer.Persistence.Entity.User;
 import com.project.layer.Persistence.Entity.UserId;
-import com.project.layer.Persistence.Repository.IParkingRepository;
+import com.project.layer.Persistence.Repository.IParkingSpaceRepository;
 import com.project.layer.Persistence.Repository.IReservationRepository;
 import com.project.layer.Persistence.Repository.IUserRepository;
 
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 
 @Service
@@ -23,9 +24,10 @@ import lombok.RequiredArgsConstructor;
 public class ReservationService {
 
     private final IReservationRepository reservationRepository;
-    private final IParkingRepository parkingRepository;
+    private final IParkingSpaceRepository parkingSpaceRepository;
     private final IUserRepository userRepository;
 
+    @Transactional
     public String startReservation(StartReservationRequest reservationRequest) {
         
         // Obtener la fecha actual
@@ -34,15 +36,35 @@ public class ReservationService {
         // Convertir LocalDate a Date
         Date sqlDate = Date.valueOf(currentDate);
 
-        List<ParkingSpace> parkingSpace = parkingRepository.getAvailableParkingSpace(
+        System.out.println("La fecha: "+reservationRequest.getDateRes());
+
+        List<Integer> busyParkingSpaces = reservationRepository.findBusyParkingSpaces(
             reservationRequest.getCityId(),
             reservationRequest.getParkingId(),
+            reservationRequest.getVehicleType(),
             reservationRequest.getDateRes(),
             reservationRequest.getStartTimeRes(),
             reservationRequest.getEndTimeRes()
         );
 
-        if(parkingSpace.isEmpty()){
+        System.out.println(busyParkingSpaces.toString());
+        List<ParkingSpace> parkingSpaces = parkingSpaceRepository.findAllByParking(reservationRequest.getParkingId(), reservationRequest.getCityId());
+
+        ParkingSpace selectedParkingSpace = null;
+        boolean wasFoundAnyParkingSpace = false;
+        System.out.println("Espacio libre!");
+    
+        for (ParkingSpace parkingSpace : parkingSpaces) {
+            if (!busyParkingSpaces.contains(parkingSpace.getParkingSpaceId().getIdParkingSpace()) &&
+                parkingSpace.getIdVehicleType().equals(reservationRequest.getVehicleType())) {
+                selectedParkingSpace = parkingSpace;
+                System.out.println(selectedParkingSpace.toString());
+                wasFoundAnyParkingSpace = true;
+                break;
+            }
+        }
+
+        if(!wasFoundAnyParkingSpace){
             return  "No hay espacios disponibles";
         }
 
@@ -56,8 +78,8 @@ public class ReservationService {
             .totalRes(0)
             .licensePlate(reservationRequest.getLicensePlate())
             .client(client)
-            .vehicleType(parkingSpace.get(0).getIdVehicleType())
-            .parkingSpace(parkingSpace.get(0))
+            .vehicleType(reservationRequest.getVehicleType())
+            .parkingSpace(selectedParkingSpace)
             .build();
 
         reservationRepository.save(reservation);
