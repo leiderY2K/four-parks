@@ -1,7 +1,8 @@
 import { useEffect, useState } from "react";
 import axios from "axios";
 
-const ParkingFilters = ({city, setCity, parkingType, setParkingType,availability, setAvailability, startTime, setStartTime, endTime, setEndTime}) => {
+const ParkingFilters = ({city, setCity, parkingType, setParkingType, availability, setAvailability, vehicleType, setVehicleType, date, setDate, startTime, 
+setStartTime, endTime, setEndTime}) => {
   const [cities, setCities] = useState([]);
 
   useEffect(() => {
@@ -28,7 +29,7 @@ const ParkingFilters = ({city, setCity, parkingType, setParkingType,availability
   };
 
   return (
-    <section className="flex flex-col justify-between w-full h-36">
+    <section className="flex flex-col justify-between w-full h-52">
       <style>
         {`
           input[type="time"]::-webkit-datetime-edit-minute,
@@ -68,12 +69,24 @@ const ParkingFilters = ({city, setCity, parkingType, setParkingType,availability
           <option value="Tiempo completo"> 24/7 </option>
           
         </select>
+        
+        <select id="parking-vehicleType" value={vehicleType} className="w-1/2 p-4 rounded-md bg-white shadow-md font-paragraph" onChange={(e) => setVehicleType(e.target.value)}>
+          <option value="" disabled selected hidden> Tipo de vehículo </option>
+          <option value=""></option>
+          <option value="CAR"> Automóvil </option>
+          <option value="MOT"> Motocicleta </option>
+          <option value="BIC"> Bicicleta </option>
+        </select>
+      </section>
+      
+      <section className="flex justify-between w-3/4">
+        <input type="date" id="date" value={date} className="p-4 rounded-md bg-white shadow-md  font-paragraph" onChange={(e) => setDate(e.target.value)}></input>
 
-        <section className="flex justify-between items-center w-1/2">
-          <input type="time" id="parking-startTime" value={startTime} className="p-4 rounded-md bg-white shadow-md font-paragraph" 
+        <section className="flex justify-between items-center">
+          <input type="time" id="parking-startTime" value={startTime} className="ml-12 p-4 rounded-md bg-white shadow-md font-paragraph" 
           onChange={handleTimeChange(setStartTime)}/>
 
-          <span className="w-5 h-0.5 rounded-full bg-black"></span>
+          <span className="w-5 h-0.5 mx-4 rounded-full bg-black"></span>
           
           <input type="time" id="parking-endTime" value={endTime} className="p-4 rounded-md bg-white shadow-md font-paragraph" 
           onChange={handleTimeChange(setEndTime)}/>
