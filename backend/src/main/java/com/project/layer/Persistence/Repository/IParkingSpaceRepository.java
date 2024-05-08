@@ -21,6 +21,13 @@ public interface IParkingSpaceRepository extends JpaRepository<ParkingSpace, Par
     )
     List<ParkingSpace> findAllByParking(@Param("idParking") int idParking,@Param("idCity") String idCity);
 
-
+    @Query(
+        value = "SELECT COUNT(*) FROM PARKINGSPACE ps " +
+                    "LEFT JOIN PARKING p ON ps.FK_IDPARKING = p.IDPARKING " +
+                    "WHERE p.FK_IDCITY = :idCity AND p.IDPARKING = :idParking " +
+                    "AND (:vehicleType IS NULL OR ps.FK_IDVEHICLETYPE = :vehicleType)",
+        nativeQuery = true
+    )
+    Integer countByParkingAndVehicleType(@Param("idParking") int idParking,@Param("idCity") String idCity,@Param("vehicleType") String vehicleType);
 
 }

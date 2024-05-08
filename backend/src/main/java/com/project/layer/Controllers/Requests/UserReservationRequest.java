@@ -11,10 +11,10 @@ import lombok.NoArgsConstructor;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class EndReservationRequest {
+public class UserReservationRequest {
+
+    UserId clientId;
+
+    String status;
     
-    private int idReservation;
-
-    private UserId clientId;
-
 }

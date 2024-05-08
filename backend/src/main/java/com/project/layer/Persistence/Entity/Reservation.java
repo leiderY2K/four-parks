@@ -43,7 +43,7 @@ public class Reservation {
     private Date creationDateRes;
 
     @Column(name = "TOTALRES", nullable = false)
-    private Integer totalRes;
+    private float totalRes;
 
     @Column(name = "LICENSEPLATE", nullable = false)
     private String licensePlate;
@@ -66,5 +66,8 @@ public class Reservation {
         @JoinColumn(name = "FK_CLIENT_IDDOCTYPE", referencedColumnName = "FK_IDDOCTYPE")
     })
     private User client;
+
+    @Column(name = "FK_IDRESSTATUS", nullable = false)
+    private String status;
 
 }
