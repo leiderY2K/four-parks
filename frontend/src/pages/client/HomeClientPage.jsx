@@ -27,6 +27,7 @@ const Home = ({url}) => {
 
   const [actualParking, setActualParking] = useState();
 
+
   return (
     <>
         <Header />

@@ -12,6 +12,7 @@ setStartTime, endTime, setEndTime}) => {
     .then(res=>{
       const cityArray = res.data.map(city => (city))
       setCities(cityArray);
+      console.log(res)
     })
     .catch(err=>{
       console.log(err);

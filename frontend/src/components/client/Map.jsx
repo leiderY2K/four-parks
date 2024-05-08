@@ -115,7 +115,7 @@ const Map = ({ url, city, parkingType, availability, vehicleType, date, startTim
     }
 
     return (
-        <MapContainer center={[4.6430382, -74.0730269]} zoom={18} minZoom={12} maxBounds={[actualCity.northLim, actualCity.southLim]} className='rounded-2xl shadow-lg' 
+        <MapContainer center={[4.6430382, -74.0730269]} zoom={14} minZoom={12} maxBounds={[actualCity.northLim, actualCity.southLim]} className='rounded-2xl shadow-lg' 
         whenCreated={mapInstance => {
             console.log("Mapa creado", mapInstance);
         }}>

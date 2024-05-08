@@ -24,8 +24,6 @@ public class UserAuthentication implements UserDetails {
 
     @EmbeddedId
     private UserId userId;
-
-    @Length(min = 6, max = 10, message = "El nombre de usuario debe tener  entre 6 y 10 caracteres")
     @Column(name = "USERNAME", nullable = false, unique = true)
     private String username;
 
