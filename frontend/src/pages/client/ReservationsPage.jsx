@@ -4,10 +4,10 @@ import ReservationInfo from '../../components/client/ReservationInfo.jsx';
 import axios from "axios";
 
 const ReservationPage = ({ url }) => {
-
   const [resState, setResState] = useState('');
+  const [reservations, setReservations] = useState([]);
+
   const user = JSON.parse(sessionStorage.getItem('userLogged'));
-  console.log(user)
   const idNumber = user.idNumber;
   const idType = user.idType;
   /*const idNumber = "6543210987654"
@@ -26,7 +26,10 @@ const ReservationPage = ({ url }) => {
 
     }, { headers: { Authorization: `Bearer ${token}` } })
       .then(res => {
-        console.log(res);
+        const reservationArray = []; 
+        res.data.map(reservation => {reservationArray.push(reservation)})
+
+        setReservations(reservationArray);
       })
       .catch(err => {
         console.log(err);
@@ -34,8 +37,6 @@ const ReservationPage = ({ url }) => {
   },[resState]);
 
   // Pruebas de iniciar reservación - = Juan Validar Error que sale en consola / Verificar si está bien 
-
-
 
   return (
     <>
@@ -57,15 +58,11 @@ const ReservationPage = ({ url }) => {
       </section>
 
       <div className='flex justify-between flex-wrap px-12 pt-32 pb-10 bg-gray-light'>
-        <ReservationInfo url={url} />
-        <ReservationInfo />
-        <ReservationInfo />
-        <ReservationInfo />
-        <ReservationInfo />
-        <ReservationInfo />
-        <ReservationInfo />
-        <ReservationInfo />
-        <ReservationInfo />
+        {
+          reservations.map(reservation => (
+            <ReservationInfo key={reservation.idReservation} url={url} reservation={reservation} />
+          ))
+        }
       </div>
     </>
   )
