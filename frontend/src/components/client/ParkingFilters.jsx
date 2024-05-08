@@ -11,6 +11,7 @@ const ParkingFilters = ({city, setCity, parkingType, setParkingType,availability
     .then(res=>{
       const cityArray = res.data.map(city => (city))
       setCities(cityArray);
+      console.log(res)
     })
     .catch(err=>{
       console.log(err);
