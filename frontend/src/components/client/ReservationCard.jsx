@@ -45,6 +45,7 @@ function ReservationCard({url, setOnReservationForm, actualParking, actualCity})
                 title: `Por favor llene todos los campos`
             });
         } else {
+            console.log(resDate,resStart,resEnd,licensePlate)
             axios.post(`${url}/client/startReservation`, {
                 dateRes: resDate, 
                 startTimeRes: resStart, 
@@ -54,20 +55,29 @@ function ReservationCard({url, setOnReservationForm, actualParking, actualCity})
                     idUser:idNumber,idDocType:idType
                 },
                 cityId:idCiudad,
-                parkingId:idParqueadero
+                parkingId:idParqueadero,
+                vehicleType:vehicleType
                 //creationDateRes: 'Hoy',
                 //totalRes: "0", 
                 //vehicleType: vehicleType, 
                 //username: resPayMethod, 
             },{headers: {Authorization: `Bearer ${token}`}})
             .then(res => {
-                console.log(res);
-                Swal.fire({
+                console.log(res)
+                console.log(res.data);
+                if ((res.data)==("No hay espacios disponibles")) {
+                    Swal.fire({
+                        icon: 'error',
+                        title: `No hay espacios disponibles` ,
+                    });
+                }else{
+                    Swal.fire({
                     icon: 'success',
                     title: `Reserva exitosa`
                 });
 
-                setOnReservationForm(false)
+                setOnReservationForm(false)}
+                
 
                 //navigate("/inicio-sesion");
             })
@@ -114,8 +124,9 @@ function ReservationCard({url, setOnReservationForm, actualParking, actualCity})
                         value={vehicleType} onChange={(e) => setVehicleType(e.target.value)}>
                             <option value="" disabled hidden> Tipo de vehiculo </option>
                             <option value=""></option>
-                            <option value="Moto">Moto</option>
-                            <option value="Carro">Carro</option>
+                            <option value="MOT">Moto</option>
+                            <option value="CAR">Carro</option>
+                            <option value="BIC">Bicicleta</option>
                         </select>
                         
                         <input id="licensePlate" className="w-2/5 p-3 rounded-md bg-white font-paragraph placeholder:text-gray-dark" placeholder="Matricula del vehiculo"
