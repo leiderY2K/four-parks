@@ -20,6 +20,7 @@ import com.project.layer.Persistence.Repository.IUserAuthRepository;
 import com.project.layer.Persistence.Repository.IUserRepository;
 import com.project.layer.Services.JWT.JwtService;
 
+import jakarta.mail.MessagingException;
 import lombok.RequiredArgsConstructor;
 
 @Service
@@ -53,7 +54,7 @@ public class AuthService {
         return extraClaims;
     }
 
-    public AuthResponse register(RegisterRequest request) {
+    public AuthResponse register(RegisterRequest request) throws MessagingException {
 
         UserId userId = UserId.builder()
             .idUser(request.getIdUser())
@@ -74,7 +75,6 @@ public class AuthService {
 
         // Generar una contraseña aleatoria
         String randomPassword = generateRandomPassword();
-
 
         // Crear una instancia de UserAuthentication para autenticación
         UserAuthentication userAuthentication = UserAuthentication.builder()
