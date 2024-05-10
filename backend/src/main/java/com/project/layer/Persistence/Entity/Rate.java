@@ -24,7 +24,7 @@ public class Rate {
     @Column(name = "HOURCOST", nullable = false)
     private int hourCost;
 
-    @Column(name = "RESERVATIONCOST", nullable = false)
-    private int reservationCost;
+    @Column(name = "CANCELLATIONCOST", nullable = false)
+    private int cancellationCost;
 
 }

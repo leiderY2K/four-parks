@@ -58,21 +58,31 @@ public class ClientController {
     public ParkingResponse getParkingByCoordinates(@RequestParam float coordinateX, @RequestParam float coordinateY) {
         return mapService.getParkingsPerCoordinates(coordinateX, coordinateY);
     }
-
-    @PostMapping("/startReservation")
-    public String startParkingSpace(@RequestBody StartReservationRequest reservationRequest){
-
-        return reservationService.startReservation(reservationRequest);
-    }
-
+    
     @PostMapping("/postReservations")
     public List<Reservation> postReservations(@RequestBody UserReservationRequest urRequest){
         return reservationService.getReservationsByClientId(urRequest);
     }
 
-    @GetMapping("/endReservation")
-    public String endReservation(@RequestParam int idReservation){
+    @PostMapping("/startReservation")
+    public String startParkingSpace(@RequestBody StartReservationRequest reservationRequest){
+        return reservationService.startReservation(reservationRequest);
+    }
+    
+    // No hay end point para confirmar por lo que es progrado, front no tiene nada que ver aqui
 
+    @PostMapping("/checkIn")
+    public String checkInReservation(@RequestBody int idReservation){
+        return reservationService.checkInReservation(idReservation);
+    }
+
+    @PostMapping("/cancelReservation")
+    public String cancelReservation(@RequestBody int idReservation){
+        return reservationService.cancelReservation(idReservation);
+    }
+
+    @GetMapping("/checkOut")
+    public String endReservation(@RequestParam int idReservation){
         return reservationService.checkOutReservation(idReservation);
     }
 

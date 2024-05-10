@@ -145,8 +145,28 @@ VALUES
     (1, 4, 'CTG', 'CAR', 1),
     (2, 4, 'CTG', 'CAR', 1),   
     (3, 4, 'CTG', 'CAR', 1),   
-    (4, 4, 'CTG', 'CAR', 1);
-    
+    (4, 4, 'CTG', 'CAR', 1),
+    -- Parqueadero 13
+    (1, 13, 'BGT', 'CAR', 0),
+    (2, 13, 'BGT', 'CAR', 0),   
+    (3, 13, 'BGT', 'CAR', 0),   
+    (4, 13, 'BGT', 'CAR', 0),
+    -- Parqueadero 14
+    (1, 14, 'BGT', 'CAR', 1),
+    (2, 14, 'BGT', 'CAR', 1),   
+    (3, 14, 'BGT', 'CAR', 1),   
+    (4, 14, 'BGT', 'CAR', 1),
+    -- Parqueadero 15
+    (1, 15, 'BGT', 'CAR', 1),
+    (2, 15, 'BGT', 'CAR', 1),   
+    (3, 15, 'BGT', 'CAR', 1),   
+    (4, 15, 'BGT', 'CAR', 1),
+    -- Parqueadero 16
+    (1, 16, 'BGT', 'CAR', 0),
+    (2, 16, 'BGT', 'CAR', 0),   
+    (3, 16, 'BGT', 'CAR', 0),   
+    (4, 16, 'BGT', 'CAR', 0);
+
 -- Insertar estados de reserva
 INSERT INTO `FOURPARKSDATABASE`.`RESERVATIONSTATUS` (`IDRESSTATUS`, `DESCRESSTATUS`) 
 VALUES
@@ -161,11 +181,11 @@ VALUES
 -- Insertar Reservaciones de prueba
 INSERT INTO `FOURPARKSDATABASE`.`RESERVATION` (`DATERES`, `STARTTIMERES`, `ENDTIMERES`, `CREATIONDATERES`, `TOTALRES`, `LICENSEPLATE`, `FK_IDPARKINGSPACE`, `FK_IDPARKING`, `FK_IDCITY`, `FK_IDVEHICLETYPE`, `FK_CLIENT_IDUSER`, `FK_CLIENT_IDDOCTYPE`,`FK_IDRESSTATUS`)
 VALUES
-    ('2024-05-01', '10:00:00', '12:00:00', '2024-05-01', 0, 'ABC123', 1, 1, 'CAL', 'CAR', '1234567890123', 'CC', 'CON'),
-    ('2024-05-01', '14:00:00', '16:00:00', '2024-05-01', 0, 'DEF456', 2, 1, 'CAL', 'CAR', '6543210987654', 'TI', 'CON'),
-    ('2024-05-03', '08:00:00', '10:00:00', '2024-05-01', 0, 'GHI789', 3, 1, 'CAL', 'MOT', '1234567890123', 'CC', 'CON'),
-    ('2024-05-04', '09:00:00', '11:00:00', '2024-05-01', 0, 'JKL012', 4, 1, 'CAL', 'CAR', '6543210987654', 'TI', 'CON'),
-    ('2024-05-05', '13:00:00', '15:00:00', '2024-05-01', 0, 'MNO345', 2, 1, 'CAL', 'CAR', '1234567890123', 'CC', 'CON');
+    ('2024-05-01', '10:00:00', '12:00:00', '2024-05-01', 0, 'ABC123', 1, 1, 'CAL', 'CAR', '1234567890123', 'CC', 'COM'),
+    ('2024-05-01', '14:00:00', '16:00:00', '2024-05-01', 0, 'DEF456', 2, 1, 'CAL', 'CAR', '6543210987654', 'TI', 'COM'),
+    ('2024-05-03', '08:00:00', '10:00:00', '2024-05-01', 0, 'GHI789', 3, 1, 'CAL', 'MOT', '1234567890123', 'CC', 'COM'),
+    ('2024-05-04', '09:00:00', '11:00:00', '2024-05-01', 0, 'JKL012', 4, 1, 'CAL', 'CAR', '6543210987654', 'TI', 'COM'),
+    ('2024-05-05', '13:00:00', '15:00:00', '2024-05-01', 0, 'MNO345', 2, 1, 'CAL', 'CAR', '1234567890123', 'CC', 'COM');
 
 
     

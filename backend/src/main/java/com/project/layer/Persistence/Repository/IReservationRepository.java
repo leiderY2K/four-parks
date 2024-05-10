@@ -16,6 +16,18 @@ import com.project.layer.Persistence.Entity.Reservation;
 public interface IReservationRepository extends JpaRepository<Reservation, Integer>{
     
     @Query(
+        value = "SELECT * FROM RESERVATION r" +
+                    "WHERE" +
+                        "r.STARTIMERES > :actualTime" +
+                        "AND r.SSTARTIMERES < :postActualTime",
+        nativeQuery = true
+    )
+    List<Reservation> findByStartTime(
+        @Param("actualTime") Time actualTime,
+        @Param("postActualTime") Time postActualTime
+    );
+
+    @Query(
         value = "SELECT * FROM RESERVATION r, USER c " + 
                     "WHERE " +
                         "r.FK_CLIENT_IDUSER = c.IDUSER " +

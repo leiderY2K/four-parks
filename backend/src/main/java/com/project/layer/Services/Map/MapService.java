@@ -56,13 +56,12 @@ public class MapService {
         
         parkings = parkingRepository.queryParkingsByArgs(city, type, startTime, endTemp, scheduleType);
         startTime = (startTime == null) ? Time.valueOf(LocalTime.now()) : startTime;
-        endTime = (endTime == null) ? Time.valueOf(LocalTime.of(23, 59, 59)) : endTime;
-        //startTime = Time.valueOf(startTime.toLocalTime().minusMinutes(59));
-        //endTime = Time.valueOf(endTime.toLocalTime().plusMinutes(59));
-
+        
         System.out.println("----------------------- La fecha es: "+ date + " " + startTime + " " +endTime);
-
+        
         for (Parking parking : parkings) {
+            endTime = (endTime == null) ? parking.getSchedule().getEndTime() : endTime;
+            
             System.out.println("El parqueadero: " + parking.getIdParking());
             
             System.out.println("El tipo de vehiculo: "+vehicleType);

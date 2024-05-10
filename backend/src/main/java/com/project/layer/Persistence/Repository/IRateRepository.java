@@ -25,19 +25,18 @@ public interface IRateRepository extends JpaRepository<Rate, RateId> {
     );
 
     @Query(
-        value = "SELECT rt.RESERVATIONCOST FROM RATE AS rt " +
+        value = "SELECT DISTINCT rt.CANCELLATIONCOST FROM RATE AS rt " +
                         "WHERE rt.FK_IDPARKING = :idParking " +
                         "AND rt.FK_IDCITY = :idCity " +
                         "AND rt.FK_IDVEHICLETYPE = :idVehicleType " +
                         "AND rt.ISUNCOVERED = :isUncovered",
         nativeQuery = true
     )
-    Integer getReservationCostByParkingSpace(
+    Integer getCancellationCostByParkingSpace(
         @Param("idParking") int idParking,
         @Param("idCity") String idCity,
         @Param("idVehicleType") String idVehicleType,
         @Param("isUncovered") boolean isUncovered
     );
-
 
 }
