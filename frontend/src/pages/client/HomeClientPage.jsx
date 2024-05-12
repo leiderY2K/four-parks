@@ -1,12 +1,12 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Header from '../../components/client/Header.jsx'
 import Map from '../../components/client/Map.jsx'
 import ParkingFilters from '../../components/client/ParkingFilters.jsx'
 import ParkingInfo from '../../components/client/ParkingInfo.jsx'
 import ReservationCard from '../../components/client/ReservationCard.jsx'
 
-const Home = ({url}) => {
-  const [city, setCity] = useState("Bogota");
+const Home = ({url, initialCoords}) => {
+  const [city, setCity] = useState("");
   const [parkingType, setParkingType] = useState("");
   const [availability, setAvailability] = useState("");
   const [vehicleType, setVehicleType] = useState("");
@@ -14,9 +14,6 @@ const Home = ({url}) => {
   const [startTime, setStartTime] = useState("");
   const [endTime, setEndTime] = useState("");
   const [onReservationForm, setOnReservationForm] = useState(false);
-
-  console.log()
-
   const [actualCity, setActualCity] = useState({
     id: 'BGT',
     name: 'Bogota',
@@ -24,10 +21,26 @@ const Home = ({url}) => {
     southLim: [4.4861, -74.0232],
     centerCoords: [4.6596, -74.0915]
   });
-
   const [actualParking, setActualParking] = useState();
 
+  useEffect(() => {
+    if(initialCoords.length > 0) {
+      setActualCity({
+        id: 'BGT',
+        name: 'Bogota',
+        northLim: [4.7694, -74.2034],
+        southLim: [4.4861, -74.0232],
+        centerCoords: initialCoords
+      });
+    }
+  }, [initialCoords]);
 
+  useEffect(() => {
+    setActualParking();
+    setOnReservationForm(false);
+  }, [city])
+  
+  
   return (
     <>
         <Header />
@@ -42,12 +55,11 @@ const Home = ({url}) => {
               actualParking={actualParking}/> : <ParkingInfo parkingType={parkingType} vehicleType={vehicleType} setOnReservationForm={setOnReservationForm} 
               actualParking={actualParking} />) : false)
             }
-            
           </section>
 
           <div className="w-1/2 ml-44 rounded-2xl z-0"> 
             <Map url={url} city={city} parkingType={parkingType} availability={availability} vehicleType={vehicleType} date={date} startTime={startTime} endTime={endTime} 
-            actualCity={actualCity} setActualCity={setActualCity} setActualParking={setActualParking} />
+            actualCity={actualCity} setActualCity={setActualCity} setActualParking={setActualParking} setOnReservationForm={setOnReservationForm} />
           </div>
         </div>
     </>

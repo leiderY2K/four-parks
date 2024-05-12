@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { Link } from "react-router-dom";
-import logo  from '../../assets/Logo4.png';
+import logo  from '../../assets/Logo.png';
 
 const Header = () => {
     const [onToggle, setOnToggle] = useState(false);
