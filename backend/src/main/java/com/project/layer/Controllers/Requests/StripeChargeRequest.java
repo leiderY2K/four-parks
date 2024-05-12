@@ -16,7 +16,7 @@ import java.util.Map;
 public class StripeChargeRequest {
     private String StripeToken;
     private String username;
-    private BigDecimal amount;
+    private double amount;
     private boolean success;
     private String message;
     private String chargeId;

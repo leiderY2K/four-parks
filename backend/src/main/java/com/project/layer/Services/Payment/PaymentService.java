@@ -1,12 +1,10 @@
 package com.project.layer.Services.Payment;
 
+import com.google.gson.Gson;
 import com.project.layer.Controllers.Requests.StripeChargeRequest;
 import com.project.layer.Controllers.Responses.StripeTokenResponse;
 import com.project.layer.Persistence.Entity.Card;
-import com.project.layer.Persistence.Entity.User;
-import com.project.layer.Persistence.Entity.UserId;
 import com.project.layer.Persistence.Repository.ICardRepository;
-import com.project.layer.Persistence.Repository.IUserRepository;
 import com.stripe.Stripe;
 import com.stripe.model.Charge;
 import com.stripe.model.Token;
@@ -17,13 +15,10 @@ import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.stereotype.Service;
 
-import java.time.LocalDate;
-import java.time.format.DateTimeFormatter;
+import java.math.BigDecimal;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
@@ -40,7 +35,8 @@ public class PaymentService {
     @Value("${stripe.key.public}")
     static String stripePublic;
 
-    public StripeTokenResponse createCardToken(String userId) {
+    @Transactional
+    public String createCardToken(String userId) {
         // Obtener la tarjeta asociada al usuario
         Optional<Card> cardOptional = cardRepository.findByUserId(userId);
         //Optional<User>  userOptional = userRepository.findByFirstName(userId);
@@ -84,37 +80,31 @@ public class PaymentService {
                                 .build();
                 Token token = Token.create(params);
                 if (token != null && token.getId() != null) {
-                    request.setSuccess(true);
-                    request.setToken(token.getId());
-                    return request;
+                    return token.getId();
                 }
             } catch (StripeException e) {
                 log.error("StripeService (createCardToken)", e);
                 throw new RuntimeException(e.getMessage());
             }
-        } else {
-            // Manejar el caso donde no se encuentra ninguna tarjeta asociada al usuario
         }
         return null;
     }
 
-    private static String getIntOrDefault(String value, int defaultValue) {
-        try {
-            return String.valueOf(Integer.parseInt(value));
-        } catch (NumberFormatException e) {
-            return String.valueOf(defaultValue);
-        }
-    }
-
-    public StripeChargeRequest charge(StripeChargeRequest chargeRequest) {
+    @Transactional
+    public StripeChargeRequest charge(String token, float totalCost) {
         Stripe.apiKey = stripeSecret;
+
+        // Crear un objeto StripeChargeRequest
+        StripeChargeRequest chargeRequest = new StripeChargeRequest();
+        chargeRequest.setStripeToken(token);
+        chargeRequest.setAmount(totalCost);
 
         try {
             chargeRequest.setSuccess(false);
             Map<String, Object> chargeParams = new HashMap<>();
-            chargeParams.put("amount", chargeRequest.getAmount());
+            chargeParams.put("amount", (int) (chargeRequest.getAmount() * 120));
             chargeParams.put("currency", "COP");
-            chargeParams.put("description", "Payment for id" + chargeRequest.getAdditionalInfo().getOrDefault("ID_TAG", ""));
+            chargeParams.put("description", "Payment for id " + chargeRequest.getAdditionalInfo().getOrDefault("ID_TAG", ""));
             chargeParams.put("source", chargeRequest.getStripeToken());
             Map<String, Object> metadata = new HashMap<>();
             metadata.put("id", chargeRequest.getChargeId());

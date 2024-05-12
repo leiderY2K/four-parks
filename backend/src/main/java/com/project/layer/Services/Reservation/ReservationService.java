@@ -5,10 +5,9 @@ import java.sql.Time;
 import java.time.Duration;
 import java.time.LocalDate;
 import java.time.LocalTime;
-import java.util.List;
-import java.util.Optional;
-import java.util.Calendar;
+import java.util.*;
 
+import com.project.layer.Services.Payment.PaymentService;
 import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
@@ -36,6 +35,9 @@ public class ReservationService {
     private final IParkingSpaceRepository parkingSpaceRepository;
     private final IUserRepository userRepository;
     private final IRateRepository rateRepository;
+
+    private final PaymentService paymentService;
+    private String token;
 
     public List<Reservation> getReservationsByClientId(UserReservationRequest urRequest) {
         return reservationRepository.findAllByClientId(urRequest.getClientId().getIdUser(),
@@ -97,8 +99,18 @@ public class ReservationService {
                 .status(ResStatus.PENDING.getId())
                 .build();
 
+
+
+        String userId = reservationRequest.getClientId().getIdUser();
+
+        //float totalCost = 8653;
+
         reservationRepository.save(reservation);
-        return "¡La reserva se realizo exitosamente!";
+        token = paymentService.createCardToken(userId);
+        //paymentService.charge(token, totalCost);
+        confirmReservation();
+
+        return "¡La reserva se realizo exitosamente!"+" su token es: " + token;
     }
 
     @Transactional
@@ -146,6 +158,9 @@ public class ReservationService {
             float totalCost = totalHours * rate;
 
             // Se debe realizar el pago
+            paymentService.charge(token, totalCost);
+            System.out.println("su token fue: " + token);
+            System.out.println("usted cancelo" + totalCost);
             // -------------------------------------------------------------------------------------------------------------
 
             // Se debe enviar email de correo
@@ -201,6 +216,7 @@ public class ReservationService {
         System.out.println("Costo de tarifa: " + cancellationCost);
 
         // Se debe realizar el cargo por cancelación
+        paymentService.charge(token, cancellationCost);
         // -------------------------------------------------------------------------------------------------------------
 
         reservation.setStatus(ResStatus.CANCELLED.getId());
@@ -242,6 +258,8 @@ public class ReservationService {
             float extraCost = extraHours * rate;
 
             // Realizar pago automatico por minutos extra
+            paymentService.charge(token, extraCost);
+
 
             System.out.println("--------------------------- Horas transcurridas: " + extraHours);
             reservation.setTotalRes(reservation.getTotalRes() + extraCost);

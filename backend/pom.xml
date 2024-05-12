@@ -124,8 +124,6 @@
 			<artifactId>stripe-java</artifactId>
 			<version>25.5.0</version>
 		</dependency>
-
-
 	</dependencies>
 
 	<build>
