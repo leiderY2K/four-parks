@@ -32,6 +32,8 @@ public class ReservationService {
     private final IParkingSpaceRepository parkingSpaceRepository;
     private final IUserRepository userRepository;
     private final IRateRepository rateRepository;
+
+
     
     public List<Reservation> getReservationsByClientId(UserReservationRequest urRequest) {
         return reservationRepository.findAllByClientId(urRequest.getClientId().getIdUser(), urRequest.getClientId().getIdDocType(),urRequest.getStatus() );
@@ -131,7 +133,6 @@ public class ReservationService {
             // Se debe realizar el pago -------------------------------------------------------------------------------------------------------------
     
             // Se debe enviar email de correo -------------------------------------------------------------------------------------------------------
-    
             reservation.setStatus(ResStatus.CONFIRMED.getId());
             reservation.setTotalRes(totalCost);
 
@@ -155,7 +156,7 @@ public class ReservationService {
 
         reservationRepository.save(reservation);
         
-        return "¡Su reserva fue cancelada!";
+        return "¡Su reserva ha comenzado!";
     }
 
     @Transactional
@@ -173,14 +174,14 @@ public class ReservationService {
             return "¡La reserva no puede ser cancelada!";
         }
         
-        int rate = rateRepository.getCancellationCostByParkingSpace(
+        int cancellationCost = rateRepository.getCancellationCostByParkingSpace(
             reservation.getParkingSpace().getParkingSpaceId().getIdParking(),
             reservation.getParkingSpace().getParkingSpaceId().getIdCity(),
             reservation.getVehicleType(),
             reservation.getParkingSpace().isUncovered()
         );
 
-        System.out.println("Costo de tarifa: " + rate);
+        System.out.println("Costo de tarifa: " + cancellationCost);
 
         //Se debe realizar el cargo por cancelación -------------------------------------------------------------------------------------------------------------
 

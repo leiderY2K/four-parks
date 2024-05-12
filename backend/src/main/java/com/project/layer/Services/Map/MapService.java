@@ -60,7 +60,7 @@ public class MapService {
         System.out.println("----------------------- La fecha es: "+ date + " " + startTime + " " +endTime);
         
         for (Parking parking : parkings) {
-            endTime = (endTime == null) ? parking.getSchedule().getEndTime() : endTime;
+            endTime = (endTime == null) ? parking.getEndTime() : endTime;
             
             System.out.println("El parqueadero: " + parking.getIdParking());
             
