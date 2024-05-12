@@ -22,5 +22,4 @@ public class StripeChargeRequest {
     private String chargeId;
     private Map<String, Object> additionalInfo = new HashMap<>();
 
-
 }

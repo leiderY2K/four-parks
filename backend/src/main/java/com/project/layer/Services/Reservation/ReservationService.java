@@ -192,7 +192,7 @@ public class ReservationService {
             return "¡La reserva no puede ser cancelada!";
         }
 
-        int rate = rateRepository.getCancellationCostByParkingSpace(
+        int cancellationCost = rateRepository.getCancellationCostByParkingSpace(
                 reservation.getParkingSpace().getParkingSpaceId().getIdParking(),
                 reservation.getParkingSpace().getParkingSpaceId().getIdCity(),
                 reservation.getVehicleType(),
