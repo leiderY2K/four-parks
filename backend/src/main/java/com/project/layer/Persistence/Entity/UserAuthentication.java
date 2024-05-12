@@ -23,6 +23,7 @@ public class UserAuthentication implements UserDetails {
 
     @EmbeddedId
     private UserId userId;
+
     @Column(name = "USERNAME", nullable = false, unique = true)
     private String username;
 
