@@ -26,10 +26,4 @@ public class ParkingSpace {
     @Column(name = "FK_IDVEHICLETYPE", nullable = false)
     private String idVehicleType;
 
-    // Constructor que acepta todos los parámetros
-    public ParkingSpace(int idParkingSpace, int idParking, String idCity, boolean isUncovered, String idVehicleType) {
-        this.parkingSpaceId = new ParkingSpaceId(idParkingSpace, idParking, idCity);
-        this.isUncovered = isUncovered;
-        this.idVehicleType = idVehicleType;
-    }
 }
