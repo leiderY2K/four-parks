@@ -20,7 +20,7 @@ const ParkingInfo = ({parkingType, vehicleType, setOnReservationForm, actualPark
         <section className="flex flex-col items-center w-full mt-12 pl-12">
             <article className="w-3/5 rounded-md shadow-md bg-blue-light">
                 <section className="flex items-center m-5">
-                    <div className="w-1/3 h-16 flex justify-center rounded-md border-2 border-black">
+                    <div className="w-1/4 flex justify-center rounded-md border-2 border-black">
                         <img src={getIcon()} alt="Imagen que identifica el tipo de parqueadero"/>
                     </div>
 

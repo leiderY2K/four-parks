@@ -2,6 +2,7 @@ import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import Swal from 'sweetalert2'
+import logo from '../../assets/Logo.png'
 
 export default function SignUp({url}) {
     const [idType, setIdType] = useState('');
@@ -59,16 +60,15 @@ export default function SignUp({url}) {
     return (
         <article className="bg-gradient-to-b from-red-light from-75% to-red-dark pt-12 pb-6 relative rounded-2xl shadow-xl">
             <section className="flex flex-col items-center px-12">
-                <div className="w-24 h-24 bg-white rounded-full ml-auto mr-auto"></div>
+                <img src={logo} alt="Logo de Four Parks" className="w-24 h-24" />
 
                 <section className="flex flex-col justify-evenly items-center w-full h-72 mt-12">
                     <div className="flex justify-between w-full">
                         <select id="idType" className="w-2/5 p-3 rounded-md bg-white font-paragraph" value={idType} onChange={(e) => setIdType(e.target.value)}>
                             <option value="" disabled hidden> Tipo de documento </option>
-                            <option value="1">CC</option>
-                            <option value="2">TI</option>
-                            <option value="3">CE</option>
-                            <option value="4">Pasaporte</option>
+                            <option value="CC">CC</option>
+                            <option value="TI">TI</option>
+                            <option value="CI">CE</option>
                         </select>
 
                         <input id="idNumber" className="w-2/5 p-3 rounded-md bg-white font-paragraph placeholder:text-gray-dark" placeholder="Numero de identificación"

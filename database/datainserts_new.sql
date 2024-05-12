@@ -178,17 +178,17 @@ VALUES
     -- Parqueadero 1 
     (1, 1, 'CAL', 'CAR', 1),
     (2, 1, 'CAL', 'CAR', 1),   
-    (3, 1, 'CAL', 'MOT', 1),   
-    (4, 1, 'CAL', 'CAR', 1),
+    (3, 1, 'CAL', 'CAR', 1),
+    (4, 1, 'CAL', 'MOT', 1),   
     -- Parqueadero 2
     (1, 2, 'BAQ', 'CAR', 0),
-    (2, 2, 'BAQ', 'CAR', 0),   
-    (3, 2, 'BAQ', 'CAR', 0),   
     (4, 2, 'BAQ', 'CAR', 1),
+    (2, 2, 'BAQ', 'CAR', 0),   
+    (8, 2, 'BAQ', 'MOT', 0),
+    (3, 2, 'BAQ', 'CAR', 0),   
     (5, 2, 'BAQ', 'CAR', 1),
     (6, 2, 'BAQ', 'CAR', 1),   
     (7, 2, 'BAQ', 'MOT', 0),   
-    (8, 2, 'BAQ', 'MOT', 0),
     (9, 2, 'BAQ', 'MOT', 0),
     (10, 2, 'BAQ', 'MOT', 0),
     (11, 2, 'BAQ', 'MOT', 1),
@@ -204,7 +204,27 @@ VALUES
     (1, 4, 'CTG', 'CAR', 1),
     (2, 4, 'CTG', 'CAR', 1),   
     (3, 4, 'CTG', 'CAR', 1),   
-    (4, 4, 'CTG', 'CAR', 1);
+    (4, 4, 'CTG', 'CAR', 1),
+    -- Parqueadero 13
+    (1, 13, 'BGT', 'CAR', 1),
+    (2, 13, 'BGT', 'CAR', 1),   
+    (3, 13, 'BGT', 'CAR', 1),   
+    (4, 13, 'BGT', 'CAR', 1),
+    -- Parqueadero 14
+    (1, 14, 'BGT', 'CAR', 1),
+    (2, 14, 'BGT', 'CAR', 1),   
+    (3, 14, 'BGT', 'CAR', 1),   
+    (4, 14, 'BGT', 'CAR', 1),
+    -- Parqueadero 15
+    (1, 15, 'BGT', 'CAR', 1),
+    (2, 15, 'BGT', 'CAR', 1),   
+    (3, 15, 'BGT', 'CAR', 1),   
+    (4, 15, 'BGT', 'CAR', 1),
+    -- Parqueadero 16
+    (1, 16, 'BGT', 'CAR', 1),
+    (2, 16, 'BGT', 'CAR', 1),   
+    (3, 16, 'BGT', 'CAR', 1),   
+    (4, 16, 'BGT', 'CAR', 1);
 
 -- Insertar Reservaciones de prueba
 INSERT INTO `FOURPARKSDATABASE`.`RESERVATION` (`DATERES`, `STARTTIMERES`, `ENDTIMERES`, `CREATIONDATERES`, `TOTALRES`, `LICENSEPLATE`, `FK_IDPARKINGSPACE`, `FK_IDPARKING`, `FK_IDCITY`, `FK_IDVEHICLETYPE`, `FK_CLIENT_IDUSER`, `FK_CLIENT_IDDOCTYPE`)

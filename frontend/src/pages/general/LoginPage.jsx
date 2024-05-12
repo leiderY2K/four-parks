@@ -1,5 +1,6 @@
 import React from 'react';
 import Login from "../../components/general/Login";
+import QuotaManager from "../../components/admin/QuotaManager"
 import bgImagePC from '../../assets/BG-PC.jpeg';
 import bgImageMobile from '../../assets/BG-Mobile.jpeg';
 import { useState, useEffect } from 'react';
@@ -30,7 +31,7 @@ const LoginPage = ({ url }) => {
 
   return (
     <div className="h-screen" style={{backgroundImage: `url(${backgroundImage})`, backgroundSize: 'cover', backgroundPosition: 'center'}}>
-        <div className="flex items-center justify-center h-screen w-full">
+        <div className="flex items-center justify-center w-full">
             <Login url={url} />
         </div>
     </div>
