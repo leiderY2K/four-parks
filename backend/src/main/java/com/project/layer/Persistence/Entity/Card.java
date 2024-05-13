@@ -38,19 +38,4 @@ public class Card {
             @JoinColumn(name = "FK_CLIENT_IDDOCTYPE", referencedColumnName = "FK_IDDOCTYPE")
     })
     private User cardOwner;
-
-
-    /*
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "IDUSER")
-    User cardOwner;
-
-
-    @Column(name = "EXPIRYYEARCARD", nullable = false)
-    private String ExpYearCard;
-
-    @Column(name = "EXPIRYMONTHCARD", nullable = false)
-    private String ExpMonthCard;
-    */
-
 }
