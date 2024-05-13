@@ -4,6 +4,7 @@ import java.lang.reflect.Field;
 import java.util.List;
 import java.util.Optional;
 
+import com.project.layer.Controllers.Requests.searchParkingRequest;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.stereotype.Service;
 
@@ -112,7 +113,11 @@ public class ParameterizationService {
         return "Se eliminaron correctamente los espacios de los parqueaderos";
     }
 
-
- 
+    @Transactional
+    public Optional<Parking> searchParking(searchParkingRequest spRequest){
+        String adminId = spRequest.getAdminId();
+        Optional<Parking> parkingList = parkingRepository.findByAdminId(adminId);
+        return parkingList; //
+    }
 
 }

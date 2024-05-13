@@ -111,7 +111,6 @@ public class ReservationService {
         reservationRepository.save(reservation);
         token = paymentService.createCardToken(userId);
         //paymentService.charge(token, totalCost);
-        //confirmReservation();
 
         return "¡La reserva se realizo exitosamente!"+" su token es: " + token;
     }

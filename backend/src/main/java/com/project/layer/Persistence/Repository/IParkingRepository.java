@@ -2,6 +2,7 @@ package com.project.layer.Persistence.Repository;
 
 import java.sql.Time;
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
@@ -60,4 +61,9 @@ public interface IParkingRepository extends JpaRepository<Parking, Integer>{
     )
     List<String> getTypeVehicleByParking(@Param("parkingId") int parkingId);
 
+    @Query(
+            value ="SELECT * FROM PARKING p WHERE p.FK_ADMIN_IDUSER LIKE %:adminId%",
+            nativeQuery = true
+    )
+    Optional<Parking> findByAdminId(String adminId);
 }
