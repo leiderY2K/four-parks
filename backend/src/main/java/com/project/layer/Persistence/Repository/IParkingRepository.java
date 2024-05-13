@@ -2,6 +2,7 @@ package com.project.layer.Persistence.Repository;
 
 import java.sql.Time;
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
@@ -9,6 +10,7 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import com.project.layer.Persistence.Entity.Parking;
+import com.project.layer.Persistence.Entity.User;
 
 @Repository
 public interface IParkingRepository extends JpaRepository<Parking, Integer>{
@@ -59,5 +61,4 @@ public interface IParkingRepository extends JpaRepository<Parking, Integer>{
         nativeQuery = true
     )
     List<String> getTypeVehicleByParking(@Param("parkingId") int parkingId);
-
 }

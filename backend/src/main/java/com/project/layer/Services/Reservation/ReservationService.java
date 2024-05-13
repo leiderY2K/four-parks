@@ -5,6 +5,7 @@ import java.sql.Time;
 import java.time.Duration;
 import java.time.LocalDate;
 import java.time.LocalTime;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
@@ -12,15 +13,19 @@ import org.springframework.stereotype.Service;
 
 import com.project.layer.Controllers.Requests.StartReservationRequest;
 import com.project.layer.Controllers.Requests.UserReservationRequest;
+import com.project.layer.Persistence.Entity.Parking;
 import com.project.layer.Persistence.Entity.ParkingSpace;
 import com.project.layer.Persistence.Entity.ResStatus;
 import com.project.layer.Persistence.Entity.Reservation;
 import com.project.layer.Persistence.Entity.User;
+import com.project.layer.Persistence.Repository.IParkingRepository;
 import com.project.layer.Persistence.Repository.IParkingSpaceRepository;
 import com.project.layer.Persistence.Repository.IRateRepository;
 import com.project.layer.Persistence.Repository.IReservationRepository;
 import com.project.layer.Persistence.Repository.IUserRepository;
+import com.project.layer.Services.Mail.MailService;
 
+import jakarta.mail.MessagingException;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 
@@ -29,16 +34,20 @@ import lombok.RequiredArgsConstructor;
 public class ReservationService {
     
     private final IReservationRepository reservationRepository;
+    private final IParkingRepository parkingRepository;
     private final IParkingSpaceRepository parkingSpaceRepository;
     private final IUserRepository userRepository;
     private final IRateRepository rateRepository;
+    private final MailService mailService;
+
+
     
     public List<Reservation> getReservationsByClientId(UserReservationRequest urRequest) {
         return reservationRepository.findAllByClientId(urRequest.getClientId().getIdUser(), urRequest.getClientId().getIdDocType(),urRequest.getStatus() );
     }
     
     @Transactional
-    public String startReservation(StartReservationRequest reservationRequest) {
+    public String startReservation(StartReservationRequest reservationRequest) throws MessagingException {
         
         Date sqlDate = Date.valueOf(LocalDate.now());
         
@@ -77,6 +86,17 @@ public class ReservationService {
         }
 
         User client = userRepository.getReferenceById(reservationRequest.getClientId());
+        List<String> reserva = Arrays.asList("Reserva",
+            reservationRequest.getDateRes().toString(),
+            reservationRequest.getStartTimeRes().toString(),
+            reservationRequest.getEndTimeRes().toString(),
+            reservationRequest.getLicensePlate(),
+            client.getFirstName()+" "+client.getLastName(),
+            reservationRequest.getClientId().getIdUser(),
+            reservationRequest.getClientId().getIdDocType(),
+            reservationRequest.getCityId(),
+            Integer.toString(reservationRequest.getParkingId()), 
+            reservationRequest.getVehicleType());
         
         Reservation reservation = Reservation.builder()
             .dateRes(reservationRequest.getDateRes())
@@ -90,8 +110,8 @@ public class ReservationService {
             .parkingSpace(selectedParkingSpace)
             .status(ResStatus.PENDING.getId())
             .build();
-
         reservationRepository.save(reservation);
+        mailService.sendMail("dmcuestaf@udistrital.edu.co", "[Four-parks] Informaciòn de su reserva",reserva);
         return "¡La reserva se realizo exitosamente!";
     }
     
@@ -131,7 +151,6 @@ public class ReservationService {
             // Se debe realizar el pago -------------------------------------------------------------------------------------------------------------
     
             // Se debe enviar email de correo -------------------------------------------------------------------------------------------------------
-    
             reservation.setStatus(ResStatus.CONFIRMED.getId());
             reservation.setTotalRes(totalCost);
 
@@ -155,7 +174,7 @@ public class ReservationService {
 
         reservationRepository.save(reservation);
         
-        return "¡Su reserva fue cancelada!";
+        return "¡Su reserva ha comenzado!";
     }
 
     @Transactional
@@ -173,14 +192,14 @@ public class ReservationService {
             return "¡La reserva no puede ser cancelada!";
         }
         
-        int rate = rateRepository.getCancellationCostByParkingSpace(
+        int cancellationCost = rateRepository.getCancellationCostByParkingSpace(
             reservation.getParkingSpace().getParkingSpaceId().getIdParking(),
             reservation.getParkingSpace().getParkingSpaceId().getIdCity(),
             reservation.getVehicleType(),
             reservation.getParkingSpace().isUncovered()
         );
 
-        System.out.println("Costo de tarifa: " + rate);
+        System.out.println("Costo de tarifa: " + cancellationCost);
 
         //Se debe realizar el cargo por cancelación -------------------------------------------------------------------------------------------------------------
 

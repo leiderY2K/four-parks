@@ -65,8 +65,8 @@ public class AuthController {
             throw new CustomException(("El  nombre de usuario ya se encuentra registrado"));
         }
         AuthResponse respuesta = authService.register(request);
-        List<String> messages = Arrays.asList(respuesta.getContra());
-        mailservice.sendMail("csguzmant@udistrital.edu.co", "Bienvenido a four-parks Colombia", messages);
+        List<String> messages = Arrays.asList("Registro",respuesta.getContra());
+        mailservice.sendMail("dmcuestaf@udistrital.edu.co", "Bienvenido a four-parks Colombia", messages);
         return ResponseEntity.ok(respuesta);
     }
 

@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Detalles de Reserva</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            background-color: #f2f2f2;
+        }
+
+        .container {
+            max-width: 600px;
+            margin: 20px auto;
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+
+        h2 {
+            text-align: center;
+        }
+
+        .reservation-details {
+            margin-bottom: 20px;
+        }
+
+        .reservation-details label {
+            font-weight: bold;
+        }
+
+        .reservation-details p {
+            margin: 5px 0;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h2>Detalles de Reserva</h2>
+        <div class="reservation-details">
+            <label>Número de Reserva:</label>
+            <p>Pendiente</p>
+        </div>
+        <div class="reservation-details">
+            <label>Fecha de Reserva:</label>
+            <p th:text="${message_1}"></p>
+        </div>
+        <div class="reservation-details">
+            <label>Hora de Inicio:</label>
+            <p th:text="${message_2}"></p>
+        </div>
+        <div class="reservation-details">
+            <label>Hora de Finalización:</label>
+            <p th:text="${message_3}"></p>
+        </div>
+        <div class="reservation-details">
+            <label>Placa del Vehículo:</label>
+            <p th:text="${message_4}"></p>
+        </div>
+        <div class="reservation-details">
+            <label>Nombre del Usuario:</label>
+            <p th:text="${message_5}"></p>
+        </div>
+        <div class="reservation-details">
+            <label>Cédula del Usuario:</label>
+            <p th:text="${message_6}"></p>
+        </div>
+        <div class="reservation-details">
+            <label>Tipo de Documento del Usuario:</label>
+            <p th:text="${message_7}"></p>
+        </div>
+        <div class="reservation-details">
+            <label>Identificador de la Ciudad:</label>
+            <p th:text="${message_8}"></p>
+        </div>
+        <div class="reservation-details">
+            <label>Nombre del Parqueadero:</label>
+            <p th:text="${message_9}"></p>
+        </div>
+        <div class="reservation-details">
+            <label>Tipo de Vehículo:</label>
+            <p th:text="${message_10}"></p>
+        </div>
+    </div>
+</body>
+</html>

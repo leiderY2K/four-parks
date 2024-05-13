@@ -1,5 +1,10 @@
 package com.project.layer.Persistence.Entity;
 
+import java.sql.Time;
+
+import org.hibernate.annotations.DynamicInsert;
+import org.hibernate.annotations.DynamicUpdate;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -17,33 +22,41 @@ import lombok.NoArgsConstructor;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
+@DynamicUpdate
+@DynamicInsert
 public class Parking {
     
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "IDPARKING", nullable = false)
-    private int idParking;
+    private Integer idParking;
 
     @Column(name = "NAMEPARK", nullable = false)
     private String namePark;
 
     @Column(name = "CAPACITY", nullable = false)
-    private int capacity;
+    private Integer capacity;
 
     @Column(name = "OCUPABILITY", nullable = false)
-    private float ocupability;
+    private Float ocupability;
 
     @Column(name = "FK_COORDINATESX", nullable = false) // Nueva columna para las coordenadas X
-    private float addressCoordinatesX;
+    private Float addressCoordinatesX;
 
     @Column(name = "FK_COORDINATESY", nullable = false) // Nueva columna para las coordenadas Y
-    private float addressCoordinatesY;
+    private Float addressCoordinatesY;
     
     @Column(name = "PHONE")
     private String phone;
     
     @Column(name = "EMAIL")
     private String email;
+
+    @Column(name = "STARTTIME", nullable = false)
+    private Time startTime;
+
+    @Column(name = "ENDTIME", nullable = false)
+    private Time endTime;
 
     @ManyToOne
     @JoinColumn(name = "FK_IDCITY")
