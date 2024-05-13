@@ -4,7 +4,6 @@ import java.lang.reflect.Field;
 import java.util.List;
 import java.util.Optional;
 
-import com.project.layer.Controllers.Requests.searchParkingRequest;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.stereotype.Service;
 
@@ -12,6 +11,7 @@ import com.project.layer.Controllers.Requests.ParkingSpaceRequest;
 import com.project.layer.Persistence.Entity.Parking;
 import com.project.layer.Persistence.Entity.ParkingSpace;
 import com.project.layer.Persistence.Entity.ParkingSpaceId;
+import com.project.layer.Persistence.Entity.UserId;
 import com.project.layer.Persistence.Repository.IParkingRepository;
 import com.project.layer.Persistence.Repository.IParkingSpaceRepository;
 
@@ -113,11 +113,15 @@ public class ParameterizationService {
         return "Se eliminaron correctamente los espacios de los parqueaderos";
     }
 
-    @Transactional
-    public Optional<Parking> searchParking(searchParkingRequest spRequest){
-        String adminId = spRequest.getAdminId();
-        Optional<Parking> parkingList = parkingRepository.findByAdminId(adminId);
-        return parkingList; //
+    public List<Parking> searchParking(UserId adminId){
+
+        System.out.println(adminId.getIdDocType()+" xd "+adminId.getIdUser());
+
+        List<Parking> parkingList = parkingRepository.findByAdminId(adminId.getIdUser(),adminId.getIdDocType());
+        for (Parking parking : parkingList) {
+            System.out.println(parking.toString());
+        }
+        return parkingList; 
     }
 
 }
