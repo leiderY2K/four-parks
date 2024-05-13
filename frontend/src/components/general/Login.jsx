@@ -1,10 +1,10 @@
-import { useRef, useState, useEffect } from "react"
+import { useRef, useState } from "react"
 import { useNavigate } from "react-router-dom"
 import ReCAPTCHA from "react-google-recaptcha"
 import axios from "axios"
 import Swal from 'sweetalert2'
 import { decodeJWT } from "../../javascript/decodeJWT"
-import logo from '../../assets/Logo4.png'
+import logo from '../../assets/Logo.png'
 import '../../css/login.css'
 
 export default function Login({ url }) {
@@ -15,66 +15,6 @@ export default function Login({ url }) {
     const navigate = useNavigate();
     const captcha = useRef(null);
     
-
-
-    const options = { enableHighAccuracy: true, timeout: 20000, maximumAge: 0 };
-
-    function success(pos) {
-        const crd = pos.coords;
-        console.log("Tu ubicación actual es:");
-        console.log(`Latitud : ${crd.latitude}`);
-        console.log(`Longitud: ${crd.longitude}`);
-        console.log(`Precisión: más o menos ${crd.accuracy} metros.`);
-        
-    }
-
-    function errors(err) {
-        console.warn(`ERROR(${err.code}): ${err.message}`);
-    }
-
-    function geolocalizar() {
-        if (navigator.geolocation) {
-            navigator.permissions
-                .query({ name: "geolocation" })
-                .then(function (result) {
-                    if (result.state === "granted" || result.state === "prompt") {
-                        let attempts = 0;
-                        const maxAttempts = 5;
-                        const minAccuracy = 100; // Precisión aceptable en metros
-
-                        const getLocationWithRetry = () => {
-                            navigator.geolocation.getCurrentPosition(
-                                (position) => {
-                                    if (position.coords.accuracy <= minAccuracy) {
-                                        success(position);
-                                    } else {
-                                        attempts++;
-                                        if (attempts < maxAttempts) {
-                                            console.log(`Intento ${attempts}: La precisión de la ubicación no es suficiente. Reintentando...`);
-                                            setTimeout(getLocationWithRetry, 3000); // Esperar 3 segundos antes de reintentar
-                                        } else {
-                                            console.log(`Se han agotado los intentos. No se pudo obtener una precisión aceptable.`);
-                                        }
-                                    }
-                                },
-                                errors,
-                                options
-                            );
-                        };
-
-                        getLocationWithRetry();
-                    } else if (result.state === "denied") {
-                        console.log("La geolocalización está desactivada.");
-                    }
-                });
-        } else {
-            console.log("La geolocalización no es compatible con este navegador.");
-        }
-    }
-
-    geolocalizar();
-
-
     const handleLogin = (e) => {
         e.preventDefault();
 
@@ -98,12 +38,12 @@ export default function Login({ url }) {
                         sessionStorage.setItem("userLogged", JSON.stringify(userLogged));
                         sessionStorage.setItem("token", JSON.stringify(res.data.token));
 
-                        if (tokenDecoded.role == "CLIENT") {
-                            Swal.fire({
-                                icon: 'success',
-                                title: `Bienvenid@ ${user}`
-                            });
+                        Swal.fire({
+                            icon: 'success',
+                            title: `Bienvenid@ ${user}`
+                        });
 
+                        if (tokenDecoded.role == "CLIENT") {
                             navigate("/cliente-inicio", {
                                 replace: ("/inicio-sesion", true)
                             });

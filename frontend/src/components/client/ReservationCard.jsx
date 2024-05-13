@@ -106,19 +106,19 @@ function ReservationCard({url, setOnReservationForm, actualParking, actualCity})
 
     return (
         <article className="bg-blue-light mt-12 pt-5 pb-6 relative rounded-2xl shadow-xl">
-            <section className="flex flex-col items-center px-5">
-                <div className="w-full flex justify-between">
-                    <div className="w-1/5 flex justify-center rounded-md h-14 mr-4 border-2 border-black">
-                            <img className="mb-1 "src={getIcon()} alt="Imagen que identifica el tipo de parqueadero"/>
+            <section className="flex flex-col items-center px-6">
+                <section className="w-full flex justify-between">
+                    <div className="w-1/6 flex justify-center rounded-md border-2 border-black">
+                            <img className="w-16" src={getIcon()} alt="Imagen que identifica el tipo de parqueadero"/>
                     </div>
-                    <div className="w-4/5 font-semibold text-lg mt-4"> {actualParking[0].namePark}
-                        <hr className="h-0.5 mt-2 rounded-full bg-black"></hr>    
-                    </div>
-                    
-                </div>
+
+                    <section className="flex flex-col justify-evenly items-center w-4/5 h-16">
+                        <h1 className="text-center text-title font-semibold text-lg"> {actualParking[0].namePark}</h1>
+                        <span className="w-full h-0.5 rounded-full bg-black"></span>
+                    </section>
+                </section>
+
                 <section className="flex flex-col justify-evenly items-center w-full h-22 mt-8">
-                    
-                
                     <div className="flex justify-between w-full mb-5">
                         <input type="date" id="resDate" className="w-2/5 p-3 rounded-md bg-white font-paragraph mr-4" value={resDate} 
                         onChange={(e) => setResDate(e.target.value)}></input>

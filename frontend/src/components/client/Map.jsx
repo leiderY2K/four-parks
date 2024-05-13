@@ -4,43 +4,49 @@ import { Icon, divIcon, point } from 'leaflet';
 import MarkerClusterGroup from 'react-leaflet-cluster'
 import axios from "axios";
 import coveredWhiteIcon from '../../assets/Parking Icons/Covered-White.png';
+import coveredOrangeIcon from '../../assets/Parking Icons/Covered-Orange.png';
 import coveredRedIcon from '../../assets/Parking Icons/Covered-Red.png';
 import uncoveredWhiteIcon from '../../assets/Parking Icons/Uncovered-White.png';
+import uncoveredOrangeIcon from '../../assets/Parking Icons/Uncovered-Orange.png';
 import uncoveredRedIcon from '../../assets/Parking Icons/Uncovered-Red.png';
 import semicoveredWhiteIcon from '../../assets/Parking Icons/Semicovered-White.png';
+import semicoveredOrangeIcon from '../../assets/Parking Icons/Semicovered-Orange.png';
 import semicoveredRedIcon from '../../assets/Parking Icons/Semicovered-Red.png';
 import "leaflet/dist/leaflet.css";
 import "../../css/map.css";
 
-const Map = ({ url, city, parkingType, availability, vehicleType, date, startTime, endTime, actualCity, setActualCity, setActualParking }) => {
+const Map = ({ url, city, parkingType, availability, vehicleType, date, startTime, endTime, actualCity, setActualCity, setActualParking, setOnReservationForm }) => {
     const [parkings, setParkings] = useState([]);
 
 
 
     useEffect(() => {
-        const token = sessionStorage.getItem('token').replace(/"/g, '');
-
-        axios.get(`http://localhost:8080/client/getCity`,  {params: {city: city}, headers: {Authorization: `Bearer ${token}`}})
-        .then(res => {
-            const cityObject = {
-                id: res.data.idCity,
-                name: res.data.name,
-                northLim: [res.data.btop, res.data.bleft],
-                southLim: [res.data.bbottom, res.data.bright],
-                centerCoords: [res.data.xcenter, res.data.ycenter]
-            }
-
-            setActualCity(cityObject);
-        })
-        .catch(err => {
-            console.log(err);
-        })
+        if(city) {
+            const token = sessionStorage.getItem('token').replace(/"/g, '');
+    
+            axios.get(`http://localhost:8080/client/getCity`,  {params: {city: city}, headers: {Authorization: `Bearer ${token}`}})
+            .then(res => {
+                const cityObject = {
+                    id: res.data.idCity,
+                    name: res.data.name,
+                    northLim: [res.data.btop, res.data.bleft],
+                    southLim: [res.data.bbottom, res.data.bright],
+                    centerCoords: [res.data.xcenter, res.data.ycenter]
+                }
+    
+                setActualCity(cityObject);
+            })
+            .catch(err => {
+                console.log(err);
+            })
+        }
     }, [city]);
 
     useEffect(() => {
         const token = sessionStorage.getItem('token').replace(/"/g, '');
-        const params = { city };
+        const params = {};
 
+        (city ? params.city = city : params.city = 'Bogota');
         if (parkingType) params.type = parkingType;
         if (availability) params.scheduleType = availability;
         if (vehicleType) params.vehicleType = vehicleType;
@@ -71,13 +77,13 @@ const Map = ({ url, city, parkingType, availability, vehicleType, date, startTim
     const getIcon = (type, ocupability) => {
         switch (type) {
             case 'COV':
-                return new Icon({iconUrl: (ocupability >= 0.8 ? coveredRedIcon : coveredWhiteIcon), iconSize: [50, 50]});
+                return new Icon({iconUrl: (ocupability >= 1 ? coveredRedIcon : (ocupability >= 0.7 ? coveredOrangeIcon : coveredWhiteIcon)), iconSize: [45, 45]});
             case 'UNC':
-                return new Icon({iconUrl: (ocupability >= 0.8 ? uncoveredRedIcon : uncoveredWhiteIcon), iconSize: [50, 50]});
+                return new Icon({iconUrl: (ocupability >= 1 ? uncoveredRedIcon : (ocupability >= 0.7 ? uncoveredOrangeIcon : uncoveredWhiteIcon)), iconSize: [45, 45]});
             case 'SEC':
-                return new Icon({iconUrl: (ocupability >= 0.8 ? semicoveredRedIcon : semicoveredWhiteIcon), iconSize: [50, 50]});
+                return new Icon({iconUrl: (ocupability >= 1 ? semicoveredRedIcon : (ocupability >= 0.7 ? semicoveredOrangeIcon : semicoveredWhiteIcon)), iconSize: [45, 45]});
             default:
-                return new Icon({iconUrl: (ocupability >= 0.8 ? coveredRedIcon : coveredWhiteIcon), iconSize: [50, 50]});
+                return new Icon({iconUrl: (ocupability >= 1 ? coveredRedIcon : (ocupability >= 0.7 ? coveredOrangeIcon : coveredWhiteIcon)), iconSize: [45, 45]});
         }
     };
 
@@ -97,6 +103,12 @@ const Map = ({ url, city, parkingType, availability, vehicleType, date, startTim
         headers: {Authorization: `Bearer ${token}`}})
         .then(res => {
             setActualParking([res.data.parking, res.data.capacity]);
+            setOnReservationForm(false);
+
+            let newCenterCoords = actualCity;
+            newCenterCoords.centerCoords = [parking.coords[0], parking.coords[1]];
+
+            setActualCity(newCenterCoords);
         })
         .catch(err => {
             console.log(err);
@@ -115,10 +127,7 @@ const Map = ({ url, city, parkingType, availability, vehicleType, date, startTim
     }
 
     return (
-        <MapContainer center={[4.6430382, -74.0730269]} zoom={14} minZoom={12} maxBounds={[actualCity.northLim, actualCity.southLim]} className='rounded-2xl shadow-lg' 
-        whenCreated={mapInstance => {
-            console.log("Mapa creado", mapInstance);
-        }}>
+        <MapContainer minZoom={12} maxBounds={[actualCity.northLim, actualCity.southLim]} className='rounded-2xl shadow-lg'>
             <TileLayer 
                 attribution='&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>'
                 url='https://tile.openstreetmap.org/{z}/{x}/{y}.png'

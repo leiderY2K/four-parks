@@ -21,8 +21,8 @@ public interface IParkingRepository extends JpaRepository<Parking, Integer>{
                     "JOIN SCHEDULE st ON p.FK_IDSCHEDULE = st.IDSCHEDULE " +
                     "LEFT JOIN PARKINGTYPE pt ON p.FK_IDPARKINGTYPE = pt.IDPARKINGTYPE " +
                 "WHERE c.NAME = :city " +
-                    "AND (:endTime IS NULL OR st.ENDTIME >= :endTime) "+
-                    "AND (:startTime IS NULL OR st.STARTTIME <= :startTime) "+
+                    "AND (:endTime IS NULL OR p.ENDTIME >= :endTime) "+
+                    "AND (:startTime IS NULL OR p.STARTTIME <= :startTime) "+
                     "AND (:scheduleType IS NULL OR st.SCHEDULETYPE = :scheduleType) " +
                     "AND (:type IS NULL OR p.FK_IDPARKINGTYPE = :type)",
         nativeQuery = true)

@@ -7,12 +7,14 @@ import jakarta.persistence.AttributeOverrides;
 import jakarta.persistence.Column;
 import jakarta.persistence.Embeddable;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
 @AllArgsConstructor
 @NoArgsConstructor
 @Data
+@Builder
 @Embeddable
 @AttributeOverrides({
     @AttributeOverride(
@@ -29,8 +31,11 @@ import lombok.NoArgsConstructor;
     )
 })
 public class ParkingSpaceId implements Serializable {
-    private int idParkingSpace;
-    private int idParking;
+    
+    private Integer idParkingSpace;
+
+    private Integer idParking;
+
     private String idCity;
 
 }

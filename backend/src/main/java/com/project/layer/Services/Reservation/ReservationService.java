@@ -8,7 +8,10 @@ import java.time.LocalTime;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
+import java.util.Calendar;
 
+import org.springframework.scheduling.annotation.EnableScheduling;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
 import com.project.layer.Controllers.Requests.StartReservationRequest;
@@ -31,7 +34,9 @@ import lombok.RequiredArgsConstructor;
 
 @Service
 @RequiredArgsConstructor
+@EnableScheduling
 public class ReservationService {
+
 
     private final IReservationRepository reservationRepository;
     private final IParkingSpaceRepository parkingSpaceRepository;
@@ -45,9 +50,10 @@ public class ReservationService {
                 urRequest.getClientId().getIdDocType(), urRequest.getStatus());
     }
 
-    @Transactional
-    public String startReservation(StartReservationRequest reservationRequest) throws MessagingException {
 
+    @Transactional
+
+    public String startReservation(StartReservationRequest reservationRequest) throws MessagingException {
         Date sqlDate = Date.valueOf(LocalDate.now());
 
         System.out.println("La fecha: " + reservationRequest.getDateRes());
@@ -86,7 +92,7 @@ public class ReservationService {
         }
 
         User client = userRepository.getReferenceById(reservationRequest.getClientId());
-
+        
         Reservation reservation = Reservation.builder()
                 .dateRes(reservationRequest.getDateRes())
                 .startTimeRes(reservationRequest.getStartTimeRes())
@@ -119,17 +125,28 @@ public class ReservationService {
     }
 
     @Transactional
-    public String confirmReservation() {
+    @Scheduled(cron = "0 30 * * * *")
+    public void confirmReservation() {
 
-        Time actualTime = Time.valueOf(LocalTime.now().minusMinutes(5));
-        Time postActualTime = Time.valueOf(LocalTime.now().plusMinutes(40));
-        ;
-
-        List<Reservation> reservations = reservationRepository.findByStartTime(actualTime, postActualTime);
-
-        if (reservations.isEmpty()) {
-            return "No se encontró ninguna reserva con el ID proporcionado.";
+        Time hour = Time.valueOf(LocalTime.now());
+        String sHour = hour.toString();
+        int intHour = 0;
+        if (sHour.substring(0, 2).equals("23")) {
+            intHour = 0;
+        } else if (sHour.charAt(0) == '0') {
+            intHour = Integer.parseInt(sHour.substring(1, 2)) + 1;
+        } else {
+            intHour = Integer.parseInt(sHour.substring(0, 2)) + 1;
         }
+        Calendar calendar = Calendar.getInstance();
+        calendar.set(Calendar.HOUR_OF_DAY, intHour); 
+        calendar.set(Calendar.MINUTE, 0); 
+        calendar.set(Calendar.SECOND, 0); 
+        calendar.set(Calendar.MILLISECOND, 0);
+        long timeInMillis = calendar.getTimeInMillis();
+        hour = new Time(timeInMillis);
+        Date sqlDate = Date.valueOf(LocalDate.now());
+        List<Reservation> reservations = reservationRepository.findByStartTime(hour, sqlDate, ResStatus.PENDING.getId());
 
         for (Reservation reservation : reservations) {
             long totalSeconds;
@@ -144,11 +161,12 @@ public class ReservationService {
             float totalHours = totalSeconds / 3600.0f;
 
             int rate = rateRepository.getHourCostByParkingSpace(
-                    reservation.getParkingSpace().getParkingSpaceId().getIdParking(),
-                    reservation.getParkingSpace().getParkingSpaceId().getIdCity(),
-                    reservation.getVehicleType(),
-                    reservation.getParkingSpace().isUncovered());2
-
+                reservation.getParkingSpace().getParkingSpaceId().getIdParking(),
+                reservation.getParkingSpace().getParkingSpaceId().getIdCity(),
+                reservation.getVehicleType(),
+                reservation.getParkingSpace().isUncovered()
+            );
+    
             float totalCost = totalHours * rate;
 
             // Se debe realizar el pago
@@ -156,13 +174,14 @@ public class ReservationService {
 
             // Se debe enviar email de correo
             // -------------------------------------------------------------------------------------------------------
+
+
             reservation.setStatus(ResStatus.CONFIRMED.getId());
             reservation.setTotalRes(totalCost);
 
             reservationRepository.save(reservation);
         }
-
-        return "Se realizo el pago";
+        
     }
 
     @Transactional
@@ -178,8 +197,7 @@ public class ReservationService {
         reservation.setStatus(ResStatus.IN_PROGRESS.getId());
 
         reservationRepository.save(reservation);
-
-        return "¡Su reserva ha comenzado!";
+        return "¡Su reserva fue cancelada!";
     }
 
     @Transactional
@@ -198,11 +216,19 @@ public class ReservationService {
             return "¡La reserva no puede ser cancelada!";
         }
 
-        int cancellationCost = rateRepository.getCancellationCostByParkingSpace(
+        int rate = rateRepository.getCancellationCostByParkingSpace(
                 reservation.getParkingSpace().getParkingSpaceId().getIdParking(),
                 reservation.getParkingSpace().getParkingSpaceId().getIdCity(),
                 reservation.getVehicleType(),
                 reservation.getParkingSpace().isUncovered());
+
+        
+        int cancellationCost = rateRepository.getCancellationCostByParkingSpace(
+            reservation.getParkingSpace().getParkingSpaceId().getIdParking(),
+            reservation.getParkingSpace().getParkingSpaceId().getIdCity(),
+            reservation.getVehicleType(),
+            reservation.getParkingSpace().isUncovered()
+        );
 
         System.out.println("Costo de tarifa: " + cancellationCost);
 
@@ -254,12 +280,69 @@ public class ReservationService {
         }
 
         // Actualizar campos
-        reservation.setStatus(ResStatus.COMPLETED.getId());
+        reservation.setStatus(ResStatus.CANCELLED.getId());
 
         // Guardar cambios
         reservationRepository.save(reservation);
 
         return "¡Su salida ha sido exitosa!";
+
+    }
+
+    @Transactional
+    @Scheduled(cron = "0 59 * * * *")
+    public void automaticCheckOut() {
+
+        Time hour = Time.valueOf(LocalTime.now());
+        String sHour = hour.toString();
+        int intHour = 0;
+        if (sHour.substring(0, 2).equals("23")) {
+            intHour = 0;
+        } else if (sHour.charAt(0) == '0') {
+            intHour = Integer.parseInt(sHour.substring(1, 2)) + 1;
+        } else {
+            intHour = Integer.parseInt(sHour.substring(0, 2)) + 1;
+        }
+        Calendar calendar = Calendar.getInstance();
+        calendar.set(Calendar.HOUR_OF_DAY, intHour); 
+        calendar.set(Calendar.MINUTE, 0); 
+        calendar.set(Calendar.SECOND, 0); 
+        calendar.set(Calendar.MILLISECOND, 0);
+        long timeInMillis = calendar.getTimeInMillis();
+        hour = new Time(timeInMillis);
+        Date sqlDate = Date.valueOf(LocalDate.now());
+        List<Reservation> reservations = reservationRepository.findByEndTime(hour, sqlDate, ResStatus.CONFIRMED.getId());
+
+        for (Reservation reservation : reservations) {
+            long totalSeconds;
+
+            LocalTime endTime = reservation.getEndTimeRes().toLocalTime();
+
+            totalSeconds = Duration.between(endTime, LocalTime.now()).getSeconds();
+            System.out.println("Aun no se ha acabado la reserva");
+
+            // Se hace de esta manera ya que en la BD el cobro se hace por horas
+            float totalMinutes = totalSeconds / 60.0f;
+
+            int rate = rateRepository.getHourCostByParkingSpace(
+                    reservation.getParkingSpace().getParkingSpaceId().getIdParking(),
+                    reservation.getParkingSpace().getParkingSpaceId().getIdCity(),
+                    reservation.getVehicleType(),
+                    reservation.getParkingSpace().isUncovered());
+
+            float totalCost = totalMinutes * (rate/60);
+
+            // Se debe realizar el pago
+            // -------------------------------------------------------------------------------------------------------------
+
+            // Se debe enviar email de correo
+            // -------------------------------------------------------------------------------------------------------
+
+            reservation.setStatus(ResStatus.COMPLETED.getId());
+            reservation.setTotalRes(reservation.getTotalRes()+totalCost);
+
+            reservationRepository.save(reservation);
+        }
 
     }
 

@@ -12,7 +12,6 @@ setStartTime, endTime, setEndTime}) => {
     .then(res=>{
       const cityArray = res.data.map(city => (city))
       setCities(cityArray);
-      console.log(res)
     })
     .catch(err=>{
       console.log(err);
@@ -46,8 +45,8 @@ setStartTime, endTime, setEndTime}) => {
         <select id="parking-city" value={city} className="w-1/2 mr-12 p-4 rounded-md bg-white shadow-md font-paragraph" onChange={(e) => setCity(e.target.value)}>
           <option value="" disabled selected hidden> Ciudad </option>
           <option value=""></option>
-          {cities.map(city => (
-            <option value={city}> {city} </option>
+          {cities.map((city, index) => (
+            <option key={index} value={city}> {city} </option>
           ))}
         </select>
         
