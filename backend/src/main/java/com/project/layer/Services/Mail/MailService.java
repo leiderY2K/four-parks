@@ -11,6 +11,7 @@ import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.stereotype.Service;
 import org.thymeleaf.TemplateEngine;
 import org.thymeleaf.context.Context;
+
 import java.util.List;
 
 @Service
@@ -35,10 +36,10 @@ public class MailService{
             helper.setSubject(subject);
 
             Context context = new Context();
-            for (int i = 0; i < messages.size(); i++) {
-                context.setVariable("message", messages.get(i));
+            for (int i = 1; i < messages.size(); i++) {
+                context.setVariable("message_"+Integer.toString(i), messages.get(i));
             }
-            String contentHTML = templateEngine.process("Registro", context);
+            String contentHTML = templateEngine.process(messages.get(0), context);
 
             helper.setText(contentHTML, true);
 
@@ -49,31 +50,5 @@ public class MailService{
         }
 
     }
-    public void sendReservationMail(String receiver,String subject, List<String> messages) throws MessagingException {
-
-        try {
-
-            MimeMessage message = javaMailSender.createMimeMessage();
-            MimeMessageHelper helper = new MimeMessageHelper(message, true, "UTF-8");
-
-            helper.setTo(receiver);
-            helper.setSubject(subject);
-
-            Context context = new Context();
-            for (int i = 0; i < messages.size(); i++) {
-                context.setVariable("message", messages.get(i));
-            }
-            String contentHTML = templateEngine.process("Registro", context);
-
-            helper.setText(contentHTML, true);
-
-            javaMailSender.send(message);
-
-        } catch (Exception e) {
-            throw new RuntimeException("Error al enviar el correo: " + e.getMessage(), e);
-        }
-
-    }
-
 }
 

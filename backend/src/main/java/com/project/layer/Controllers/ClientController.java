@@ -17,9 +17,11 @@ import com.project.layer.Controllers.Responses.ParkingResponse;
 import com.project.layer.Persistence.Entity.City;
 import com.project.layer.Persistence.Entity.Parking;
 import com.project.layer.Persistence.Entity.Reservation;
+import com.project.layer.Services.Mail.MailService;
 import com.project.layer.Services.Map.MapService;
 import com.project.layer.Services.Reservation.ReservationService;
 
+import jakarta.mail.MessagingException;
 import lombok.RequiredArgsConstructor;
 
 @RestController
@@ -29,7 +31,7 @@ public class ClientController {
     
     private final MapService mapService;
     private final ReservationService reservationService;
-    //private final PaymentService paymentService;
+ //private final PaymentService paymentService;
 
     @GetMapping("/cityList")
     public List<String> getCityList(){
@@ -65,7 +67,7 @@ public class ClientController {
     }
 
     @PostMapping("/startReservation")
-    public String startParkingSpace(@RequestBody StartReservationRequest reservationRequest){
+    public String startParkingSpace(@RequestBody StartReservationRequest reservationRequest) throws MessagingException{
         return reservationService.startReservation(reservationRequest);
     }
     
