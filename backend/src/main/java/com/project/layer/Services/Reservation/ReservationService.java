@@ -8,6 +8,8 @@ import java.time.LocalTime;
 import java.util.*;
 
 import com.project.layer.Services.Payment.PaymentService;
+import org.springframework.scheduling.annotation.Async;
+import org.springframework.scheduling.annotation.EnableAsync;
 import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
@@ -29,6 +31,7 @@ import lombok.RequiredArgsConstructor;
 @Service
 @RequiredArgsConstructor
 @EnableScheduling
+@EnableAsync
 public class ReservationService {
 
     private final IReservationRepository reservationRepository;
@@ -108,7 +111,7 @@ public class ReservationService {
         reservationRepository.save(reservation);
         token = paymentService.createCardToken(userId);
         //paymentService.charge(token, totalCost);
-        confirmReservation();
+        //confirmReservation();
 
         return "¡La reserva se realizo exitosamente!"+" su token es: " + token;
     }
@@ -159,8 +162,7 @@ public class ReservationService {
 
             // Se debe realizar el pago
             paymentService.charge(token, totalCost);
-            System.out.println("su token fue: " + token);
-            System.out.println("usted cancelo" + totalCost);
+
             // -------------------------------------------------------------------------------------------------------------
 
             // Se debe enviar email de correo

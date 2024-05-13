@@ -1,6 +1,4 @@
 package com.project.layer.Services.Payment;
-
-import com.google.gson.Gson;
 import com.project.layer.Controllers.Requests.StripeChargeRequest;
 import com.project.layer.Controllers.Responses.StripeTokenResponse;
 import com.project.layer.Persistence.Entity.Card;
@@ -16,8 +14,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
-
-import java.math.BigDecimal;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
