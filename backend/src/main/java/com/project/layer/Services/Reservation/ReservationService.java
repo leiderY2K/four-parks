@@ -198,7 +198,7 @@ public class ReservationService {
                 reservation.getVehicleType(),
                 reservation.getParkingSpace().isUncovered());
 
-        System.out.println("Costo de tarifa: " + cancellationCost);
+        System.out.println("Costo de tarifa: " + rate);
 
         // Se debe realizar el cargo por cancelación
         // -------------------------------------------------------------------------------------------------------------

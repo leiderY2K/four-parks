@@ -31,7 +31,7 @@ const LoginPage = ({ url }) => {
 
   return (
     <div className="h-screen" style={{backgroundImage: `url(${backgroundImage})`, backgroundSize: 'cover', backgroundPosition: 'center'}}>
-        <div className="flex items-center justify-center w-full">
+        <div className="flex items-center justify-center h-screen">
             <Login url={url} />
         </div>
     </div>
