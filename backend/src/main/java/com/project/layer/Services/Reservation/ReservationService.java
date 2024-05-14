@@ -113,26 +113,21 @@ public class ReservationService {
                 .status(ResStatus.PENDING.getId())
                 .build();
         Optional<Parking> parking = parkingRepository.findById(reservation.getParkingSpace().getParkingSpaceId().getIdParking());
-        List<String> reserva = Arrays.asList("email",
-                Integer.toString(reservation.getIdReservation()),
-                reservation.getDateRes().toString(),
-                reservation.getStartTimeRes().toString(),
-                reservation.getEndTimeRes().toString(),
-                reservation.getLicensePlate(),
-                client.getFirstName() + " " + client.getLastName(),
-                reservationRequest.getClientId().getIdUser(),
-                reservationRequest.getClientId().getIdDocType(),
-                reservationRequest.getCityId(),
-                parking.get().getNamePark(),
-                reservationRequest.getVehicleType());
-
-
-
         String userId = reservationRequest.getClientId().getIdUser();
-
         //float totalCost = 8653;
-
         reservationRepository.save(reservation);
+        List<String> reserva = Arrays.asList("email",
+        Integer.toString(reservation.getIdReservation()),
+        reservation.getDateRes().toString(),
+        reservation.getStartTimeRes().toString(),
+        reservation.getEndTimeRes().toString(),
+        reservation.getLicensePlate(),
+        client.getFirstName() + " " + client.getLastName(),
+        reservationRequest.getClientId().getIdUser(),
+        reservationRequest.getClientId().getIdDocType(),
+        reservationRequest.getCityId(),
+        parking.get().getNamePark(),
+        reservationRequest.getVehicleType());
         mailService.sendMail("dmcuestaf@udistrital.edu.co", "[Four-parks] Informaciòn de su reserva", reserva);
         return "¡La reserva se realizo exitosamente!";
     }
