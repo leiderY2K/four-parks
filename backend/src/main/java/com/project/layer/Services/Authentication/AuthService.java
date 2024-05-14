@@ -1,9 +1,14 @@
 package com.project.layer.Services.Authentication;
 
 import java.security.SecureRandom;
+import java.text.SimpleDateFormat;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.HashMap;
 import java.util.Map;
 
+import com.project.layer.Persistence.Entity.*;
+import com.project.layer.Persistence.Repository.ICardRepository;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -12,10 +17,6 @@ import org.springframework.stereotype.Service;
 import com.project.layer.Controllers.Requests.LoginRequest;
 import com.project.layer.Controllers.Requests.RegisterRequest;
 import com.project.layer.Controllers.Responses.AuthResponse;
-import com.project.layer.Persistence.Entity.Role;
-import com.project.layer.Persistence.Entity.User;
-import com.project.layer.Persistence.Entity.UserAuthentication;
-import com.project.layer.Persistence.Entity.UserId;
 import com.project.layer.Persistence.Repository.IUserAuthRepository;
 import com.project.layer.Persistence.Repository.IUserRepository;
 import com.project.layer.Services.JWT.JwtService;
@@ -29,6 +30,7 @@ public class AuthService {
 
     private final IUserRepository userRepository;
     private final IUserAuthRepository userAuthRepository;
+    private final ICardRepository cardRepository;
     private final PasswordEncoder passwordEncoder;
     private final JwtService jwtService;
 
@@ -88,6 +90,25 @@ public class AuthService {
 
         // Guardar el usuario en la base de datos
         userAuthRepository.save(userAuthentication);
+
+        User cardOwner = userRepository.getReferenceById(userId);
+
+
+        // Cambiar el formato de fecha para pasárselo a la tabla
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yy");
+        LocalDate expiryDate = LocalDate.parse(request.getExpiryDate(), formatter);
+
+
+        // Crear una instancia de Card
+        Card newCard = Card.builder()
+                .cardOwner(cardOwner)
+                .serialCard(request.getSerialCard())
+                .ExpDateCard(expiryDate)
+                .cvvCard(request.getCvv())
+                .build();
+
+        //Guardar la tarjeta del usuario en la base de datos
+        cardRepository.save(newCard);
 
         return AuthResponse.builder()
             .token(jwtService.getToken(null, userAuthentication))

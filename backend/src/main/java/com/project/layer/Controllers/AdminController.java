@@ -1,4 +1,6 @@
 package com.project.layer.Controllers;
+import java.util.List;
+
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -7,6 +9,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.project.layer.Controllers.Requests.ParkingSpaceRequest;
 import com.project.layer.Persistence.Entity.Parking;
+import com.project.layer.Persistence.Entity.UserId;
 import com.project.layer.Services.Parameterization.ParameterizationService;
 
 import lombok.RequiredArgsConstructor;
@@ -17,6 +20,11 @@ import lombok.RequiredArgsConstructor;
 public class AdminController {
     
     private final ParameterizationService parameterizationService;
+
+    @PostMapping("/searchParkings")
+    public List<Parking> searchParking(@RequestBody UserId adminId ){
+        return parameterizationService.searchParking(adminId);
+    }
 
     @PostMapping("/modifyParking")
     public ResponseEntity<String> modifyParking(@RequestBody Parking parkingRequest){

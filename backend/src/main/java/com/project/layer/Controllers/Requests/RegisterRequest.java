@@ -1,9 +1,11 @@
 package com.project.layer.Controllers.Requests;
 
+import com.project.layer.Persistence.Entity.UserId;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import javax.validation.constraints.*;
+import java.text.SimpleDateFormat;
 import java.util.regex.Pattern;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
@@ -51,6 +53,26 @@ public class RegisterRequest {
     @JsonProperty("phone")
     private String phone;
 
+
+    @Length(min = 16, max = 16, message = "El numero de tarjeta debe tener 16 caracteres")
+    @JsonProperty("serialCard")
+    private String serialCard;
+
+    @Length(min = 2, max = 2, message = "El mes de expiracion debe tener 2 caracteres")
+    @NotBlank
+    @JsonProperty("ExpiryMonthCard")
+    private String expiryMonthCard;
+
+    @Length(min = 2, max = 2, message = "El año de expiracion debe tener 2 caracteres")
+    @NotBlank
+    @JsonProperty("ExpiryYearCard")
+    private String expiryYearCard;
+
+    @Digits(integer = 3, fraction = 0, message = "El CVC debe ser numérico")
+    @Length(min = 3, max = 3, message = "El cvv de la tarjeta debe tener  3 caracteres")
+    @JsonProperty("cvc")
+    private String cvv;
+
     public boolean hasEmptyParameters() {
         return idDocTypeFk == null || idDocTypeFk.isEmpty() ||
                 idUser == null || idUser.isEmpty() ||
@@ -61,10 +83,11 @@ public class RegisterRequest {
                 role == null || role.isEmpty();
     }
 
-    public boolean isEmail(String tempEmail) {
-        Pattern pattern = Pattern.compile("^[_A-Za-z0-9-\\+]+(\\.[_A-Za-z0-9-]+)*@[A-Za-z0-9-]+(\\.[A-Za-z0-9]+)*(\\.[A-Za-z]{2,})$");
-        Matcher mather = pattern.matcher(email);
-        return mather.find();
+    public String getExpiryDate() {
+
+        String expiryDayCard = String.valueOf(31);
+        return  expiryDayCard  + "/"  +expiryMonthCard + "/" + expiryYearCard;
     }
+
 }
 

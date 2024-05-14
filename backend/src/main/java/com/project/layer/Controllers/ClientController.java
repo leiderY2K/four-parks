@@ -85,11 +85,5 @@ public class ClientController {
     public String endReservation(@RequestParam int idReservation){
         return reservationService.checkOutReservation(idReservation);
     }
-
-    /*@PostMapping("/makePayment")
-    public String makePayment(@RequestParam float amount){
-
-        return paymentService.getToken();
-    }*/
     
 }

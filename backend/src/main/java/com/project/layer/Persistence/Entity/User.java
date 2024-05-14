@@ -1,14 +1,14 @@
 package com.project.layer.Persistence.Entity;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.EmbeddedId;
-import jakarta.persistence.Entity;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @Table(name = "USER")
@@ -32,4 +32,10 @@ public class User {
 
     @Column(name = "PHONE", length = 10, nullable = false)
     private String phone;
+/*
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "cardOwner", cascade = CascadeType.ALL)
+    List<Card> cards;
+
+}
+ */
 }

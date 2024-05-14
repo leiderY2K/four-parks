@@ -32,6 +32,12 @@ public interface IUserRepository extends JpaRepository<User, UserId> {
     )
     Optional<User> findByEmail(@Param("email") String email);
 
+    @Query(
+            value ="SELECT * FROM USER u WHERE u.FIRSTNAME = :firstname",
+            nativeQuery = true
+    )
+    Optional<User> findByFirstName(@Param("firstname") String firstname);
+
     /*
     @Query(
             value = "SELECT * FROM USER_AUTHENTICATION ua " +
