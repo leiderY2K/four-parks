@@ -128,7 +128,7 @@ public class ReservationService {
         reservationRequest.getCityId(),
         parking.get().getNamePark(),
         reservationRequest.getVehicleType());
-        mailService.sendMail("dmcuestaf@udistrital.edu.co", "[Four-parks] Informaciòn de su reserva", reserva);
+        mailService.sendMail(client.getEmail(), "[Four-parks] Informaciòn de su reserva", reserva);
         return "¡La reserva se realizo exitosamente!";
     }
 

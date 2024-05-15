@@ -15,9 +15,10 @@ function ReservationCard({url, setOnReservationForm, actualParking, actualCity})
     const [licensePlate, setLicensePlate] = useState('');
     const [vehicleType, setVehicleType] = useState('');
     const [resPayMethod, setResPayMethod] = useState('');
-
+    const [price, setPrice] = useState('');
+    
     const navigate = useNavigate();
-
+    //Hacer calculo de tarifa
     const idCiudad = actualCity.id;
     const idParqueadero = actualParking[0].idParking;
 
@@ -30,6 +31,7 @@ function ReservationCard({url, setOnReservationForm, actualParking, actualCity})
         }
       };
 
+    
     const handleReservation = (e) => {
         e.preventDefault();
         const token = sessionStorage.getItem('token').replace(/"/g, '');
@@ -148,13 +150,13 @@ function ReservationCard({url, setOnReservationForm, actualParking, actualCity})
                         onChange={(e) => setResPayMethod(e.target.value)}>
                             <option value="" disabled hidden> Metodo de pago </option>
                             <option value=""></option>
-                            <option value="Mastercard">Mastercard</option>
+                            <option value="5104499087433833">5104499087433833</option>
                             <option value="Nequi">Nequi</option>
                         </select>
                     </div>
 
                     <div className="flex justify-between w-full mt-5">
-                        <div className="text font-semibold text-lg">Total Reserva: $0</div>
+                        <div className="text font-semibold text-lg">Total Reserva: ${price}</div>
                         <hr className="h-0.5 rounded-full bg-blue-light"></hr>
                     </div>
                 </section>  
