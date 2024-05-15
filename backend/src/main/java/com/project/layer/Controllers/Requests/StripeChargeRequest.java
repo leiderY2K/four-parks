@@ -21,5 +21,4 @@ public class StripeChargeRequest {
     private String message;
     private String chargeId;
     private Map<String, Object> additionalInfo = new HashMap<>();
-
 }

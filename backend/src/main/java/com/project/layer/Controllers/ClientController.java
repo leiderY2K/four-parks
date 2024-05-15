@@ -4,6 +4,7 @@ import java.sql.Time;
 import java.util.List;
 
 //import com.project.layer.Services.Payment.PaymentService;
+import jakarta.mail.MessagingException;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -65,7 +66,7 @@ public class ClientController {
     }
 
     @PostMapping("/startReservation")
-    public String startParkingSpace(@RequestBody StartReservationRequest reservationRequest){
+    public String startParkingSpace(@RequestBody StartReservationRequest reservationRequest) throws MessagingException {
         return reservationService.startReservation(reservationRequest);
     }
     

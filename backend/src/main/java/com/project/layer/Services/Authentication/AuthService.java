@@ -1,7 +1,6 @@
 package com.project.layer.Services.Authentication;
 
 import java.security.SecureRandom;
-import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.HashMap;
