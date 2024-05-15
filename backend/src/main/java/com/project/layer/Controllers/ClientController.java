@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.project.layer.Controllers.Requests.ReservationRequest;
 import com.project.layer.Controllers.Requests.StartReservationRequest;
 import com.project.layer.Controllers.Requests.UserReservationRequest;
 import com.project.layer.Controllers.Responses.ParkingResponse;
@@ -72,18 +73,18 @@ public class ClientController {
     // No hay end point para confirmar por lo que es progrado, front no tiene nada que ver aqui
 
     @PostMapping("/checkIn")
-    public String checkInReservation(@RequestBody int idReservation){
-        return reservationService.checkInReservation(idReservation);
+    public String checkInReservation(@RequestBody ReservationRequest idReservation){
+        return reservationService.checkInReservation(idReservation.getIdReservation());
     }
 
     @PostMapping("/cancelReservation")
-    public String cancelReservation(@RequestBody int idReservation){
-        return reservationService.cancelReservation(idReservation);
+    public String cancelReservation(@RequestBody ReservationRequest idReservation){
+        return reservationService.cancelReservation(idReservation.getIdReservation());
     }
 
     @GetMapping("/checkOut")
-    public String endReservation(@RequestParam int idReservation){
-        return reservationService.checkOutReservation(idReservation);
+    public String endReservation(@RequestParam ReservationRequest idReservation){
+        return reservationService.checkOutReservation(idReservation.getIdReservation());
     }
     
 }
