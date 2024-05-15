@@ -48,7 +48,6 @@ public class ReservationService {
     private final MailService mailService;
 
     private final PaymentService paymentService;
-    //private String token;
 
     public List<Reservation> getReservationsByClientId(UserReservationRequest urRequest) {
         return reservationRepository.findAllByClientId(urRequest.getClientId().getIdUser(),
@@ -112,8 +111,6 @@ public class ReservationService {
                 .status(ResStatus.PENDING.getId())
                 .build();
         Optional<Parking> parking = parkingRepository.findById(reservation.getParkingSpace().getParkingSpaceId().getIdParking());
-        //String userId = reservationRequest.getClientId().getIdUser();
-        //float totalCost = 8653;
         reservationRepository.save(reservation);
         List<String> reserva = Arrays.asList("email",
         Integer.toString(reservation.getIdReservation()),
@@ -155,7 +152,6 @@ public class ReservationService {
         hour = new Time(timeInMillis);
         Date sqlDate = Date.valueOf(LocalDate.now());
         List<Reservation> reservations = reservationRepository.findByStartTime(hour, sqlDate, ResStatus.PENDING.getId());
-        //String userIdd = String.valueOf(reservationRepository.findByUserId());
         for (Reservation reservation : reservations) {
             long totalSeconds;
 

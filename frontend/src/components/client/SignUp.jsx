@@ -4,7 +4,7 @@ import axios from "axios";
 import Swal from 'sweetalert2'
 import logo from '../../assets/Logo.png'
 
-export default function SignUp({url}) {
+export default function SignUp({ url }) {
     const [idType, setIdType] = useState('');
     const [idNumber, setIdNumber] = useState('');
     const [name, setName] = useState('');
@@ -16,47 +16,68 @@ export default function SignUp({url}) {
     const [cardNumber, setCardNumber] = useState('');
     const [expirationDate, setExpirationDate] = useState('');
     const [cvv, setCvv] = useState('');
+    const [masterCardNumbers, setMasterCardNumbers] = useState([5555555555554444, 2223003122003222, 5200828282828210, 5105105105105100])
+    const [visaNumbers, setVisaNumbers] = useState([4242424242424242, 4000056655665556])
+
+    //const [year, setYear] = useState("");
+    //const [month, setMonth] = useState("");
+
+    //Select si es mastercard o visa y dependiendo mestre uno de los dos 
+    //
 
     const navigate = useNavigate();
 
+
+
     const handleSignUp = (e) => {
         e.preventDefault();
+        let arr = expirationDate.split('-');
+        console.log(arr)
+        let year = arr[0].substr(arr[0].length - 2)
+        console.log(year)
+        let month = arr[1]
 
-        if(!idType || !idNumber || !name || !lastName || !phone || !username || !email) {
+
+        if (!idType || !idNumber || !name || !lastName || !phone || !username || !email ||!cardNumber ||!cvv ||!payMethod ||!expirationDate) {
             Swal.fire({
                 icon: 'info',
                 title: `Por favor llene todos los campos`
             });
         } else {
             axios.post(`${url}/auth/register`, {
-                idUser: idNumber, 
-                idDocTypeFk: idType, 
-                firstName: name, 
+                idUser: idNumber,
+                idDocTypeFk: idType,
+                firstName: name,
                 role: 'CLIENT',
-                lastName: lastName, 
-                email: email, 
-                phone: phone, 
-                username: username, 
+                lastName: lastName,
+                email: email,
+                phone: phone,
+                username: username,
                 password: 'temporal',
-            })
-            .then(res => {
-                console.log(res);
-                
-                Swal.fire({
-                    icon: 'success',
-                    title: `Registro exitoso`
-                });
+                serialCard: cardNumber,
+                ExpiryMonthCard: month,
+                ExpiryYearCard: year,
+                cvc: cvv
 
-                navigate("/inicio-sesion");
             })
-            .catch(err => {
-                Swal.fire({
-                    icon: 'error',
-                    title: `Hubo un error al registrar el usuario` ,
-                });
+                .then(res => {
+                    console.log(res);
 
-                console.log(err);
-            })
+                    Swal.fire({
+                        icon: 'success',
+                        title: `Registro exitoso`
+                    });
+
+                    navigate("/inicio-sesion");
+                })
+                .catch(err => {
+                    Swal.fire({
+                        icon: 'error',
+                        title: `Hubo un error al registrar el usuario`,
+                    });
+
+                    console.log(err);
+                })
         }
     }
 
@@ -75,69 +96,86 @@ export default function SignUp({url}) {
                         </select>
 
                         <input id="idNumber" className="w-2/5 p-3 rounded-md bg-white font-paragraph placeholder:text-gray-dark" placeholder="Numero de identificación"
-                        value={idNumber} onChange={(e) => setIdNumber(e.target.value)}></input>
+                            value={idNumber} onChange={(e) => setIdNumber(e.target.value)}></input>
                     </div>
-                
+
                     <div className="flex justify-between w-full">
                         <input id="name" className="w-2/5 p-3 rounded-md bg-white font-paragraph placeholder:text-gray-dark" placeholder="Nombre"
-                        value={name} onChange={(e) => setName(e.target.value)}></input>
-                        
-                        <input id="lastName"className="w-2/5 p-3 rounded-md bg-white font-paragraph placeholder:text-gray-dark" placeholder="Apellido"
-                        value={lastName} onChange={(e) => setLastName(e.target.value)}></input>
+                            value={name} onChange={(e) => setName(e.target.value)}></input>
+
+                        <input id="lastName" className="w-2/5 p-3 rounded-md bg-white font-paragraph placeholder:text-gray-dark" placeholder="Apellido"
+                            value={lastName} onChange={(e) => setLastName(e.target.value)}></input>
                     </div>
-                
+
                     <div className="flex justify-between w-full">
                         <input id="phone" className="w-2/5 p-3 rounded-md bg-white font-paragraph placeholder:text-gray-dark" placeholder="Telefono"
-                        value={phone} onChange={(e) => setPhone(e.target.value)}></input>
-                        
+                            value={phone} onChange={(e) => setPhone(e.target.value)}></input>
+
                         <input id="username" className="w-2/5 p-3 rounded-md bg-white font-paragraph placeholder:text-gray-dark" placeholder="Nombre de usuario"
-                        value={username} onChange={(e) => setUsername(e.target.value)}></input>
+                            value={username} onChange={(e) => setUsername(e.target.value)}></input>
                     </div>
-                
+
                     <div className="w-full">
                         <input id="email" className="w-full p-3 rounded-md bg-white font-paragraph placeholder:text-gray-dark" placeholder="Correo electrónico"
-                        value={email} onChange={(e) => setEmail(e.target.value)}></input>
+                            value={email} onChange={(e) => setEmail(e.target.value)}></input>
                     </div>
-                </section>  
+                </section>
 
                 <section className="w-full">
                     <div id="payMethods" className="flex justify-between w-full px-8 py-4 rounded-md bg-white font-paragraph">
                         <fieldset className="flex justify-between w-full" onChange={(e) => setPayMethod(e.target.value)}>
                             <div className="flex items-center">
-                                <input type="radio" id="mastercard" name="methods" value="mastercard" className="mr-4"/>
+                                <input type="radio" id="mastercard" name="methods" value="mastercard" className="mr-4" />
                                 <label for="mastercard"> Mastercard </label>
                             </div>
 
                             <div className="flex items-center">
-                                <input type="radio" id="visa" name="methods" value="visa" className="mr-4"/>
+                                <input type="radio" id="visa" name="methods" value="visa" className="mr-4" />
                                 <label for="visa"> Visa </label>
                             </div>
                         </fieldset>
                     </div>
 
                     <div className="w-full mt-5">
-                        <input id="cardNumber" className="w-full p-3 rounded-md bg-white font-paragraph placeholder:text-gray-dark" placeholder="Número de cuenta"
-                        value={cardNumber} onChange={(e) => setCardNumber(e.target.value)}></input>
+                        {payMethod?(payMethod == "mastercard" ? (
+                            <select id="idType" className="w-full p-3 rounded-md bg-white font-paragraph" value={cardNumber} onChange={(e) => setCardNumber(e.target.value)}>
+                                 <option value=""> </option>
+
+                                {masterCardNumbers.map(card => (
+                                    <option value={card}>{card}</option>
+                                ))}
+                            </select>
+                        ) : (<select id="idType" className="w-full p-3 rounded-md bg-white font-paragraph" value={cardNumber} onChange={(e) => setCardNumber(e.target.value)}>
+                            <option value=""> </option>
+                            {visaNumbers.map(card => (
+                                <option value={card}>{card}</option>
+                            ))}
+                        </select>)):(
+                            <select id="idType" className="w-full p-3 rounded-md bg-white font-paragraph" >
+                        </select>
+                        )}
+
+
                     </div>
 
                     <div className="flex justify-between w-full mt-5">
-                        <input type="date" id="expirationDate" value={expirationDate} className="p-4 rounded-md bg-white shadow-md font-paragraph" 
-                        onChange={(e) => setExpirationDate(e.target.value)}></input>
+                        <input type="date" id="expirationDate" value={expirationDate} className="p-4 rounded-md bg-white shadow-md font-paragraph"
+                            onChange={(e) => setExpirationDate(e.target.value)}></input>
 
-                        <input id="cvv"className="w-2/5 p-3 rounded-md bg-white font-paragraph placeholder:text-gray-dark" placeholder="cvv"
-                        value={cvv} onChange={(e) => setCvv(e.target.value)}></input>
-                    </div>           
+                        <input id="cvv" className="w-2/5 p-3 rounded-md bg-white font-paragraph placeholder:text-gray-dark" placeholder="cvv"
+                            value={cvv} onChange={(e) => setCvv(e.target.value)}></input>
+                    </div>
                 </section>
 
-                <button className="mt-8 px-20 py-3 bg-blue-dark hover:bg-blue-darkest rounded-xl text-white font-title font-semibold text-xl" onClick={handleSignUp}> 
-                Crear cuenta </button>
+                <button className="mt-8 px-20 py-3 bg-blue-dark hover:bg-blue-darkest rounded-xl text-white font-title font-semibold text-xl" onClick={handleSignUp}>
+                    Crear cuenta </button>
             </section>
 
             <hr className="h-0.5 mt-8 rounded-full bg-white"></hr>
 
             <div className="flex justify-center mt-2 font-paragraph text-sm text-white"> ¿Ya tiene una cuenta?
                 <a href="/inicio-sesion" className="ml-1 font-semibold text-white hover:text-blue-darkest"> Inicia sesión </a>
-            </div> 
+            </div>
         </article>
     )
 }
