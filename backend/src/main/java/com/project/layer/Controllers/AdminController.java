@@ -2,12 +2,15 @@ package com.project.layer.Controllers;
 import java.util.List;
 
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.project.layer.Controllers.Requests.HourAveragemRequest;
 import com.project.layer.Controllers.Requests.ParkingSpaceRequest;
+import com.project.layer.Controllers.Requests.StatisticsRequest;
 import com.project.layer.Persistence.Entity.Parking;
 import com.project.layer.Persistence.Entity.UserId;
 import com.project.layer.Services.Parameterization.ParameterizationService;
@@ -39,6 +42,11 @@ public class AdminController {
     @PostMapping("/deleteParkingSpace") 
     public ResponseEntity<String> deleteParkingSpace(@RequestBody ParkingSpaceRequest pkRequest ){
         return ResponseEntity.ok(parameterizationService.deleteParkingSpace(pkRequest));
+    }
+
+    @GetMapping("/getStatistics")
+    public List<HourAveragemRequest> getStatistics(@RequestBody StatisticsRequest statisticRequest) {
+        return parameterizationService.getStatistics(statisticRequest);
     }
 
 }
