@@ -1,7 +1,5 @@
 package com.project.layer.Controllers.Requests;
 
-import com.project.layer.Persistence.Entity.UserId;
-
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -11,10 +9,8 @@ import lombok.NoArgsConstructor;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class EndReservationRequest {
+public class ReservationRequest {
     
     private int idReservation;
-
-    private UserId clientId;
 
 }
