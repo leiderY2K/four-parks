@@ -1,7 +1,7 @@
 import React from 'react';
 import { useState } from "react";
 
-function ParamsInfo({ url }) {
+function QuotaManager({ url }) {
     //Cupos Cubiertos
     const [quotaCarCov, setQuotaCarCov] = useState('');
     const [quotaMotoCov, setQuotaMotoCov] = useState('');
@@ -21,167 +21,127 @@ function ParamsInfo({ url }) {
 
 
     return (
-        <article className="bg-blue-light mt-12 pt-2 pb-6 w-5/12 relative rounded-2xl shadow-xl ">
+        <article className="w-full mt-12 py-4 rounded-2xl shadow-xl bg-blue-light">
             <section className='flex justify-center'>
-                <div className='text-2xl font-semibold'>
-                    Administrar cupos
-                </div>
+                <div className='text-2xl font-semibold'> Administrar cupos </div>
             </section>
 
-
-
-
-            <section className='mt-5 mx-5'>
-                <label className='text font-semibold text-lg '>
-                    Cubierto
-                </label>
+            <section className='mt-2 px-8'>
+                <label className='text font-semibold text-xl'> Cubierto </label>
+                
                 <section className='flex flex-col'>
-
-                    <label className='mt-5 mb-2 text font-semibold'>
-                        Automóvil
-                    </label>
+                    <label className='mt-5 mb-2 text font-semibold'> Automóvil </label>
 
                     <section className='flex justify-between'>
                         <div className='flex justify-between'>
-                            <label className='text font-semibold pt-3'>
-                                # cupos
-                            </label>
-                            <input type="number" className='mr-8 w-7/12 shadow-xl p-3 rounded-md bg-white font-paragraph placeholder:text-gray-dark' placeholder='20' value={quotaCarCov} onChange={(e) => setQuotaCarCov(e.target.value)}/>
+                            <label className='text font-semibold pt-3'> # cupos </label>
+                            <input type="number" className='mr-8 w-7/12 shadow-xl p-3 rounded-md bg-white font-paragraph placeholder:text-gray-dark' placeholder='20' 
+                            value={quotaCarCov} onChange={(e) => setQuotaCarCov(e.target.value)}/>
                         </div>
 
                         <div className='flex justify-between'>
-                            <label className='ml-8 text font-semibold pt-3'>
-                                Tarifa
-                            </label>
-                            <input type="" className='w-2/3 shadow-xl p-3 rounded-md bg-white font-paragraph placeholder:text-gray-dark' placeholder='$25.000' value={RateCarCov} onChange={(e) => setRateCarCov(e.target.value)}/>
+                            <label className='ml-8 text font-semibold pt-3'> Tarifa </label>
+                            <input type="" className='w-2/3 shadow-xl p-3 rounded-md bg-white font-paragraph placeholder:text-gray-dark' placeholder='$25.000' 
+                            value={RateCarCov} onChange={(e) => setRateCarCov(e.target.value)}/>
                         </div>
                     </section>
                 </section>
 
                 <section className='flex flex-col'>
-
-                    <label className='mt-5 mb-2 text font-semibold'>
-                        Motocicleta
-                    </label>
+                    <label className='mt-5 mb-2 text font-semibold'> Motocicleta </label>
 
                     <section className='flex justify-between'>
                         <div className='flex justify-between'>
-                            <label className='text font-semibold pt-3'>
-                                # cupos
-                            </label>
-                            <input type="number" className='mr-8 w-7/12 shadow-xl p-3 rounded-md bg-white font-paragraph placeholder:text-gray-dark' placeholder='20' value={quotaMotoCov} onChange={(e) => setQuotaMotoCov(e.target.value)}/>
+                            <label className='text font-semibold pt-3'> # cupos </label>
+                            <input type="number" className='mr-8 w-7/12 shadow-xl p-3 rounded-md bg-white font-paragraph placeholder:text-gray-dark' placeholder='20' 
+                            value={quotaMotoCov} onChange={(e) => setQuotaMotoCov(e.target.value)}/>
                         </div>
 
                         <div className='flex justify-between'>
-                            <label className='ml-8 text font-semibold pt-3'>
-                                Tarifa
-                            </label>
-                            <input type="" className='w-2/3 shadow-xl p-3 rounded-md bg-white font-paragraph placeholder:text-gray-dark' placeholder='$15.000'value={RateMotoCov} onChange={(e) => setRateMotoCov(e.target.value)}/>
+                            <label className='ml-8 text font-semibold pt-3'> Tarifa </label>
+                            <input type="" className='w-2/3 shadow-xl p-3 rounded-md bg-white font-paragraph placeholder:text-gray-dark' placeholder='$15.000'
+                            value={RateMotoCov} onChange={(e) => setRateMotoCov(e.target.value)}/>
                         </div>
                     </section>
                 </section>
 
                 <section className='flex flex-col'>
-
-                    <label className='mt-5 mb-2 text font-semibold'>
-                        Bicicleta
-                    </label>
+                    <label className='mt-5 mb-2 text font-semibold'> Bicicleta </label>
 
                     <section className='flex justify-between'>
                         <div className='flex justify-between'>
-                            <label className='text font-semibold pt-3'>
-                                # cupos
-                            </label>
-                            <input type="number" className='mr-8 w-7/12 shadow-xl p-3 rounded-md bg-white font-paragraph placeholder:text-gray-dark' placeholder='20' value={quotaBicCov} onChange={(e) => setQuotaBicCov(e.target.value)}/>
+                            <label className='text font-semibold pt-3'> # cupos </label>
+                            <input type="number" className='mr-8 w-7/12 shadow-xl p-3 rounded-md bg-white font-paragraph placeholder:text-gray-dark' placeholder='20' 
+                            value={quotaBicCov} onChange={(e) => setQuotaBicCov(e.target.value)}/>
                         </div>
 
                         <div className='flex justify-between'>
-                            <label className='ml-8 text font-semibold pt-3'>
-                                Tarifa
-                            </label>
-                            <input type="" className='w-2/3 shadow-xl p-3 rounded-md bg-white font-paragraph placeholder:text-gray-dark' placeholder='$10.000' value={RateBicCov} onChange={(e) => setRateBicCov(e.target.value)}/>
+                            <label className='ml-8 text font-semibold pt-3'> Tarifa </label>
+                            <input type="" className='w-2/3 shadow-xl p-3 rounded-md bg-white font-paragraph placeholder:text-gray-dark' placeholder='$10.000' 
+                            value={RateBicCov} onChange={(e) => setRateBicCov(e.target.value)}/>
                         </div>
                     </section>
                 </section>
-
-
             </section>
-            <hr className="h-0.5 rounded-full bg-white w-full mt-10"></hr>
 
-            <section className='mt-5 mx-5'>
-                <label className='text font-semibold text-lg'>
-                    Descubierto
-                </label>
+            <hr className="h-0.5 mt-10 rounded-full bg-white"></hr>
+
+            <section className='mt-5 mx-5 px-4'>
+                <label className='text font-semibold text-lg'> Descubierto </label>
+
                 <section className='flex flex-col'>
-
-                    <label className='mt-5 mb-2 text font-semibold'>
-                        Automóvil
-                    </label>
+                    <label className='mt-5 mb-2 text font-semibold'> Automóvil </label>
 
                     <section className='flex justify-between'>
                         <div className='flex justify-between'>
-                            <label className='text font-semibold pt-3'>
-                                # cupos
-                            </label>
-                            <input type="number" className='mr-8 w-7/12 shadow-xl p-3 rounded-md bg-white font-paragraph placeholder:text-gray-dark' placeholder='20' value={quotaCarUnc} onChange={(e) => setQuotaCarUnc(e.target.value)}/>
+                            <label className='text font-semibold pt-3'> # cupos </label>
+                            <input type="number" className='mr-8 w-7/12 shadow-xl p-3 rounded-md bg-white font-paragraph placeholder:text-gray-dark' placeholder='20' 
+                            value={quotaCarCov} onChange={(e) => setQuotaCarCov(e.target.value)}/>
                         </div>
 
                         <div className='flex justify-between'>
-                            <label className='ml-8 text font-semibold pt-3'>
-                                Tarifa
-                            </label>
-                            <input type="" className='w-2/3 shadow-xl p-3 rounded-md bg-white font-paragraph placeholder:text-gray-dark' placeholder='$25.000' value={RateCarUnc} onChange={(e) => setRateCarUnc(e.target.value)}/>
+                            <label className='ml-8 text font-semibold pt-3'> Tarifa </label>
+                            <input type="" className='w-2/3 shadow-xl p-3 rounded-md bg-white font-paragraph placeholder:text-gray-dark' placeholder='$25.000' 
+                            value={RateCarCov} onChange={(e) => setRateCarCov(e.target.value)}/>
                         </div>
                     </section>
                 </section>
 
                 <section className='flex flex-col'>
-
-                    <label className='mt-5 mb-2 text font-semibold'>
-                        Motocicleta
-                    </label>
+                    <label className='mt-5 mb-2 text font-semibold'> Motocicleta </label>
 
                     <section className='flex justify-between'>
                         <div className='flex justify-between'>
-                            <label className='text font-semibold pt-3'>
-                                # cupos
-                            </label>
-                            <input type="number" className='mr-8 w-7/12 shadow-xl p-3 rounded-md bg-white font-paragraph placeholder:text-gray-dark' placeholder='20' value={quotaMotoUnc} onChange={(e) => setQuotaMotoUnc(e.target.value)}/>
+                            <label className='text font-semibold pt-3'> # cupos </label>
+                            <input type="number" className='mr-8 w-7/12 shadow-xl p-3 rounded-md bg-white font-paragraph placeholder:text-gray-dark' placeholder='20' 
+                            value={quotaMotoCov} onChange={(e) => setQuotaMotoCov(e.target.value)}/>
                         </div>
 
                         <div className='flex justify-between'>
-                            <label className='ml-8 text font-semibold pt-3'>
-                                Tarifa
-                            </label>
-                            <input type="" className='w-2/3 shadow-xl p-3 rounded-md bg-white font-paragraph placeholder:text-gray-dark' placeholder='$15.000'value={RateMotoUnc} onChange={(e) => setRateMotoUnc(e.target.value)}/>
+                            <label className='ml-8 text font-semibold pt-3'> Tarifa </label>
+                            <input type="" className='w-2/3 shadow-xl p-3 rounded-md bg-white font-paragraph placeholder:text-gray-dark' placeholder='$15.000'
+                            value={RateMotoCov} onChange={(e) => setRateMotoCov(e.target.value)}/>
                         </div>
                     </section>
                 </section>
 
                 <section className='flex flex-col'>
-
-                    <label className='mt-5 mb-2 text font-semibold'>
-                        Bicicleta
-                    </label>
+                    <label className='mt-5 mb-2 text font-semibold'> Bicicleta </label>
 
                     <section className='flex justify-between'>
                         <div className='flex justify-between'>
-                            <label className='text font-semibold pt-3'>
-                                # cupos
-                            </label>
-                            <input type="number" className='mr-8 w-7/12 shadow-xl p-3 rounded-md bg-white font-paragraph placeholder:text-gray-dark' placeholder='20' value={quotaBicUnc} onChange={(e) => setQuotaBicUnc(e.target.value)}/>
+                            <label className='text font-semibold pt-3'> # cupos </label>
+                            <input type="number" className='mr-8 w-7/12 shadow-xl p-3 rounded-md bg-white font-paragraph placeholder:text-gray-dark' placeholder='20' 
+                            value={quotaBicCov} onChange={(e) => setQuotaBicCov(e.target.value)}/>
                         </div>
 
                         <div className='flex justify-between'>
-                            <label className='ml-8 text font-semibold pt-3'>
-                                Tarifa
-                            </label>
-                            <input type="" className='w-2/3 shadow-xl p-3 rounded-md bg-white font-paragraph placeholder:text-gray-dark' placeholder='$10.000'value={RateBicUnc} onChange={(e) => setRateBicUnc(e.target.value)}/>
+                            <label className='ml-8 text font-semibold pt-3'> Tarifa </label>
+                            <input type="" className='w-2/3 shadow-xl p-3 rounded-md bg-white font-paragraph placeholder:text-gray-dark' placeholder='$10.000' 
+                            value={RateBicCov} onChange={(e) => setRateBicCov(e.target.value)}/>
                         </div>
                     </section>
                 </section>
-
-
             </section>
 
 
@@ -203,4 +163,4 @@ function ParamsInfo({ url }) {
     )
 }
 
-export default ParamsInfo;
+export default QuotaManager;

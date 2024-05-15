@@ -43,8 +43,12 @@ export default function Login({ url }) {
                             title: `Bienvenid@ ${user}`
                         });
 
-                        if (tokenDecoded.role == "CLIENT") {
+                        if(tokenDecoded.role == "CLIENT") {
                             navigate("/cliente-inicio", {
+                                replace: ("/inicio-sesion", true)
+                            });
+                        } else if(tokenDecoded.role == "ADMIN") {
+                            navigate("/admin-inicio", {
                                 replace: ("/inicio-sesion", true)
                             });
                         }
@@ -73,8 +77,7 @@ export default function Login({ url }) {
     }
 
     return (
-        <article id="loginCard" className="pt-6 md:pt-10 2xl:pt-6 rounded-2xl shadow-xl bg-gradient-to-b 
-        from-red-light from-75% to-red-dark">
+        <article id="loginCard" className="pt-6 md:pt-10 2xl:pt-6 rounded-2xl shadow-xl bg-gradient-to-b from-red-light from-75% to-red-dark">
             <section className="flex flex-col items-center px-6 md:px-10 xl:px-8">
                 <img src={logo} alt="Logo de Four Parks" className="w-24 h-24" />
 

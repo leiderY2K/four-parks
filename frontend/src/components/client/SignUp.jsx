@@ -13,6 +13,9 @@ export default function SignUp({url}) {
     const [username, setUsername] = useState('');
     const [email, setEmail] = useState('');
     const [payMethod, setPayMethod] = useState('');
+    const [cardNumber, setCardNumber] = useState('');
+    const [expirationDate, setExpirationDate] = useState('');
+    const [cvv, setCvv] = useState('');
 
     const navigate = useNavigate();
 
@@ -58,11 +61,11 @@ export default function SignUp({url}) {
     }
 
     return (
-        <article className="bg-gradient-to-b from-red-light from-75% to-red-dark pt-12 pb-6 relative rounded-2xl shadow-xl">
+        <article className="bg-gradient-to-b from-red-light from-75% to-red-dark pt-6 pb-6 relative rounded-2xl shadow-xl">
             <section className="flex flex-col items-center px-12">
                 <img src={logo} alt="Logo de Four Parks" className="w-24 h-24" />
 
-                <section className="flex flex-col justify-evenly items-center w-full h-72 mt-12">
+                <section className="flex flex-col justify-evenly items-center w-full h-72 mt-4">
                     <div className="flex justify-between w-full">
                         <select id="idType" className="w-2/5 p-3 rounded-md bg-white font-paragraph" value={idType} onChange={(e) => setIdType(e.target.value)}>
                             <option value="" disabled hidden> Tipo de documento </option>
@@ -95,17 +98,37 @@ export default function SignUp({url}) {
                         <input id="email" className="w-full p-3 rounded-md bg-white font-paragraph placeholder:text-gray-dark" placeholder="Correo electrónico"
                         value={email} onChange={(e) => setEmail(e.target.value)}></input>
                     </div>
-                    
                 </section>  
 
-                <div className="w-full mt-8">
-                    <div id="payMethods" className="flex justify-between w-full px-12 py-4 rounded-md bg-white font-paragraph placeholder:text-gray-dark" 
-                    value={payMethod} onChange={(e) => setPayMethod(e.target.value)}>
-                        <input type="radio" id="" value={"nequi"}/> Nequi
-                        <input type="radio" id="" value={"tarjeta"}/> Tarjeta de crédito
+                <section className="w-full">
+                    <div id="payMethods" className="flex justify-between w-full px-8 py-4 rounded-md bg-white font-paragraph">
+                        <fieldset className="flex justify-between w-full" onChange={(e) => setPayMethod(e.target.value)}>
+                            <div className="flex items-center">
+                                <input type="radio" id="mastercard" name="methods" value="mastercard" className="mr-4"/>
+                                <label for="mastercard"> Mastercard </label>
+                            </div>
+
+                            <div className="flex items-center">
+                                <input type="radio" id="visa" name="methods" value="visa" className="mr-4"/>
+                                <label for="visa"> Visa </label>
+                            </div>
+                        </fieldset>
                     </div>
-                </div>
-            
+
+                    <div className="w-full mt-5">
+                        <input id="cardNumber" className="w-full p-3 rounded-md bg-white font-paragraph placeholder:text-gray-dark" placeholder="Número de cuenta"
+                        value={cardNumber} onChange={(e) => setCardNumber(e.target.value)}></input>
+                    </div>
+
+                    <div className="flex justify-between w-full mt-5">
+                        <input type="date" id="expirationDate" value={expirationDate} className="p-4 rounded-md bg-white shadow-md font-paragraph" 
+                        onChange={(e) => setExpirationDate(e.target.value)}></input>
+
+                        <input id="cvv"className="w-2/5 p-3 rounded-md bg-white font-paragraph placeholder:text-gray-dark" placeholder="cvv"
+                        value={cvv} onChange={(e) => setCvv(e.target.value)}></input>
+                    </div>           
+                </section>
+
                 <button className="mt-8 px-20 py-3 bg-blue-dark hover:bg-blue-darkest rounded-xl text-white font-title font-semibold text-xl" onClick={handleSignUp}> 
                 Crear cuenta </button>
             </section>

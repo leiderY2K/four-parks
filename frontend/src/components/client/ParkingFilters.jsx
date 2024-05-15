@@ -66,7 +66,6 @@ setStartTime, endTime, setEndTime}) => {
           <option value="Dias de semana"> Lunes a viernes </option>
           <option value="Fines de semana"> Fines de semana </option>
           <option value="Tiempo completo"> 24/7 </option>
-          
         </select>
         
         <select id="parking-vehicleType" value={vehicleType} className="w-1/2 p-4 rounded-md bg-white shadow-md font-paragraph" onChange={(e) => setVehicleType(e.target.value)}>

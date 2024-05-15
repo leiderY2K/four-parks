@@ -5,7 +5,10 @@ import java.sql.Time;
 import java.time.Duration;
 import java.time.LocalDate;
 import java.time.LocalTime;
-import java.util.*;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Optional;
+import java.util.Calendar;
 
 import com.project.layer.Services.Payment.PaymentService;
 
@@ -18,15 +21,19 @@ import org.springframework.stereotype.Service;
 
 import com.project.layer.Controllers.Requests.StartReservationRequest;
 import com.project.layer.Controllers.Requests.UserReservationRequest;
+import com.project.layer.Persistence.Entity.Parking;
 import com.project.layer.Persistence.Entity.ParkingSpace;
 import com.project.layer.Persistence.Entity.ResStatus;
 import com.project.layer.Persistence.Entity.Reservation;
 import com.project.layer.Persistence.Entity.User;
+import com.project.layer.Persistence.Repository.IParkingRepository;
 import com.project.layer.Persistence.Repository.IParkingSpaceRepository;
 import com.project.layer.Persistence.Repository.IRateRepository;
 import com.project.layer.Persistence.Repository.IReservationRepository;
 import com.project.layer.Persistence.Repository.IUserRepository;
+import com.project.layer.Services.Mail.MailService;
 
+import jakarta.mail.MessagingException;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 
@@ -36,10 +43,13 @@ import lombok.RequiredArgsConstructor;
 @EnableAsync
 public class ReservationService {
 
+
     private final IReservationRepository reservationRepository;
     private final IParkingSpaceRepository parkingSpaceRepository;
+    private final IParkingRepository parkingRepository;
     private final IUserRepository userRepository;
     private final IRateRepository rateRepository;
+    private final MailService mailService;
 
     private final PaymentService paymentService;
     private String token;
@@ -49,10 +59,11 @@ public class ReservationService {
                 urRequest.getClientId().getIdDocType(), urRequest.getStatus());
     }
 
+
     @Transactional
     @Modifying
-    public String startReservation(StartReservationRequest reservationRequest) {
 
+    public String startReservation(StartReservationRequest reservationRequest) throws MessagingException {
         Date sqlDate = Date.valueOf(LocalDate.now());
 
         System.out.println("La fecha: " + reservationRequest.getDateRes());
@@ -91,7 +102,7 @@ public class ReservationService {
         }
 
         User client = userRepository.getReferenceById(reservationRequest.getClientId());
-
+        
         Reservation reservation = Reservation.builder()
                 .dateRes(reservationRequest.getDateRes())
                 .startTimeRes(reservationRequest.getStartTimeRes())
@@ -104,18 +115,24 @@ public class ReservationService {
                 .parkingSpace(selectedParkingSpace)
                 .status(ResStatus.PENDING.getId())
                 .build();
-
-
-
+        Optional<Parking> parking = parkingRepository.findById(reservation.getParkingSpace().getParkingSpaceId().getIdParking());
         String userId = reservationRequest.getClientId().getIdUser();
-
         //float totalCost = 8653;
-
         reservationRepository.save(reservation);
-        token = paymentService.createCardToken(userId);
-        //paymentService.charge(token, totalCost);
-
-        return "¡La reserva se realizo exitosamente!"+" su token es: " + token;
+        List<String> reserva = Arrays.asList("email",
+        Integer.toString(reservation.getIdReservation()),
+        reservation.getDateRes().toString(),
+        reservation.getStartTimeRes().toString(),
+        reservation.getEndTimeRes().toString(),
+        reservation.getLicensePlate(),
+        client.getFirstName() + " " + client.getLastName(),
+        reservationRequest.getClientId().getIdUser(),
+        reservationRequest.getClientId().getIdDocType(),
+        reservationRequest.getCityId(),
+        parking.get().getNamePark(),
+        reservationRequest.getVehicleType());
+        mailService.sendMail("dmcuestaf@udistrital.edu.co", "[Four-parks] Informaciòn de su reserva", reserva);
+        return "¡La reserva se realizo exitosamente!";
     }
 
     @Transactional
@@ -156,11 +173,12 @@ public class ReservationService {
             float totalHours = totalSeconds / 3600.0f;
 
             int rate = rateRepository.getHourCostByParkingSpace(
-                    reservation.getParkingSpace().getParkingSpaceId().getIdParking(),
-                    reservation.getParkingSpace().getParkingSpaceId().getIdCity(),
-                    reservation.getVehicleType(),
-                    reservation.getParkingSpace().isUncovered());
-
+                reservation.getParkingSpace().getParkingSpaceId().getIdParking(),
+                reservation.getParkingSpace().getParkingSpaceId().getIdCity(),
+                reservation.getVehicleType(),
+                reservation.getParkingSpace().isUncovered()
+            );
+    
             float totalCost = totalHours * rate;
 
             // Se debe realizar el pago
@@ -170,6 +188,7 @@ public class ReservationService {
 
             // Se debe enviar email de correo
             // -------------------------------------------------------------------------------------------------------
+
 
             reservation.setStatus(ResStatus.CONFIRMED.getId());
             reservation.setTotalRes(totalCost);
@@ -193,7 +212,6 @@ public class ReservationService {
         reservation.setStatus(ResStatus.IN_PROGRESS.getId());
 
         reservationRepository.save(reservation);
-
         return "¡Su reserva fue cancelada!";
     }
 
@@ -219,6 +237,7 @@ public class ReservationService {
                 reservation.getParkingSpace().getParkingSpaceId().getIdCity(),
                 reservation.getVehicleType(),
                 reservation.getParkingSpace().isUncovered());
+
 
         System.out.println("Costo de tarifa: " + cancellationCost);
 
@@ -274,7 +293,7 @@ public class ReservationService {
         }
 
         // Actualizar campos
-        reservation.setStatus(ResStatus.COMPLETED.getId());
+        reservation.setStatus(ResStatus.CANCELLED.getId());
 
         // Guardar cambios
         reservationRepository.save(reservation);
