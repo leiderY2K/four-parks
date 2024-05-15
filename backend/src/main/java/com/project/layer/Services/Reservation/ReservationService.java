@@ -11,6 +11,8 @@ import java.util.Optional;
 import java.util.Calendar;
 
 import com.project.layer.Services.Payment.PaymentService;
+
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.scheduling.annotation.EnableAsync;
 import org.springframework.scheduling.annotation.EnableScheduling;
@@ -57,6 +59,7 @@ public class ReservationService {
     }
 
     @Transactional
+    @Modifying
 
     public String startReservation(StartReservationRequest reservationRequest) throws MessagingException {
         Date sqlDate = Date.valueOf(LocalDate.now());
@@ -132,7 +135,8 @@ public class ReservationService {
     }
 
     @Transactional
-    @Scheduled(cron = "0 23 * * * *")
+    @Modifying
+    @Scheduled(cron = "0 30 * * * *")
     public void confirmReservation() {
 
         Time hour = Time.valueOf(LocalTime.now());
@@ -200,6 +204,7 @@ public class ReservationService {
     }
 
     @Transactional
+    @Modifying
     public String checkInReservation(int idReservation) {
 
         Optional<Reservation> optionalReservation = reservationRepository.findById(idReservation);
@@ -216,6 +221,7 @@ public class ReservationService {
     }
 
     @Transactional
+    @Modifying
     public String cancelReservation(int idReservation) {
 
         Optional<Reservation> optionalReservation = reservationRepository.findById(idReservation);
@@ -252,6 +258,7 @@ public class ReservationService {
     }
 
     @Transactional
+    @Modifying
     public String checkOutReservation(int idReservation) {
         Optional<Reservation> optionalReservation = reservationRepository.findById(idReservation);
 
