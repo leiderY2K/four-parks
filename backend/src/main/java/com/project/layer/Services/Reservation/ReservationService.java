@@ -290,6 +290,7 @@ public class ReservationService {
 
             float extraCost = extraHours * rate;
 
+
             // Realizar pago automatico por minutos extra
 
 
