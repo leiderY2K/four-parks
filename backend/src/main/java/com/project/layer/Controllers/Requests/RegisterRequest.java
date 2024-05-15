@@ -69,7 +69,7 @@ public class RegisterRequest {
     private String expiryYearCard;
 
     @Digits(integer = 3, fraction = 0, message = "El CVC debe ser numérico")
-    @Length(min = 3, max = 3, message = "El cvv de la tarjeta debe tener  3 caracteres")
+    @Length(min = 3, max = 4, message = "El cvv de la tarjeta debe tener  3 caracteres")
     @JsonProperty("cvc")
     private String cvv;
 
@@ -80,6 +80,10 @@ public class RegisterRequest {
                 username == null || username.isEmpty()||
                 firstName == null || firstName.isEmpty() ||
                 phone == null || phone.isEmpty() ||
+                serialCard == null || serialCard.isEmpty() ||
+                expiryMonthCard == null || expiryMonthCard.isEmpty() ||
+                expiryYearCard == null || expiryYearCard.isEmpty() ||
+                cvv == null || cvv.isEmpty() ||
                 role == null || role.isEmpty();
     }
 
