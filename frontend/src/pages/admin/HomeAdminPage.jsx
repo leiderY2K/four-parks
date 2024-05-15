@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import Header from "../../components/client/Header"
+import Header from "../../components/admin/Header"
 import Map from '../../components/admin/Map.jsx'
 import ParamsInfo from '../../components/admin/ParamsInfo.jsx'
 import QuotaManager from "../../components/admin/QuotaManager.jsx";
@@ -38,15 +38,14 @@ const HomeAdminPage = ({url, initialCoords}) => {
 
         <div className='flex h-screen px-12 py-40 bg-gray-light'> 
           
-        {/*
           <div className="w-1/2 rounded-2xl z-0"> 
             <Map url={url} city={city} actualCity={actualCity} setActualCity={setActualCity} setActualParking={setActualParking} />
           </div>
-        */}
 
           <section className='w-2/5 ml-48'>
             {
-              !canEditSpaces ? (<ParamsInfo url={url} setCanEditSpaces={setCanEditSpaces} />) : (<QuotaManager />)
+              !canEditSpaces ? (<ParamsInfo url={url} actualParking={actualParking} setCanEditSpaces={setCanEditSpaces} />) : 
+              (<QuotaManager setCanEditSpaces={setCanEditSpaces} />)
             }
           </section>
         </div>
