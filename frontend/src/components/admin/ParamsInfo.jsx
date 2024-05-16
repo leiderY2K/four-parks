@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
+import axios from "axios";
 
-function ParamsInfo({url, actualParking, setCanEditSpaces}) {
+function ParamsInfo({url, cities, actualParking, setCanEditSpaces}) {
     const [parkName, setParkName]= useState('');
     const [parkCity, setParkCity]= useState('');
     const [coordX, setCoordX]= useState('');
@@ -16,18 +17,7 @@ function ParamsInfo({url, actualParking, setCanEditSpaces}) {
     const [parkEnd, setParkEnd]= useState('');
     const [canEdit, setCanEdit] = useState(false);
 
-    /*useEffect(() => {
-        const token = sessionStorage.getItem('token').replace(/"/g, '');
     
-        axios.get(`http://localhost:8080/client/cityList`, {headers: {Authorization: `Bearer ${token}`}})
-        .then(res=>{
-          const cityArray = res.data.map(city => (city))
-          setCities(cityArray);
-        })
-        .catch(err=>{
-          console.log(err);
-        }) 
-    },[]); */
 
     useEffect(() => {
         if(actualParking) {
@@ -63,7 +53,7 @@ function ParamsInfo({url, actualParking, setCanEditSpaces}) {
                 <div className='text-2xl font-semibold'> Información del parqueadero </div>
             </section>
 
-            <section className='flex items-center justify-between w-full px-5'>
+            <section className='flex justify-between w-full px-5'>
                 <section className='flex flex-col w-72'>
                     <div className='flex flex-col mt-5'>
                         <label className='text-lg font-semibold mb-2'>Nombre del parqueadero</label>
@@ -95,14 +85,16 @@ function ParamsInfo({url, actualParking, setCanEditSpaces}) {
                     </div>
 
                     <div className='flex flex-col mt-5'>
-                        <label className='text-lg font-semibold mb-2'>Disponibilidad</label>
-                        <select className='w-full shadow-xl p-3 rounded-md bg-white font-paragraph' value={parkAvailability} disabled={!canEdit}
-                        onChange={(e) => setParkAvailability(e.target.value)}>
-                            <option value=""> </option>
-                            <option value="Dias de semana"> Lunes a viernes </option>
-                            <option value="Fines de semana"> Fines de semana </option>
-                            <option value="Todos los días"> 24/7 </option>
-                        </select>
+                        <label className='text-lg font-semibold mb-2'>Horario</label>
+                        <div className="flex justify-between items-center">
+                            <input type='time' className='w-2/5 shadow-xl p-2.5 rounded-md bg-white font-paragraph text-sm' value={parkStart} disabled={!canEdit} 
+                            onChange={handleTimeChange(setParkStart)}></input>   
+
+                            <span className="w-5 h-0.5 mx-4 rounded-full bg-black"></span>
+
+                            <input type='time' className='w-2/5 shadow-xl p-2.5 rounded-md bg-white font-paragraph text-sm' value={parkEnd} disabled={!canEdit} 
+                            onChange={handleTimeChange(setParkEnd)}></input>
+                        </div>    
                     </div>
                 </section>
 
@@ -111,10 +103,10 @@ function ParamsInfo({url, actualParking, setCanEditSpaces}) {
                         <label className='text-lg font-semibold mb-2'>Ciudad</label>
                         <select className='w-full shadow-xl p-3 rounded-md bg-white font-paragraph' value={parkCity} disabled={!canEdit} 
                         onChange={(e) => setParkCity(e.target.value)}>
-                            <option value={parkCity}> {parkCity} </option>
-                           {/*cities.map((city, index) => (
+                            <option value=""> </option>
+                            {cities.map((city, index) => (
                                 <option key={index} value={city}> {city} </option>
-                           ))*/}
+                            ))}
                         </select>
                     </div>
 
@@ -131,25 +123,14 @@ function ParamsInfo({url, actualParking, setCanEditSpaces}) {
                     </div>
 
                     <div className='flex flex-col mt-5'>
-                        <label className='text-lg font-semibold mb-2'>Vehículos admitidos</label>
-                        <div className='flex justify-between w-full shadow-xl p-3 rounded-md bg-white font-paragraph text-sm'>
-                            <input type='checkbox' value={car} disabled={!canEdit} onChange={(e) => setCar(!car)}></input> <label> Automóvil </label>
-                            <input type='checkbox' value={motorcycle} disabled={!canEdit} onChange={(e) => setMotorcycle(!motorcycle)}></input> <label> Moto </label>
-                            <input type='checkbox' value={bicycle} disabled={!canEdit} onChange={(e) => setBicycle(!bicycle)}></input> <label> Bicicleta </label>
-                            </div>        
-                    </div>
-
-                    <div className='flex flex-col mt-5'>
-                        <label className='text-lg font-semibold mb-2'>Horario</label>
-                        <div className="flex justify-between items-center">
-                            <input type='time' className='w-2/5 shadow-xl p-2.5 rounded-md bg-white font-paragraph text-sm' value={parkStart} disabled={!canEdit} 
-                            onChange={handleTimeChange(setParkStart)}></input>   
-
-                            <span className="w-5 h-0.5 mx-4 rounded-full bg-black"></span>
-
-                            <input type='time' className='w-2/5 shadow-xl p-2.5 rounded-md bg-white font-paragraph text-sm' value={parkEnd} disabled={!canEdit} 
-                            onChange={handleTimeChange(setParkEnd)}></input>
-                        </div>    
+                        <label className='text-lg font-semibold mb-2'>Disponibilidad</label>
+                        <select className='w-full shadow-xl p-3 rounded-md bg-white font-paragraph' value={parkAvailability} disabled={!canEdit}
+                        onChange={(e) => setParkAvailability(e.target.value)}>
+                            <option value=""> </option>
+                            <option value="Dias de semana"> Lunes a viernes </option>
+                            <option value="Fines de semana"> Fines de semana </option>
+                            <option value="Todos los días"> 24/7 </option>
+                        </select>
                     </div>
                 </section>
             </section>

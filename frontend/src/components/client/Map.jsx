@@ -18,8 +18,6 @@ import "../../css/map.css";
 const Map = ({ url, city, parkingType, availability, vehicleType, date, startTime, endTime, actualCity, setActualCity, setActualParking, setOnReservationForm }) => {
     const [parkings, setParkings] = useState([]);
 
-
-
     useEffect(() => {
         if(city) {
             const token = sessionStorage.getItem('token').replace(/"/g, '');

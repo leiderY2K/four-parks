@@ -16,7 +16,7 @@ const Map = ({ url, city, actualCity, setActualCity, setActualParking }) => {
         if(city) {
             const token = sessionStorage.getItem('token').replace(/"/g, '');
     
-            axios.get(`${url}/client/getCity`,  {params: {city: city}, headers: {Authorization: `Bearer ${token}`}})
+            axios.get(`${url}/admin/getCity`,  {params: {city: city}, headers: {Authorization: `Bearer ${token}`}})
             .then(res => {
                 const cityObject = {
                     id: res.data.idCity,

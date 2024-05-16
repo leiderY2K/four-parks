@@ -85,4 +85,12 @@ public interface IReservationRepository extends JpaRepository<Reservation, Integ
             nativeQuery = true
     )
     List<Card> findByUserId();
+
+    @Query(value = "SELECT COUNT(*) " +
+                        "FROM RESERVATION r " +
+                        "WHERE r.DATERES = :valueOf AND " +
+                        "r.STARTTIMERES <= :valueOf2 AND r.ENDTIMERES > :valueOf2 AND "+
+                        "r.FK_IDPARKING = :idParking", nativeQuery = true)
+        Integer getDateHourCount(Date valueOf, Time valueOf2, int idParking);
+
 }
