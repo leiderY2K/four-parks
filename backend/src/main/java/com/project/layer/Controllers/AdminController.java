@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.project.layer.Controllers.Requests.ParkingSpaceRequest;
+import com.project.layer.Controllers.Responses.ParkingResponse;
 import com.project.layer.Persistence.Entity.City;
 import com.project.layer.Persistence.Entity.Parking;
 import com.project.layer.Persistence.Entity.UserId;
@@ -27,7 +28,7 @@ public class AdminController {
     private final MapService mapService;
 
     @PostMapping("/searchParkings")
-    public List<Parking> searchParking(@RequestBody UserId adminId ){
+    public List<ParkingResponse> searchParking(@RequestBody UserId adminId ){
         return parameterizationService.searchParking(adminId);
     }
 
