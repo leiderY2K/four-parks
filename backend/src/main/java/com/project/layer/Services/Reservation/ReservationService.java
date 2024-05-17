@@ -124,13 +124,13 @@ public class ReservationService {
         reservationRequest.getCityId(),
         parking.get().getNamePark(),
         reservationRequest.getVehicleType());
-        mailService.sendMail("dmcuestaf@udistrital.edu.co", "[Four-parks] Informaciòn de su reserva", reserva);
+        mailService.sendMail(client.getEmail(), "[Four-parks] Informaciòn de su reserva", reserva);
         return "¡La reserva se realizo exitosamente!";
     }
 
     @Transactional
     @Modifying
-    @Scheduled(cron = "0 00 * * * *")
+    @Scheduled(cron = "0 30-59 * * * *")
     public void confirmReservation() {
 
         Time hour = Time.valueOf(LocalTime.now());
@@ -190,6 +190,8 @@ public class ReservationService {
             reservation.setTotalRes(totalCost);
 
             reservationRepository.save(reservation);
+
+            //mailService.sendMail(reservation.getClient().getEmail(), "Reserva Confirmada",);
         }
         
     }
