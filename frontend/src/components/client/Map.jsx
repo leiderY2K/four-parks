@@ -18,13 +18,11 @@ import "../../css/map.css";
 const Map = ({ url, city, parkingType, availability, vehicleType, date, startTime, endTime, actualCity, setActualCity, setActualParking, setOnReservationForm }) => {
     const [parkings, setParkings] = useState([]);
 
-
-
     useEffect(() => {
         if(city) {
             const token = sessionStorage.getItem('token').replace(/"/g, '');
     
-            axios.get(`http://localhost:8080/client/getCity`,  {params: {city: city}, headers: {Authorization: `Bearer ${token}`}})
+            axios.get(`${url}/client/getCity`,  {params: {city: city}, headers: {Authorization: `Bearer ${token}`}})
             .then(res => {
                 const cityObject = {
                     id: res.data.idCity,

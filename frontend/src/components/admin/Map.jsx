@@ -16,7 +16,7 @@ const Map = ({ url, city, actualCity, setActualCity, setActualParking }) => {
         if(city) {
             const token = sessionStorage.getItem('token').replace(/"/g, '');
     
-            axios.get(`http://localhost:8080/client/getCity`,  {params: {city: city}, headers: {Authorization: `Bearer ${token}`}})
+            axios.get(`${url}/admin/getCity`,  {params: {city: city}, headers: {Authorization: `Bearer ${token}`}})
             .then(res => {
                 const cityObject = {
                     id: res.data.idCity,
@@ -36,21 +36,24 @@ const Map = ({ url, city, actualCity, setActualCity, setActualParking }) => {
 
     useEffect(() => {
         const token = sessionStorage.getItem('token').replace(/"/g, '');
-        const params = {};
-
-        (city ? params.city = city : params.city = 'Bogota');
-        if (parkingType) params.type = parkingType;
+        const user = JSON.parse(sessionStorage.getItem('userLogged'));
         
-        axios.get(`${url}/client/getParkings`, {
-            params: params,
-            headers: { Authorization: `Bearer ${token}` }
-        })
+        axios.post(`${url}/admin/searchParkings`, {idUser: user.idNumber, idDocType: user.idType}, {headers: { Authorization: `Bearer ${token}` }})
         .then(res => {
             const parkingArray = res.data.map(parking => ({
                 id: parking.idParking,
                 name: parking.namePark,
+                idCity: parking.city.idCity,
+                city: parking.city.name,
                 coords: [parking.addressCoordinatesX, parking.addressCoordinatesY],
-                type: parking.parkingType.idParkingType
+                email: parking.email,
+                phone: parking.phone,
+                idType: parking.parkingType.idParkingType,
+                type: parking.parkingType.descParkingType,
+                idAvailability: parking.schedule.idSchedule,
+                availability: parking.schedule.scheduleType,
+                startTime: parking.startTime,
+                endTime: parking.endTime
             }));
 
             setParkings(parkingArray);
@@ -83,21 +86,12 @@ const Map = ({ url, city, actualCity, setActualCity, setActualParking }) => {
     }
 
     const handleChangeParking = (parking) => {
-        const token = sessionStorage.getItem('token').replace(/"/g, '');
-        
-        axios.get(`${url}/client/getParkingByCoordinates`, {params: {coordinateX: parking.coords[0], coordinateY: parking.coords[1]}, 
-        headers: {Authorization: `Bearer ${token}`}})
-        .then(res => {
-            setActualParking([res.data.parking, res.data.capacity]);
+        setActualParking(parking);
 
-            let newCenterCoords = actualCity;
-            newCenterCoords.centerCoords = [parking.coords[0], parking.coords[1]];
+        let newCenterCoords = actualCity;
+        newCenterCoords.centerCoords = [parking.coords[0], parking.coords[1]];
 
-            setActualCity(newCenterCoords);
-        })
-        .catch(err => {
-            console.log(err);
-        })
+        setActualCity(newCenterCoords);
     }
     
     const UpdateMap = ({ city, center, bounds }) => {
@@ -123,7 +117,7 @@ const Map = ({ url, city, actualCity, setActualCity, setActualParking }) => {
 
             <MarkerClusterGroup chunkedLoading iconCreateFunction={createCustomClusterIcon}>
                 {parkings.map(parking => (
-                    <Marker key={parking.id} position={parking.coords} icon={getIcon(parking.type, parking.ocupability)} 
+                    <Marker key={parking.id} position={parking.coords} icon={getIcon(parking.idType, parking.ocupability)} 
                     eventHandlers={{click: () => handleChangeParking(parking)}}> 
                         <Popup>{parking.name}</Popup>
                     </Marker>

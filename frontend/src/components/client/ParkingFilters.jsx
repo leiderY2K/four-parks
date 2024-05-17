@@ -1,14 +1,14 @@
 import { useEffect, useState } from "react";
 import axios from "axios";
 
-const ParkingFilters = ({city, setCity, parkingType, setParkingType, availability, setAvailability, vehicleType, setVehicleType, date, setDate, startTime, 
+const ParkingFilters = ({url, city, setCity, parkingType, setParkingType, availability, setAvailability, vehicleType, setVehicleType, date, setDate, startTime, 
 setStartTime, endTime, setEndTime}) => {
   const [cities, setCities] = useState([]);
 
   useEffect(() => {
     const token = sessionStorage.getItem('token').replace(/"/g, '');
 
-    axios.get(`http://localhost:8080/client/cityList`,  {headers: {Authorization: `Bearer ${token}`}})
+    axios.get(`${url}/client/cityList`,  {headers: {Authorization: `Bearer ${token}`}})
     .then(res=>{
       const cityArray = res.data.map(city => (city))
       setCities(cityArray);
@@ -65,7 +65,7 @@ setStartTime, endTime, setEndTime}) => {
           <option value=""></option>
           <option value="Dias de semana"> Lunes a viernes </option>
           <option value="Fines de semana"> Fines de semana </option>
-          <option value="Tiempo completo"> 24/7 </option>
+          <option value="Todos los dias"> Todos los días </option>
         </select>
         
         <select id="parking-vehicleType" value={vehicleType} className="w-1/2 p-4 rounded-md bg-white shadow-md font-paragraph" onChange={(e) => setVehicleType(e.target.value)}>
