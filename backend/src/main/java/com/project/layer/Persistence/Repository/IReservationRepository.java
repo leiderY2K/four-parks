@@ -3,7 +3,9 @@ package com.project.layer.Persistence.Repository;
 import java.sql.Date;
 import java.sql.Time;
 import java.util.List;
+import java.util.Optional;
 
+import com.project.layer.Persistence.Entity.Card;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -77,4 +79,10 @@ public interface IReservationRepository extends JpaRepository<Reservation, Integ
             @Param("startTimeRes") Time startTimeRes,
             @Param("endTimeRes") Time endTimeRes);
 
+
+    @Query(
+            value ="SELECT * FROM CARD u WHERE u.FK_CLIENT_IDUSER LIKE %:userId%",
+            nativeQuery = true
+    )
+    List<Card> findByUserId();
 }
