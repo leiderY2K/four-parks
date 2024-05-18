@@ -40,20 +40,21 @@ const Map = ({ url, city, actualCity, setActualCity, setActualParking }) => {
         
         axios.post(`${url}/admin/searchParkings`, {idUser: user.idNumber, idDocType: user.idType}, {headers: { Authorization: `Bearer ${token}` }})
         .then(res => {
+            console.log(res)
             const parkingArray = res.data.map(parking => ({
-                id: parking.idParking,
-                name: parking.namePark,
-                idCity: parking.city.idCity,
-                city: parking.city.name,
-                coords: [parking.addressCoordinatesX, parking.addressCoordinatesY],
-                email: parking.email,
-                phone: parking.phone,
-                idType: parking.parkingType.idParkingType,
-                type: parking.parkingType.descParkingType,
-                idAvailability: parking.schedule.idSchedule,
-                availability: parking.schedule.scheduleType,
-                startTime: parking.startTime,
-                endTime: parking.endTime
+                id: parking.parking.idParking,
+                name: parking.parking.namePark,
+                idCity: parking.parking.city.idCity,
+                city: parking.parking.city.name,
+                coords: [parking.parking.addressCoordinatesX, parking.parking.addressCoordinatesY],
+                email: parking.parking.email,
+                phone: parking.parking.phone,
+                idType: parking.parking.parkingType.idParkingType,
+                type: parking.parking.parkingType.descParkingType,
+                idAvailability: parking.parking.schedule.idSchedule,
+                availability: parking.parking.schedule.scheduleType,
+                startTime: parking.parking.startTime,
+                endTime: parking.parking.endTime
             }));
 
             setParkings(parkingArray);

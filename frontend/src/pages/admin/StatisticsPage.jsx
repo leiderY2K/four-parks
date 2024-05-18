@@ -9,7 +9,7 @@ const StatisticsPage = ({url}) => {
   const [startDate, setStartDate] = useState('');
   const [endDate, setEndDate] = useState('');
   const [parkings, setParkings] = useState([]);
-  const [actualParking, setActualParking] = useState();
+  const [actualParkingID, setActualParkingID] = useState();
 
   useEffect(() => {
         const token = sessionStorage.getItem('token').replace(/"/g, '');
@@ -18,8 +18,8 @@ const StatisticsPage = ({url}) => {
         axios.post(`${url}/admin/searchParkings`, {idUser: user.idNumber, idDocType: user.idType}, {headers: { Authorization: `Bearer ${token}` }})
         .then(res => {
             const parkingArray = res.data.map(parking => ({
-                id: parking.idParking,
-                name: parking.namePark,
+                id: parking.parking.idParking,
+                name: parking.parking.namePark,
             }));
 
             setParkings(parkingArray);
@@ -30,15 +30,20 @@ const StatisticsPage = ({url}) => {
     }, []);
 
     useEffect(() => {
-      if(actualParking && infoType && graphicType && startDate && endDate) {
+      if(actualParkingID && infoType && graphicType && startDate && endDate) {
         if(infoType == 'hours') {
           
         }
       }
-    }, [actualParking, infoType, graphicType, startDate, endDate])
+    }, [actualParkingID, infoType, graphicType, startDate, endDate])
+
+    const handleParkingChange = (e) => {
+      const selectedIndex = e.target.value;
+      setActualParkingID(parkings[selectedIndex]);
+    };
     
     const createHoursGraphic = () => {
-      return <BarHours url={url} idParking={actualParking.id} startDate={startDate} endDate={endDate} />
+      return <BarHours url={url} actualParkingID={actualParkingID} startDate={startDate} endDate={endDate} />
     }
 
     const renderSelectedGraph = () => {
@@ -53,9 +58,9 @@ const StatisticsPage = ({url}) => {
               return null;
       }*/
 
-      if(actualParking && infoType && graphicType && startDate && endDate) {
+      if(actualParkingID && infoType && graphicType && startDate && endDate) {
         if(infoType == 'hours') {
-          return <BarHours url={url} idParking={actualParking.id} startDate={startDate} endDate={endDate} />
+          return <BarHours url={url} actualParkingID={actualParkingID} startDate={startDate} endDate={endDate} />
         }
       }
   };
@@ -83,8 +88,8 @@ const StatisticsPage = ({url}) => {
                 <option value="lines"> Línea </option>
             </select>
             
-            <select id="statistics-parkings" value={actualParking} className="w-1/6 h-12 mr-12 mb-6 p-3 rounded-md bg-white shadow-md font-paragraph" 
-            onChange={(e) => setActualParking(e.target.value)}>
+            <select id="statistics-parkings" value={actualParkingID} className="w-1/6 h-12 mr-12 mb-6 p-3 rounded-md bg-white shadow-md font-paragraph" 
+            onChange={(e) => setActualParkingID(e.target.value)}>
                 <option value="" disabled selected hidden> Parqueadero </option>
                 <option value=""></option>
                 {parkings.map((parking) => (

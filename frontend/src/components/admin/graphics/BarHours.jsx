@@ -5,7 +5,7 @@ import axios from "axios";
 
 ChartJS.register(CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend);
 
-const BarHours = ({url, idParking, startDate, endDate}) => {
+const BarHours = ({url, actualParkingID, startDate, endDate}) => {
     const [hoursAverage, setHoursAverage] = useState([]);
 
     useEffect(() => {
@@ -13,8 +13,8 @@ const BarHours = ({url, idParking, startDate, endDate}) => {
         setHoursAverage([]);
       
         axios.get(`${url}/admin/getStatistics`, {
-            initialDate: "2024-05-14",
-            finalDate: "2024-05-16",
+            initialDate: startDate,
+            finalDate: endDate,
             idParking: 2
         }, {headers: {Authorization: `Bearer ${token}`}})
         .then((res) => {
@@ -27,7 +27,7 @@ const BarHours = ({url, idParking, startDate, endDate}) => {
         .catch((err) => {
             console.log(err);
         });
-    }, [idParking, startDate, endDate]);      
+    }, [actualParkingID, startDate, endDate]);      
 
     const labels = hoursAverage.map((item) => item.hour);
     const average = hoursAverage.map((item) => item.average);
@@ -52,7 +52,7 @@ const BarHours = ({url, idParking, startDate, endDate}) => {
         plugins: {
             title: {
                 display: true,
-                text: 'TOP 10 restaurantes mejores calificados',
+                text: '',
             },
         },
         scales: {
