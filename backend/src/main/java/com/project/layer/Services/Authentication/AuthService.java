@@ -7,6 +7,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import com.project.layer.Persistence.Entity.*;
+import com.project.layer.Persistence.Error.CustomException;
 import com.project.layer.Persistence.Repository.ICardRepository;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -53,6 +54,21 @@ public class AuthService {
         extraClaims.put("role", user.getRole());
 
         return extraClaims;
+    }
+
+    public void verifyRegisterRequest(RegisterRequest request) throws CustomException{
+        if(request.hasEmptyParameters()){
+            throw new CustomException(("Todos los campos son obligatorios"));
+        }
+        if(userRepository.findByEmail(request.getEmail()).isPresent()) {
+            throw new CustomException(("El email ya se encuentra registrado"));
+        }if(userAuthRepository.findByUsername(request.getIdUser()).isPresent()){
+            throw new CustomException(("El  id usuario ya se encuentra registrado"));
+        }if(userRepository.findByPhone(request.getPhone()).isPresent()){
+            throw new CustomException(("El  numero de telefono ya se encuentra registrado"));
+        }if(userAuthRepository.findByUsername(request.getUsername()).isPresent()){
+            throw new CustomException(("El  nombre de usuario ya se encuentra registrado"));
+        }
     }
 
     public AuthResponse register(RegisterRequest request) throws MessagingException {

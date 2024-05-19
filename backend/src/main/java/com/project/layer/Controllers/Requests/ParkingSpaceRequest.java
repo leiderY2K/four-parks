@@ -10,9 +10,6 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 public class ParkingSpaceRequest {
-    public Integer idParking;
-
-    public String idCity;
 
     public String vehicleType;
 

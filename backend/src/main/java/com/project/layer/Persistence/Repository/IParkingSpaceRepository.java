@@ -19,12 +19,14 @@ public interface IParkingSpaceRepository extends JpaRepository<ParkingSpace, Par
     @Query(
         value = "SELECT DISTINCT ps.* FROM PARKINGSPACE ps " +
                     "LEFT JOIN PARKING p ON ps.FK_IDPARKING = p.IDPARKING " +
-                    "WHERE p.FK_IDCITY = :idCity AND p.IDPARKING = :idParking",
+                    "WHERE p.FK_IDCITY = :idCity AND p.IDPARKING = :idParking " +
+                        "AND ps.ISUNCOVERED = :isUncovered",
         nativeQuery = true
     )
     List<ParkingSpace> findAllByParking(
         @Param("idParking") int idParking,
-        @Param("idCity") String idCity
+        @Param("idCity") String idCity,
+        @Param("isUncovered") Boolean isUncovered
     );
 
     @Query(
