@@ -7,23 +7,28 @@ import java.time.LocalDate;
 import java.time.LocalTime;
 import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.stereotype.Service;
+import org.springframework.web.bind.annotation.RequestParam;
 
 import com.project.layer.Controllers.Requests.DateHourCountRequest;
+import com.project.layer.Controllers.Requests.DateSumRequest;
 import com.project.layer.Controllers.Requests.HourAveragemRequest;
 import com.project.layer.Controllers.Requests.ParkingSpaceRequest;
-import com.project.layer.Controllers.Requests.StatisticsRequest;
+import com.project.layer.Controllers.Responses.ParkingResponse;
 import com.project.layer.Persistence.Entity.Parking;
 import com.project.layer.Persistence.Entity.ParkingSpace;
 import com.project.layer.Persistence.Entity.ParkingSpaceId;
 import com.project.layer.Persistence.Entity.UserId;
 import com.project.layer.Persistence.Repository.IParkingRepository;
 import com.project.layer.Persistence.Repository.IParkingSpaceRepository;
+import com.project.layer.Persistence.Repository.IRateRepository;
 import com.project.layer.Persistence.Repository.IReservationRepository;
 
 import jakarta.transaction.Transactional;
@@ -36,6 +41,7 @@ public class ParameterizationService {
     private final IParkingRepository parkingRepository;
     private final IReservationRepository reservationRepository;
     private final IParkingSpaceRepository parkingSpaceRepository;
+    private final IRateRepository rateRepository;
 
     @Transactional
     @Modifying
@@ -134,10 +140,11 @@ public class ParameterizationService {
         return parkingList;
     }
 
-    public List<HourAveragemRequest> getStatistics(StatisticsRequest statisticRequest) {
-        LocalDate iniDate = statisticRequest.getInitialDate().toLocalDate().plusDays(1);
-        LocalDate finDate = statisticRequest.getFinalDate().toLocalDate().plusDays(1);
-        System.out.println("finDate: " + statisticRequest.getFinalDate());
+    public List<HourAveragemRequest> getHourAverage(@RequestParam Date initialDate, @RequestParam Date finalDate,
+            @RequestParam int idParking) {
+        LocalDate iniDate = initialDate.toLocalDate().plusDays(1);
+        LocalDate finDate = finalDate.toLocalDate().plusDays(1);
+        System.out.println("finDate: " + finalDate);
         LocalTime hour = LocalTime.of(0, 0);
         List<DateHourCountRequest> prevList = new ArrayList<>();
         long daysBetween = ChronoUnit.DAYS.between(iniDate, finDate) + 1;
@@ -145,7 +152,8 @@ public class ParameterizationService {
         for (int i = 0; i < daysBetween; i++) {
             for (int j = 0; j <= 23; j++) {
                 DateHourCountRequest auxDHC = new DateHourCountRequest(); // Crear una nueva instancia en cada iteración
-                auxDHC.setCount(reservationRepository.getDateHourCount(Date.valueOf(iniDate), Time.valueOf(hour), statisticRequest.getIdParking()));
+                auxDHC.setCount(
+                        reservationRepository.getDateHourCount(Date.valueOf(iniDate), Time.valueOf(hour), idParking));
                 auxDHC.setDate(Date.valueOf(iniDate));
                 auxDHC.setHour(Time.valueOf(hour));
                 prevList.add(auxDHC); // Agregar la instancia a la lista
@@ -174,7 +182,33 @@ public class ParameterizationService {
             returnList.add(auxAverage);
             hour = hour.plusHours(1);
         }
+        System.out.println(returnList);
 
+        return returnList;
+    }
+
+    public List<DateSumRequest> getSales(Date initialDate, Date finalDate, int idParking) {
+        LocalDate iniDate = initialDate.toLocalDate();
+        LocalDate finDate = finalDate.toLocalDate();
+        LocalDate auxDate = initialDate.toLocalDate();
+        System.out.println("INITIAL DATE: " + initialDate);
+        System.out.println("FINAL DATE: " + finalDate); // Corrigido para imprimir la fecha final correcta
+        List<DateSumRequest> returnList = new ArrayList<>();
+        long daysBetween = ChronoUnit.DAYS.between(iniDate, finDate);
+        System.out.println("total dias: " + daysBetween);
+    
+        for (int i = 0; i <= daysBetween; i++) {
+            DateSumRequest auxDS = new DateSumRequest(); // Crear una nueva instancia en cada iteración
+            Float sum = reservationRepository.getSumTotalRes(Date.valueOf(auxDate), idParking);
+            auxDS.setSum(sum != null ? sum : 0.0f); // Manejar el caso donde sum es null
+            auxDS.setDate(Date.valueOf(auxDate));
+            returnList.add(auxDS); // Agregar la instancia a la lista
+            System.out.println("INITIAL DATE: " + initialDate);
+            auxDate = auxDate.plusDays(1);
+            System.out.println("AUX DATE: " + auxDate);
+            System.out.println(returnList);
+        }
+    
         return returnList;
     }
 

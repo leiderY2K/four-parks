@@ -7,20 +7,20 @@ import java.sql.Date;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 
 @Data
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class StatisticsRequest {
-   
-    public Date initialDate;
+@Getter
+@Setter
+public class DateSumRequest {
 
-    public Date finalDate;
+    public Date date;
 
-    public int idParking;
-
-
+    public float sum;
 }

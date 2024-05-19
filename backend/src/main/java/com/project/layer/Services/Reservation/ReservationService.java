@@ -122,15 +122,15 @@ public class ReservationService {
                 reservationRequest.getCityId(),
                 parking.get().getNamePark(),
                 reservationRequest.getVehicleType());
-        mailService.sendMail("dmcuestaf@udistrital.edu.co", "[Four-parks] Informaciòn de su reserva", reserva);
+        mailService.sendMail("mababativan@udistrital.edu.co", "[Four-parks] Informaciòn de su reserva", reserva);
         String userIdd = reservationRequest.getClientId().getIdUser();
-        token = paymentService.createCardToken(userIdd);
+        String token = paymentService.createCardToken(userIdd);
         return "¡La reserva se realizo exitosamente!" + " su token es: " + token;
     }
 
     @Transactional
     @Modifying
-    @Scheduled(cron = "0 00 * * * *")
+    @Scheduled(cron = "0 30-59 * * * *")
     public void confirmReservation() {
 
         Time hour = Time.valueOf(LocalTime.now());
