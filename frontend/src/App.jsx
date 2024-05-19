@@ -5,6 +5,7 @@ import LoginPage from "./pages/general/LoginPage"
 import SignUpClientPage from "./pages/client/SignUpClientPage"
 import ReservationPage from "./pages/client/ReservationsPage";
 import HomeAdminPage from "./pages/admin/HomeAdminPage";
+import StatisticsPage from "./pages/admin/StatisticsPage";
 
 function App() {
   const url = "http://localhost:8080";
@@ -66,10 +67,11 @@ function App() {
           <Route path="/" element={<LoginPage url={url} />} />
           <Route path="/inicio-sesion" element={<LoginPage url={url} />} />
           <Route path="/registro" element={<SignUpClientPage url={url} />} />
-          <Route path="cliente-inicio" element={<HomeClientPage url={url} initialCoords={initialCoords} />}/>
-          <Route path="mis-reservas" element={<ReservationPage url={url} />}/>
+          <Route path="/cliente-inicio" element={<HomeClientPage url={url} initialCoords={initialCoords} />}/>
+          <Route path="/mis-reservas" element={<ReservationPage url={url} />}/>
 
-          <Route path="admin-inicio" element={<HomeAdminPage url={url} initialCoords={initialCoords} />}/>
+          <Route path="/admin-inicio" element={<HomeAdminPage url={url} initialCoords={initialCoords} />}/>
+          <Route path="/ver-estadisticas" element={<StatisticsPage url={url} />}/>
       </Routes>
     </BrowserRouter>
   )

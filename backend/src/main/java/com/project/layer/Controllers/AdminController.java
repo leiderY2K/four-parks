@@ -9,7 +9,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.project.layer.Controllers.Requests.HourAveragemRequest;
 import com.project.layer.Controllers.Requests.ParkingSpaceRequest;
+import com.project.layer.Controllers.Requests.StatisticsRequest;
 import com.project.layer.Controllers.Responses.ParkingResponse;
 import com.project.layer.Persistence.Entity.City;
 import com.project.layer.Persistence.Entity.Parking;
@@ -55,6 +57,11 @@ public class AdminController {
     @GetMapping("/getCity")
     public City getCity(@RequestParam String city){
         return mapService.getCity(city);
+    }
+
+    @GetMapping("/getStatistics")
+    public List<HourAveragemRequest> getStatistics(@RequestBody StatisticsRequest statisticRequest) {
+        return parameterizationService.getStatistics(statisticRequest);
     }
 
 }

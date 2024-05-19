@@ -46,7 +46,7 @@ const Home = ({url, initialCoords}) => {
         <Header />
         <div className='flex h-screen px-12 py-40 bg-gray-light'> 
           <section className='w-2/5'>
-            <ParkingFilters city={city} setCity={setCity} parkingType={parkingType} setParkingType={setParkingType} availability={availability} setAvailability={setAvailability}
+            <ParkingFilters url={url} city={city} setCity={setCity} parkingType={parkingType} setParkingType={setParkingType} availability={availability} setAvailability={setAvailability}
             vehicleType={vehicleType} setVehicleType={setVehicleType} date={date} setDate={setDate} startTime={startTime} setStartTime={setStartTime} 
             endTime={endTime} setEndTime={setEndTime} />
 
