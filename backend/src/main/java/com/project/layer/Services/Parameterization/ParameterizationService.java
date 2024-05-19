@@ -12,11 +12,13 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
- 
+
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.stereotype.Service;
- 
+import org.springframework.web.bind.annotation.RequestParam;
+
 import com.project.layer.Controllers.Requests.DateHourCountRequest;
+import com.project.layer.Controllers.Requests.DateSumRequest;
 import com.project.layer.Controllers.Requests.HourAveragemRequest;
 import com.project.layer.Controllers.Requests.ParkingSpaceRequest;
 import com.project.layer.Controllers.Responses.ParkingResponse;
@@ -36,7 +38,7 @@ import lombok.RequiredArgsConstructor;
 @Service
 @RequiredArgsConstructor
 public class ParameterizationService {
- 
+
     private final IParkingRepository parkingRepository;
     private final IReservationRepository reservationRepository;
     private final IParkingSpaceRepository parkingSpaceRepository;
@@ -77,21 +79,21 @@ public class ParameterizationService {
             return "No se encontró ningún estacionamiento con el ID proporcionado";
         }
     }
- 
+
     public List<ParkingSpace> getParkingSpace(int parkingId, String idCity) {
         List<ParkingSpace> parkingSpaces = parkingSpaceRepository.findAllByParking(parkingId, idCity);
- 
+
         return parkingSpaces;
     }
  
     @Transactional
     @Modifying
     public String insertParkingSpace(ParkingSpaceRequest psRequest) {
- 
+
         int lastIdPSValue = parkingSpaceRepository.countByParking(psRequest.getIdParking(), psRequest.getIdCity());
  
         for (int i = 0; i < psRequest.getAmount(); i++) {
- 
+
             lastIdPSValue++;
  
             ParkingSpaceId pkID = ParkingSpaceId.builder()
@@ -99,13 +101,13 @@ public class ParameterizationService {
                     .idCity(psRequest.getIdCity())
                     .idParking(psRequest.getIdParking())
                     .build();
- 
+
             ParkingSpace parkingSpace = ParkingSpace.builder()
                     .idVehicleType(psRequest.getVehicleType())
                     .isUncovered(psRequest.getIsUncovered())
                     .parkingSpaceId(pkID)
                     .build();
- 
+
             // Guardar el espacio de estacionamiento en la base de datos
             parkingSpaceRepository.save(parkingSpace);
         }
@@ -124,56 +126,26 @@ public class ParameterizationService {
                 psRequest.getIsUncovered(),
                 psRequest.getVehicleType(),
                 psRequest.getAmount());
- 
+
         return "Se eliminaron correctamente los espacios de los parqueaderos";
     }
 
-    public List<ParkingResponse> searchParking(UserId adminId){
+    public List<Parking> searchParking(UserId adminId) {
 
-        System.out.println(adminId.getIdDocType()+" xd "+adminId.getIdUser());
+        System.out.println(adminId.getIdDocType() + " xd " + adminId.getIdUser());
 
-        List<ParkingResponse> parkingResponses = new ArrayList<>();
-
-        List<Parking> parkingList = parkingRepository.findByAdminId(adminId.getIdUser(),adminId.getIdDocType());
+        List<Parking> parkingList = parkingRepository.findByAdminId(adminId.getIdUser(), adminId.getIdDocType());
         for (Parking parking : parkingList) {
             System.out.println(parking.toString());
-            List<String> vehicleListType = parkingRepository.getTypeVehicleByParking(parking.getIdParking());
-
-            System.out.println(vehicleListType.toString());
-            Map<String, Object> tipoVehiculo = new HashMap<>();
-
-            for (String vehicle : vehicleListType) {
-                
-                Map<String, Integer> vehicleType = new HashMap<>();
-        
-                if(parking.getParkingType().getIdParkingType().equals("COV") || parking.getParkingType().getIdParkingType().equals("SEC")) {
-                    vehicleType.put("covered", parkingRepository.countByCoveredAndParkingAndVehicleType(
-                        parking.getIdParking(), false, vehicle));
-                    vehicleType.put("rate-covered", rateRepository.getHourCostByParkingSpace(
-                        parking.getIdParking(), parking.getCity().getIdCity(), vehicle, false
-                    ));
-                }
-                if(parking.getParkingType().getIdParkingType().equals("UNC") || parking.getParkingType().getIdParkingType().equals("SEC")) {
-                    vehicleType.put("uncovered", parkingRepository.countByCoveredAndParkingAndVehicleType(
-                        parking.getIdParking(), true, vehicle
-                    ));
-                    vehicleType.put("rate-uncovered", rateRepository.getHourCostByParkingSpace(
-                        parking.getIdParking(), parking.getCity().getIdCity(), vehicle, true
-                    ));
-                }
-                tipoVehiculo.put(vehicle, vehicleType);
-            }
-
-            parkingResponses.add(ParkingResponse.builder().parking(parking).capacity(tipoVehiculo).build());
-
         }
-        return parkingResponses; 
+        return parkingList;
     }
- 
-    public List<HourAveragemRequest> getStatistics(StatisticsRequest statisticRequest) {
-        LocalDate iniDate = statisticRequest.getInitialDate().toLocalDate().plusDays(1);
-        LocalDate finDate = statisticRequest.getFinalDate().toLocalDate().plusDays(1);
-        System.out.println("finDate: " + statisticRequest.getFinalDate());
+
+    public List<HourAveragemRequest> getHourAverage(@RequestParam Date initialDate, @RequestParam Date finalDate,
+            @RequestParam int idParking) {
+        LocalDate iniDate = initialDate.toLocalDate().plusDays(1);
+        LocalDate finDate = finalDate.toLocalDate().plusDays(1);
+        System.out.println("finDate: " + finalDate);
         LocalTime hour = LocalTime.of(0, 0);
         List<DateHourCountRequest> prevList = new ArrayList<>();
         long daysBetween = ChronoUnit.DAYS.between(iniDate, finDate) + 1;
@@ -181,7 +153,8 @@ public class ParameterizationService {
         for (int i = 0; i < daysBetween; i++) {
             for (int j = 0; j <= 23; j++) {
                 DateHourCountRequest auxDHC = new DateHourCountRequest(); // Crear una nueva instancia en cada iteración
-                auxDHC.setCount(reservationRepository.getDateHourCount(Date.valueOf(iniDate), Time.valueOf(hour), statisticRequest.getIdParking()));
+                auxDHC.setCount(
+                        reservationRepository.getDateHourCount(Date.valueOf(iniDate), Time.valueOf(hour), idParking));
                 auxDHC.setDate(Date.valueOf(iniDate));
                 auxDHC.setHour(Time.valueOf(hour));
                 prevList.add(auxDHC); // Agregar la instancia a la lista
@@ -190,7 +163,7 @@ public class ParameterizationService {
             hour = LocalTime.of(0, 0);
             iniDate = iniDate.plusDays(1);
         }
- 
+
         List<HourAveragemRequest> returnList = new ArrayList<>();
         hour = LocalTime.of(0, 0); // Reiniciar hour
         for (int i = 0; i <= 23; i++) {
@@ -210,8 +183,34 @@ public class ParameterizationService {
             returnList.add(auxAverage);
             hour = hour.plusHours(1);
         }
- 
+        System.out.println(returnList);
+
         return returnList;
     }
- 
+
+    public List<DateSumRequest> getSales(Date initialDate, Date finalDate, int idParking) {
+        LocalDate iniDate = initialDate.toLocalDate();
+        LocalDate finDate = finalDate.toLocalDate();
+        LocalDate auxDate = initialDate.toLocalDate();
+        System.out.println("INITIAL DATE: " + initialDate);
+        System.out.println("FINAL DATE: " + finalDate); // Corrigido para imprimir la fecha final correcta
+        List<DateSumRequest> returnList = new ArrayList<>();
+        long daysBetween = ChronoUnit.DAYS.between(iniDate, finDate);
+        System.out.println("total dias: " + daysBetween);
+    
+        for (int i = 0; i <= daysBetween; i++) {
+            DateSumRequest auxDS = new DateSumRequest(); // Crear una nueva instancia en cada iteración
+            Float sum = reservationRepository.getSumTotalRes(Date.valueOf(auxDate), idParking);
+            auxDS.setSum(sum != null ? sum : 0.0f); // Manejar el caso donde sum es null
+            auxDS.setDate(Date.valueOf(auxDate));
+            returnList.add(auxDS); // Agregar la instancia a la lista
+            System.out.println("INITIAL DATE: " + initialDate);
+            auxDate = auxDate.plusDays(1);
+            System.out.println("AUX DATE: " + auxDate);
+            System.out.println(returnList);
+        }
+    
+        return returnList;
+    }
+
 }

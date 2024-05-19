@@ -1,4 +1,6 @@
 package com.project.layer.Controllers;
+
+import java.sql.Date;
 import java.util.List;
 
 import org.springframework.http.ResponseEntity;
@@ -9,6 +11,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.project.layer.Controllers.Requests.DateSumRequest;
 import com.project.layer.Controllers.Requests.HourAveragemRequest;
 import com.project.layer.Controllers.Requests.ParkingSpaceRequest;
 import com.project.layer.Controllers.Requests.StatisticsRequest;
@@ -25,43 +28,49 @@ import lombok.RequiredArgsConstructor;
 @RequestMapping("/admin")
 @RequiredArgsConstructor
 public class AdminController {
-    
+
     private final ParameterizationService parameterizationService;
     private final MapService mapService;
 
     @PostMapping("/searchParkings")
-    public List<ParkingResponse> searchParking(@RequestBody UserId adminId ){
+    public List<Parking> searchParking(@RequestBody UserId adminId) {
         return parameterizationService.searchParking(adminId);
     }
 
     @PostMapping("/modifyParking")
-    public ResponseEntity<String> modifyParking(@RequestBody Parking parkingRequest){
+    public ResponseEntity<String> modifyParking(@RequestBody Parking parkingRequest) {
         return ResponseEntity.ok(parameterizationService.modifyParking(parkingRequest));
     }
 
-    @PostMapping("/insertParkingSpace") 
-    public ResponseEntity<String> insertParkingSpace(@RequestBody ParkingSpaceRequest pkRequest ){
+    @PostMapping("/insertParkingSpace")
+    public ResponseEntity<String> insertParkingSpace(@RequestBody ParkingSpaceRequest pkRequest) {
         return ResponseEntity.ok(parameterizationService.insertParkingSpace(pkRequest));
     }
-    
-    @PostMapping("/deleteParkingSpace") 
-    public ResponseEntity<String> deleteParkingSpace(@RequestBody ParkingSpaceRequest pkRequest ){
+
+    @PostMapping("/deleteParkingSpace")
+    public ResponseEntity<String> deleteParkingSpace(@RequestBody ParkingSpaceRequest pkRequest) {
         return ResponseEntity.ok(parameterizationService.deleteParkingSpace(pkRequest));
     }
 
     @GetMapping("/cityList")
-    public List<String> getCityList(){
+    public List<String> getCityList() {
         return mapService.getCityList();
     }
 
     @GetMapping("/getCity")
-    public City getCity(@RequestParam String city){
+    public City getCity(@RequestParam String city) {
         return mapService.getCity(city);
     }
 
-    @GetMapping("/getStatistics")
-    public List<HourAveragemRequest> getStatistics(@RequestBody StatisticsRequest statisticRequest) {
-        return parameterizationService.getStatistics(statisticRequest);
+    @GetMapping("/getHourAverage")
+    public List<HourAveragemRequest> getHourAverage(@RequestParam Date initialDate, @RequestParam Date finalDate,
+            @RequestParam int idParking) {
+        return parameterizationService.getHourAverage(initialDate, finalDate, idParking);
     }
 
+    @GetMapping("/getSales")
+    public List<DateSumRequest> getSales(@RequestParam Date initialDate, @RequestParam Date finalDate,
+            @RequestParam int idParking) {
+        return parameterizationService.getSales(initialDate, finalDate, idParking);
+    }
 }
