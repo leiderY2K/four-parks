@@ -80,7 +80,7 @@ public class ReservationController {
             );
     }
 
-    @Scheduled(cron = "0 30 * * * *")
+    @Scheduled(cron = "0 30-59 * * * *")
     public void confirm(){
         List<Reservation> reservations = reservationService.selectNearReservations();
 

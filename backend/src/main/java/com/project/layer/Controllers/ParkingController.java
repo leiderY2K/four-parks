@@ -37,7 +37,7 @@ public class ParkingController {
     private final ParkingService parkingService;
 
     @GetMapping("/city/{city}")
-    public List<Parking> search(
+    public List<Parking> getParkingbyCity(
         @PathVariable("city") String city,
         @RequestParam(required = false) String type,
         @RequestParam(required = false) Date startDate,

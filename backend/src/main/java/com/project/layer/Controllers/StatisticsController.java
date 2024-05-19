@@ -1,14 +1,15 @@
 package com.project.layer.Controllers;
+import java.sql.Date;
 import java.util.List;
 
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.project.layer.Controllers.Requests.DateSumRequest;
 import com.project.layer.Controllers.Requests.HourAveragemRequest;
-import com.project.layer.Controllers.Requests.StatisticsRequest;
-import com.project.layer.Services.Parameterization.ParameterizationService;
+import com.project.layer.Services.Parameterization.StatisticsService;
 
 import lombok.RequiredArgsConstructor;
 
@@ -17,11 +18,18 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class StatisticsController {
     
-    private final ParameterizationService parameterizationService;
+    private final StatisticsService statisticsService;
 
-    @GetMapping("/getStatistics")
-    public List<HourAveragemRequest> getStatistics(@RequestBody StatisticsRequest statisticRequest) {
-        return parameterizationService.getStatistics(statisticRequest);
+    @GetMapping("/average-hour/")
+    public List<HourAveragemRequest> getHourAverage(@RequestParam Date initialDate, @RequestParam Date finalDate,
+            @RequestParam int idParking) {
+        return statisticsService.getHourAverage(initialDate, finalDate, idParking);
+    }
+
+    @GetMapping("/sales")
+    public List<DateSumRequest> getSales(@RequestParam Date initialDate, @RequestParam Date finalDate,
+            @RequestParam int idParking) {
+        return statisticsService.getSales(initialDate, finalDate, idParking);
     }
 
 }

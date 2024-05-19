@@ -27,7 +27,6 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class ReservationService {
 
-
     private final IReservationRepository reservationRepository;
     private final IParkingSpaceRepository parkingSpaceRepository;
     private final IUserRepository userRepository;
@@ -121,7 +120,7 @@ public class ReservationService {
         System.out.println("el costo es: " + totalCost);
 
         User client = userRepository.getReferenceById(reservationRequest.getClientId());
-        
+
         Reservation reservation = Reservation.builder()
                 .startDateRes(Date.valueOf(reservationRequest.getStartDateRes()))
                 .startTimeRes(Time.valueOf(reservationRequest.getStartTimeRes()))
@@ -196,8 +195,7 @@ public class ReservationService {
 
         Reservation reservation = optionalReservation.get();
 
-        if (!(reservation.getStatus().equals(ResStatus.PENDING.getId())
-                || reservation.getStatus().equals(ResStatus.CONFIRMED.getId()))) {
+        if (!reservation.getStatus().equals(ResStatus.PENDING.getId())) {
             return new ReservationResponse(null,"¡La reserva no puede ser cancelada!");
         }
 
@@ -206,7 +204,6 @@ public class ReservationService {
                 reservation.getParkingSpace().getParkingSpaceId().getParking().getParkingId().getCity().getIdCity(),
                 reservation.getVehicleType(),
                 reservation.getParkingSpace().isUncovered());
-
 
         System.out.println("Costo de tarifa: " + cancellationCost);
         reservation.setTotalRes(cancellationCost);

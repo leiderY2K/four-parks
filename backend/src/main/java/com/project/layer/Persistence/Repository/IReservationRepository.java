@@ -96,11 +96,11 @@ public interface IReservationRepository extends JpaRepository<Reservation, Integ
         @Param("endTimeRes") Time endTimeRes);
 
 
-    @Query(
+    /*@Query(
         value ="SELECT * FROM CARD u WHERE u.FK_CLIENT_IDUSER LIKE %:userId%",
         nativeQuery = true
     )
-    List<Card> findByUserId();
+    List<Card> findByUserId();*/
 
     @Query(
         value = "SELECT COUNT(*) " +
@@ -116,4 +116,12 @@ public interface IReservationRepository extends JpaRepository<Reservation, Integ
         @Param("idParking") int idParking
     );
 
+        @Query(value = "SELECT SUM(TOTALRES) " +
+                        "FROM RESERVATION r " +
+                        "WHERE r.DATERES = :date AND " +
+                        "r.FK_IDPARKING = :idParking", nativeQuery = true)
+        Float getSumTotalRes(Date date, int idParking);
+
+        @Query(value = "SELECT * FROM CARD u WHERE u.FK_CLIENT_IDUSER LIKE %:userId%", nativeQuery = true)
+        List<Card> findByUserId();
 }
