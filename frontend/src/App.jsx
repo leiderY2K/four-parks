@@ -5,7 +5,9 @@ import LoginPage from "./pages/general/LoginPage"
 import SignUpClientPage from "./pages/client/SignUpClientPage"
 import ReservationPage from "./pages/client/ReservationsPage";
 import HomeAdminPage from "./pages/admin/HomeAdminPage";
-import StatisticsPage from "./pages/admin/StatisticsPage";
+import StatisticsAdminPage from "./pages/admin/StatisticsAdminPage";
+import HomeManagerPage from "./pages/manager/HomeManagerPage";
+import StatisticsManagerPage from "./pages/manager/StatisticsManagerPage";
 
 function App() {
   const url = "http://localhost:8080";
@@ -71,7 +73,10 @@ function App() {
           <Route path="/mis-reservas" element={<ReservationPage url={url} />}/>
 
           <Route path="/admin-inicio" element={<HomeAdminPage url={url} initialCoords={initialCoords} />}/>
-          <Route path="/ver-estadisticas" element={<StatisticsPage url={url} />}/>
+          <Route path="/admin-ver-estadisticas" element={<StatisticsAdminPage url={url} />}/>
+          
+          <Route path="/manager-inicio" element={<HomeManagerPage url={url} initialCoords={initialCoords} />}/>
+          <Route path="/manager-ver-estadisticas" element={<StatisticsManagerPage url={url} />}/>
       </Routes>
     </BrowserRouter>
   )

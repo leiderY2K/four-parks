@@ -18,7 +18,7 @@ const Header = () => {
                         </li>
                         
                         <li className="mr-16 relative">
-                            <Link to="/ver-estadisticas" className="inline-block font-title font-medium text-white hover:scale-105 py-2 px-4" 
+                            <Link to="/admin-ver-estadisticas" className="inline-block font-title font-medium text-white hover:scale-105 py-2 px-4" 
                             onClick={() => {setOnToggle(false);}}>Ver estadísticas</Link>
                         </li>
 

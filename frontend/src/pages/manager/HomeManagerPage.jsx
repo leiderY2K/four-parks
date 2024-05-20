@@ -1,11 +1,11 @@
 import { useEffect, useState } from "react";
 import axios from "axios";
-import Header from "../../components/admin/Header"
-import Map from '../../components/admin/Map.jsx'
-import ParamsInfo from '../../components/admin/ParamsInfo.jsx'
-import QuotaManager from "../../components/admin/QuotaManager.jsx";
+import Header from "../../components/manager/Header.jsx"
+import Map from '../../components/manager/Map.jsx'
+import ParamsInfo from '../../components/manager/ParamsInfo.jsx'
+import QuotaManager from "../../components/manager/QuotaManager.jsx";
 
-const HomeManagerPage = ({url, initialCoords}) => {
+const HomeAdminPage = ({url, initialCoords}) => {
   const [cities, setCities] = useState([]);
   const [city, setCity] = useState("");
   const [actualCity, setActualCity] = useState({
@@ -75,4 +75,4 @@ const HomeManagerPage = ({url, initialCoords}) => {
   )
 }
 
-export default HomeManagerPage
+export default HomeAdminPage
