@@ -43,7 +43,7 @@ public class AuthController {
         
         AuthResponse respuesta = authService.register(request);
 
-        List<String> messages = Arrays.asList("Registro", respuesta.getContra());
+        List<String> messages = Arrays.asList("Register", respuesta.getContra());
         mailservice.sendMail(request.getEmail(), "Bienvenido a four-parks Colombia", messages);
         return ResponseEntity.ok(respuesta);
     }
