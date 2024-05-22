@@ -2,6 +2,8 @@ import { useState, useEffect } from "react";
 import axios from "axios";
 import Header from "../../components/admin/Header"
 import BarHours from "../../components/admin/graphics/BarHours";
+import PieHours from "../../components/admin/graphics/PieHours";
+import LineHours from "../../components/admin/graphics/LineHours";
 import { jsPDF } from "jspdf";
 import { read, writeFileXLSX } from "xlsx";
 import html2canvas from "html2canvas";
@@ -32,27 +34,38 @@ const StatisticsAdminPage = ({ url }) => {
       });
   }, []);
 
-  const createHoursGraph = () => {
-    if (actualParking && infoType && graphicType && startDate && endDate) {
-      switch (graphicType) {
-        case 'bars':
-          return (
-            <section id="graph-section" className="w-10/12 mt-5 mx-auto">
-              <div className="border bg-white p-6 rounded-md shadow-md overflow-hidden">
-                <BarHours url={url} actualParking={actualParking} startDate={startDate} endDate={endDate} />
-              </div>
-            </section>
-          );
-        case 'circle':
-          return null;
-        case 'lines':
-          return null;
-        default:
-          return null;
+    const createHoursGraph = () => {
+      if(actualParking && infoType && graphicType && startDate && endDate) {
+        switch (graphicType) {
+            case 'bars':
+                return (
+                  <section className="w-10/12 mt-5 mx-auto" id="graph-section">
+                      <div className="border bg-white p-6 rounded-md shadow-md overflow-hidden">
+                        <BarHours url={url} actualParking={actualParking} startDate={startDate} endDate={endDate} />
+                      </div>
+                  </section> 
+                );
+            case 'circle':
+                return (
+                  <section className="w-10/12 mt-5 mx-auto" id="graph-section">
+                      <div className="border bg-white p-6 rounded-md shadow-md overflow-hidden">
+                        <PieHours url={url} actualParking={actualParking} startDate={startDate} endDate={endDate} />
+                      </div>
+                  </section> 
+                );
+            case 'lines':
+                return (
+                  <section className="w-10/12 mt-5 mx-auto" id="graph-section">
+                      <div className="border bg-white p-6 rounded-md shadow-md overflow-hidden">
+                        <LineHours url={url} actualParking={actualParking} startDate={startDate} endDate={endDate} />
+                      </div>
+                  </section> 
+                );
+            default:
+                return null;
+        }
       }
     }
-  };
-
 
 
   const GenPDF = () => {
@@ -124,3 +137,4 @@ const StatisticsAdminPage = ({ url }) => {
 }
 
 export default StatisticsAdminPage
+
