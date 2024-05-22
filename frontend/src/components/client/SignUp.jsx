@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import Swal from 'sweetalert2'
 import logo from '../../assets/Logo.png'
+import { useEffect } from "react";
 
 export default function SignUp({ url }) {
     const [idType, setIdType] = useState('');
@@ -22,8 +23,8 @@ export default function SignUp({ url }) {
     //const [year, setYear] = useState("");
     //const [month, setMonth] = useState("");
 
-    //Select si es mastercard o visa y dependiendo mestre uno de los dos 
-    //
+    //Select si es mastercard o visa y dependiendo muestre uno de los dos  
+
 
     const navigate = useNavigate();
 
@@ -32,9 +33,7 @@ export default function SignUp({ url }) {
     const handleSignUp = (e) => {
         e.preventDefault();
         let arr = expirationDate.split('-');
-        console.log(arr)
         let year = arr[0].substr(arr[0].length - 2)
-        console.log(year)
         let month = arr[1]
 
 
@@ -81,6 +80,8 @@ export default function SignUp({ url }) {
         }
     }
 
+
+
     return (
         <article className="bg-gradient-to-b from-red-light from-75% to-red-dark pt-6 pb-6 relative rounded-2xl shadow-xl">
             <section className="flex flex-col items-center px-12">
@@ -108,7 +109,7 @@ export default function SignUp({ url }) {
                     </div>
 
                     <div className="flex justify-between w-full">
-                        <input id="phone" className="w-2/5 p-3 rounded-md bg-white font-paragraph placeholder:text-gray-dark" placeholder="Telefono"
+                        <input id="phone" className="w-2/5 p-3 rounded-md bg-white font-paragraph placeholder:text-gray-dark" placeholder="Teléfono"
                             value={phone} onChange={(e) => setPhone(e.target.value)}></input>
 
                         <input id="username" className="w-2/5 p-3 rounded-md bg-white font-paragraph placeholder:text-gray-dark" placeholder="Nombre de usuario"
@@ -159,7 +160,7 @@ export default function SignUp({ url }) {
                     </div>
 
                     <div className="flex justify-between w-full mt-5">
-                        <input type="date" id="expirationDate" value={expirationDate} className="p-4 rounded-md bg-white shadow-md font-paragraph"
+                        <input type="month" id="expirationDate" value={expirationDate} className="p-4 rounded-md bg-white shadow-md font-paragraph"
                             onChange={(e) => setExpirationDate(e.target.value)}></input>
 
                         <input id="cvv" className="w-2/5 p-3 rounded-md bg-white font-paragraph placeholder:text-gray-dark" placeholder="cvv"

@@ -2,6 +2,9 @@ import { useState, useEffect } from "react";
 import axios from "axios";
 import Header from "../../components/admin/Header"
 import BarHours from "../../components/admin/graphics/BarHours";
+import { jsPDF } from "jspdf";
+import { read, writeFileXLSX } from "xlsx";
+
 
 const StatisticsPage = ({url}) => {
   const [infoType, setInfoType] = useState('');
@@ -58,12 +61,20 @@ const StatisticsPage = ({url}) => {
               return null;
       }*/
 
+
       if(actualParkingID && infoType && graphicType && startDate && endDate) {
         if(infoType == 'hours') {
           return <BarHours url={url} actualParkingID={actualParkingID} startDate={startDate} endDate={endDate} />
         }
       }
   };
+
+
+  const GenPDF = ()=>{
+    const doc = new jsPDF();
+    doc.text("Gráfica:", 95,20);
+    doc.save("Estadisticas.pdf");
+  }
 
   return (
     <>
@@ -112,6 +123,14 @@ const StatisticsPage = ({url}) => {
               </div>
             </div>
           </section>        
+          <section className="mt-6 flex justify-end">
+                <div className="">
+                <button onClick={GenPDF} className='shadow-xl px-16 py-3 mr-6 bg-blue-dark hover:bg-blue-darkest rounded-xl text-white font-title font-semibold'> Generar PDF </button>
+                <button className='shadow-xl px-16 py-3 bg-blue-dark hover:bg-blue-darkest rounded-xl text-white font-title font-semibold'> Generar Excel </button>
+                
+                </div>
+
+          </section>
         </section>
     </>
   )

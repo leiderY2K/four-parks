@@ -6,6 +6,7 @@ import SignUpClientPage from "./pages/client/SignUpClientPage"
 import ReservationPage from "./pages/client/ReservationsPage";
 import HomeAdminPage from "./pages/admin/HomeAdminPage";
 import StatisticsPage from "./pages/admin/StatisticsPage";
+import PasswordChangePage from "./pages/general/PasswordChangePage";
 
 function App() {
   const url = "http://localhost:8080";
@@ -72,6 +73,7 @@ function App() {
 
           <Route path="/admin-inicio" element={<HomeAdminPage url={url} initialCoords={initialCoords} />}/>
           <Route path="/ver-estadisticas" element={<StatisticsPage url={url} />}/>
+          <Route path="/cambio-contraseña" element={<PasswordChangePage url={url}/>} />
       </Routes>
     </BrowserRouter>
   )

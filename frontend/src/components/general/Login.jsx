@@ -98,7 +98,7 @@ export default function Login({ url }) {
             <hr className="h-0.5 mt-8 2xl:mt-6  rounded-full bg-white"></hr>
 
             <div className="flex justify-center mt-4 font-paragraph text-sm text-white"> ¿Olvidó su contraseña?
-                <a href="/" className="ml-1 font-semibold text-white hover:text-blue-darkest"> Recuperar </a>
+                <a href="/cambio-contraseña" className="ml-1 font-semibold text-white hover:text-blue-darkest"> Recuperar </a>
             </div>
 
             <div className="flex justify-center mt-2 font-paragraph text-sm text-white"> ¿Aún no tiene una cuenta?
