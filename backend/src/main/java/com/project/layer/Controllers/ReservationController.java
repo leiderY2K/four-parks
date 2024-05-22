@@ -1,5 +1,6 @@
 package com.project.layer.Controllers;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -58,28 +59,47 @@ public class ReservationController {
         mailService.sendMail(
             reservationResponse.getReservation().getClient().getEmail(),
             "[Four-parks] Información de su reserva",
-            getReservationMailParameters(reservationResponse.getReservation()));
+            getReservationMailParameters(reservationResponse.getReservation(),"Reserve"));
 
         return new ResponseEntity<>(reservationResponse, HttpStatus.OK);
     }
     
-    private List<String> getReservationMailParameters(Reservation reservation) {
-        return Arrays.asList("email",
-                Integer.toString(
-                reservation.getIdReservation()),
-                reservation.getStartDateRes().toString(),
-                reservation.getStartTimeRes().toString(),
-                reservation.getEndTimeRes().toString(),
-                reservation.getLicensePlate(),
-                reservation.getClient().getFirstName() + " " + reservation.getClient().getLastName(),
-                reservation.getClient().getUserId().getIdUser(),
-                reservation.getClient().getUserId().getIdDocType(),
-                reservation.getParkingSpace().getParkingSpaceId().getParking().getParkingId().getCity().getIdCity(),
-                reservation.getParkingSpace().getParkingSpaceId().getParking().getNamePark(),
-                reservation.getVehicleType()
-            );
+    private List<String> getReservationMailParameters(Reservation reservation, String template) {
+        List<String> list = new ArrayList<>(); 
+
+        //Plantilla para enviar los detalles de la reserva
+        if(template.equals("Reserve")){
+            list = Arrays.asList(template,
+            "ID: "+Integer.toString(reservation.getIdReservation()), //Id de la reservación
+            reservation.getParkingSpace().getParkingSpaceId().getParking().getNamePark(), //Nombre del parqueadero
+            reservation.getParkingSpace().getParkingSpaceId().getParking().getAddress().getDescAddress(),//Dirección
+            reservation.getClient().getFirstName() + " " + reservation.getClient().getLastName(),//Nombre del cliente
+            reservation.getStartDateRes().toString(), // Fecha de la reserva
+            reservation.getStartTimeRes().toString(),//Tiempo de inicio de la reserva
+            reservation.getEndTimeRes().toString(),//Tiempo de terminación de la reserva
+            Integer.toString(reservation.getParkingSpace().getParkingSpaceId().getIdParkingSpace()),//Id del espacio de parqueadero
+            reservation.getParkingSpace().getParkingSpaceId().getParking().getParkingId().getCity().getName(),//Ciuad de la reserva
+            reservation.getVehicleType(),//Tipo de vehiculo
+            reservation.getLicensePlate()//Placa del automovil 
+        );}
+
+        //Plantilla para confirmar la cancelacion de la reserva
+        if(template.equals("Reserve_Cancellation")){
+            list = Arrays.asList(template,
+            "ID: "+Integer.toString(reservation.getIdReservation()), //Id de la reservación
+            reservation.getParkingSpace().getParkingSpaceId().getParking().getNamePark(), //Nombre del parqueadero
+            reservation.getParkingSpace().getParkingSpaceId().getParking().getAddress().getDescAddress(),//Dirección
+            reservation.getClient().getFirstName() + " " + reservation.getClient().getLastName(),//Nombre del cliente
+            reservation.getStartDateRes().toString(), // Fecha de la reserva
+            Integer.toString(reservation.getParkingSpace().getParkingSpaceId().getIdParkingSpace()),//Id del espacio de parqueadero
+            reservation.getParkingSpace().getParkingSpaceId().getParking().getParkingId().getCity().getName()//Ciuad de la reserva
+            //falta poner la parte del monto de la tarifa por cancelacion 
+        );}
+
+        return list;
     }
 
+    //se ejecuta a la media hora antes de que empiece la reserva
     @Scheduled(cron = "0 30-59 * * * *")
     public void confirm(){
         List<Reservation> reservations = reservationService.selectNearReservations();
@@ -108,7 +128,7 @@ public class ReservationController {
     }
 
     @PutMapping("{id}/cancel")
-    public ResponseEntity<ReservationResponse> cancel(@PathVariable("id") Integer idReservation){
+    public ResponseEntity<ReservationResponse> cancel(@PathVariable("id") Integer idReservation) throws MessagingException{
         ReservationResponse reservationResponse = reservationService.cancelReservation(idReservation); 
 
         if (reservationResponse.getReservation() == null) return new ResponseEntity<>(reservationResponse, HttpStatus.BAD_REQUEST);
@@ -118,6 +138,10 @@ public class ReservationController {
         reservationService.setStatus(reservationResponse.getReservation(), ResStatus.CANCELLED.getId());
         
         // Se envian los correos
+        mailService.sendMail(
+            reservationResponse.getReservation().getClient().getEmail(),
+            "[Four-parks] Información de su reserva",
+            getReservationMailParameters(reservationResponse.getReservation(), "Reserve_Cancellation"));
 
         return new ResponseEntity<>(reservationResponse, HttpStatus.OK);
     }

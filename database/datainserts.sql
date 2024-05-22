@@ -74,7 +74,18 @@ VALUES
     ('121232465696', 'Admin43', 'Parqueadero', 'CC', 'admin43@example.com', '123456789'),
     ('121232465697', 'Admin44', 'Parqueadero', 'CC', 'admin44@example.com', '123456789'),
     ('121232465698', 'Admin45', 'Parqueadero', 'CC', 'admin45@example.com', '123456789'),
-    ('121232465699', 'Admin46', 'Parqueadero', 'CC', 'admin46@example.com', '123456789');
+    ('121232465699', 'Admin46', 'Parqueadero', 'CC', 'admin46@example.com', '123456789'),
+    -- Gerentes
+    ('111232465699', 'Laura', 'González', 'CC', 'gerente1@example.com', '987654321'),
+	('111232465700', 'Carlos', 'Martínez', 'CC', 'gerente2@example.com', '234567890'),
+    ('111232465701', 'Ana', 'Pérez', 'CC', 'gerente3@example.com', '345678901'),
+    ('111232465702', 'María', 'Rodríguez', 'CC', 'gerente4@example.com', '456789012'),
+    ('111232465703', 'José', 'Fernández', 'CC', 'gerente5@example.com', '567890123'),
+    ('111232465704', 'Lucía', 'Gómez', 'CC', 'gerente6@example.com', '678901234'),
+	('111232465705', 'David', 'López', 'CC', 'gerente7@example.com', '789012345'),
+	('111232465706', 'Sofía', 'Hernández', 'CC', 'gerente8@example.com', '890123456'),
+    ('111232465707', 'Jorge', 'Jiménez', 'CC', 'gerente9@example.com', '901234567'),
+    ('111232465708', 'Marta', 'Ruiz', 'CC', 'gerente10@example.com', '012345678');
  
 
 -- Insertar Autenticacion de usuarios después de los usuarios
@@ -131,8 +142,31 @@ VALUES
     (121232465696, 'CC', 'admin43', '$2a$10$QaazF..XTCslpdfjsNS.ZO3O6VhyG4roY6JJcE9TYc93W5ZbMbfwa', 'ADMIN', 0, 0),
     (121232465697, 'CC', 'admin44', '$2a$10$QaazF..XTCslpdfjsNS.ZO3O6VhyG4roY6JJcE9TYc93W5ZbMbfwa', 'ADMIN', 0, 0),
     (121232465698, 'CC', 'admin45', '$2a$10$QaazF..XTCslpdfjsNS.ZO3O6VhyG4roY6JJcE9TYc93W5ZbMbfwa', 'ADMIN', 0, 0),
-    (121232465699, 'CC', 'admin46', '$2a$10$QaazF..XTCslpdfjsNS.ZO3O6VhyG4roY6JJcE9TYc93W5ZbMbfwa', 'ADMIN', 0, 0);
+    (121232465699, 'CC', 'admin46', '$2a$10$QaazF..XTCslpdfjsNS.ZO3O6VhyG4roY6JJcE9TYc93W5ZbMbfwa', 'ADMIN', 0, 0),
+    -- Gerentes
+    (111232465699, 'CC', 'manager1', '$2a$10$QaazF..XTCslpdfjsNS.ZO3O6VhyG4roY6JJcE9TYc93W5ZbMbfwa', 'MANAGER', 0, 0),
+    (111232465700, 'CC', 'manager2', '$2a$10$QaazF..XTCslpdfjsNS.ZO3O6VhyG4roY6JJcE9TYc93W5ZbMbfwa', 'MANAGER', 0, 0),
+    (111232465701, 'CC', 'manager3', '$2a$10$QaazF..XTCslpdfjsNS.ZO3O6VhyG4roY6JJcE9TYc93W5ZbMbfwa', 'MANAGER', 0, 0),
+    (111232465702, 'CC', 'manager4', '$2a$10$QaazF..XTCslpdfjsNS.ZO3O6VhyG4roY6JJcE9TYc93W5ZbMbfwa', 'MANAGER', 0, 0),
+    (111232465703, 'CC', 'manager5', '$2a$10$QaazF..XTCslpdfjsNS.ZO3O6VhyG4roY6JJcE9TYc93W5ZbMbfwa', 'MANAGER', 0, 0),
+    (111232465704, 'CC', 'manager6', '$2a$10$QaazF..XTCslpdfjsNS.ZO3O6VhyG4roY6JJcE9TYc93W5ZbMbfwa', 'MANAGER', 0, 0),
+    (111232465705, 'CC', 'manager7', '$2a$10$QaazF..XTCslpdfjsNS.ZO3O6VhyG4roY6JJcE9TYc93W5ZbMbfwa', 'MANAGER', 0, 0),
+    (111232465706, 'CC', 'manager8', '$2a$10$QaazF..XTCslpdfjsNS.ZO3O6VhyG4roY6JJcE9TYc93W5ZbMbfwa', 'MANAGER', 0, 0),
+    (111232465707, 'CC', 'manager9', '$2a$10$QaazF..XTCslpdfjsNS.ZO3O6VhyG4roY6JJcE9TYc93W5ZbMbfwa', 'MANAGER', 0, 0),
+    (111232465708, 'CC', 'manager10', '$2a$10$QaazF..XTCslpdfjsNS.ZO3O6VhyG4roY6JJcE9TYc93W5ZbMbfwa', 'MANAGER', 0, 0);
    
+-- Insertar acciones 
+INSERT INTO `FOURPARKSDATABASE`.`CUSTOMERACTION` (`DESCACTION`, `DATEACTION`, `IPUSER`, `FK_IDUSER`, `FK_IDDOCTYPE`) VALUES
+('Registro', '2024-05-21', '192.134.27.1', '121232465654', 'CC'),
+('Ingreso', '2024-05-22', '203.145.28.2', '121232465655', 'CC'),
+('Realizo reserva', '2024-05-23', '194.156.29.3', '121232465656', 'CC'),
+('Realizo pago', '2024-05-24', '195.167.30.4', '121232465657', 'CC'),
+('Registro', '2024-05-25', '196.178.31.5', '121232465658', 'CC'),
+('Ingreso', '2024-05-26', '197.189.32.6', '121232465659', 'CC'),
+('Realizo reserva', '2024-05-27', '198.190.33.7', '121232465660', 'CC'),
+('Realizo pago', '2024-05-28', '199.201.34.8', '121232465661', 'CC'),
+('Registro', '2024-05-29', '200.212.35.9', '121232465661', 'CC'),
+('Ingreso', '2024-05-30', '201.223.36.10', '121232465662', 'CC');
 
 -- Insertar ciudades
 INSERT INTO `FOURPARKSDATABASE`.`CITY` (`IDCITY`, `NAME`, `B_TOP`, `B_BOTTOM`, `B_LEFT`, `B_RIGHT`, `X_CENTER`, `Y_CENTER`)

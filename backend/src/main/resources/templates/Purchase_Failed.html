@@ -1,0 +1,227 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>Contraseña Temporal</title>
+	<style>
+		body {
+			font-family: Arial, sans-serif;
+		}
+
+		.container {
+			background-color: #d46e51;
+			box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+			margin: 50px auto;
+			padding: 30px;
+			max-width: 600px;
+			text-align: center;
+		}
+
+		.container_2 {
+			max-width: 600px;
+			margin: 50px auto;
+			background-color: white;
+			border-radius: 8px;
+			box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+			overflow: hidden;
+			margin-top: 0px;
+			margin-bottom: 0px;
+		}
+
+		.content {
+			padding: 20px;
+		}
+
+		.content p {
+			margin: 5px 0;
+			font-size: 16px;
+		}
+
+		.box_2 {
+			margin-top: 20px;
+			padding-top: 20px;
+			border-top: 1px solid #ddd;
+			font-size: 18px;
+			text-align: right;
+		}
+
+		.box {
+			display: flex;
+			justify-content: space-between;
+		}
+
+		.box h2 {
+			margin-top: 0px;
+			margin-bottom: 0px;
+			font-size: 24px;
+		}
+
+		.box h3 {
+			margin-top: 0px;
+			margin-bottom: 0px;
+			font-size: 20px;
+		}
+		.box h4 {
+			margin-top: 0px;
+			margin-bottom: 0px;
+			font-size: 16px;
+		}
+
+		.brand {
+			display: flex;
+			justify-content: start;
+			align-items: center;
+			width: 50%;
+		}
+
+		.brand p {
+			padding-left: 10px;
+			font-weight: bold;
+			font-size: 15px;
+			color: aliceblue;
+		}
+
+		.header {
+			color: white;
+			padding: 20px;
+			text-align: center;
+		}
+
+		.header h1 {
+			margin: 0;
+			font-size: 30px;
+		}
+
+		.header p {
+			margin: 0;
+		}
+		.payment {
+			font-size: 24px;
+		}
+
+		/* Media Queries for Responsive Design */
+		@media (max-width: 768px) {
+
+			.container,
+			.container_2 {
+				margin: 20px auto;
+				padding: 20px;
+				max-width: 90%;
+			}
+
+			.box {
+				flex-direction: column;
+				align-items: flex-start;
+			}
+
+			.box h2 {
+				font-size: 20px;
+			}
+
+			.box h3 {
+				font-size: 16px;
+			}
+			.box h4{
+				font-size: 14px;
+			}
+
+			.brand {
+				width: 100%;
+				margin-bottom: 10px;
+			}
+
+			.brand p {
+				font-size: 14px;
+			}
+
+			.box_2 {
+				font-size: 16px;
+				text-align: left;
+			}
+			.payment {
+				font-size: 20px;
+			}
+		}
+
+		@media (max-width: 480px) {
+
+			.container,
+			.container_2 {
+				margin: 10px auto;
+				padding: 10px;
+				max-width: 100%;
+			}
+
+			.content {
+				padding: 10px;
+			}
+
+			.content p {
+				font-size: 14px;
+			}
+
+			.box h2 {
+				font-size: 18px;
+			}
+
+			.box h3 {
+				font-size: 14px;
+			}
+			.box h4{
+				font-size: 12px;
+			}
+
+			.brand p {
+				font-size: 12px;
+			}
+
+			.box_2 {
+				font-size: 14px;
+			}
+
+			.header h1 {
+				font-size: 20px;
+			}
+			.payment {
+				font-size: 18px;
+			}
+		}
+	</style>
+</head>
+
+<body>
+	<div class="container">
+
+		<div class="brand">
+			<img src="./Logo4.png" width="30" bheight="30" />
+			<p>Four-parks</p>
+		</div>
+		<div class="header">
+			<h1>¡El pago no ha sido efectivo!</h1>
+			<p>ID: [idPago]</p>
+		</div>
+		<div class="container_2">
+			<div class="content">
+				<div class="box">
+					<h2>Detalles de transacción:</h2>
+				</div>
+				<div class="box">
+					<h3>[Nombre cliente]</</h3>
+				</div>
+				<div class="box">
+					<h4>[Num Tarjeta]</h4>
+				</div>
+				<div class="box_2">
+					<div class="box">
+						<h2>Monto total:</h2>
+						<p class="payment">[Monto]</p>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</body>
+
+</html>
