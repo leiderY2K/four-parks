@@ -21,6 +21,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import com.project.layer.Controllers.Requests.LoginRequest;
+import com.project.layer.Controllers.Requests.PassRequest;
 import com.project.layer.Controllers.Requests.RegisterRequest;
 import com.project.layer.Controllers.Requests.UnlockRequest;
 import com.project.layer.Controllers.Responses.AuthResponse;
@@ -74,6 +75,7 @@ public class AuthService {
             unBlockPassword(userAuth.getUsername());
             String randomPassword = generateRandomPassword();
             User user= userRepository.getReferenceById(userAuth.getUserId());
+            updatePass(userAuth.getUsername(), passwordEncoder.encode(randomPassword));
             List<String> messages = Arrays.asList("Register", randomPassword);
             mailservice.sendMail(user.getEmail(), "Bienvenido a four-parks Colombia", messages);
             return AuthResponse.builder()
@@ -89,10 +91,14 @@ public class AuthService {
         UserAuthentication user = userAuthRepository.findByUsername(username).orElseThrow(() -> new UsernameNotFoundException("Usuario no encontrado"));
         if(user.getAttempts()>=3){
             blockPassword(username);
-            throw new UserBlockedException("Contraseña bloqueada. Por favor cambie la contraseña.");
+            throw new UserBlockedException("Se ha bloqueado el usuario por multiples intentos de inicio de sesión.");
         }
         userAuthRepository.incrementFailedAttempts(username);
 
+    }
+
+    public void updatePass(String username, String pass) {
+        userAuthRepository.updatePass(username, pass);
     }
 
     public void blockPassword(String username) {
@@ -202,4 +208,26 @@ public class AuthService {
         return sb.toString();
     }
 
-}
+    public AuthResponse changePass(PassRequest request){
+
+        try {
+            authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(request.getUsername(), request.getOldPass()));
+        } catch (BadCredentialsException e) {
+            // Lanzar la excepción para que sea capturada en el controlador
+            throw new BadCredentialsException("Credenciales incorrectas", e);
+        }
+        UserAuthentication userAuth = userAuthRepository.findByUsername(request.getUsername()).orElseThrow(() -> new UsernameNotFoundException("Usuario no encontrado"));
+        /*System.out.println("Contra base de datos :    "+ userAuth.getPassword());
+        System.out.println("Contra base de datos :    "+ userAuth.getPassword());
+        System.out.println("Contra traida de front :    "+ passwordEncoder.encode(request.getOldPass()));
+        if(userAuth.getUsername().equals(request.getUsername())&&userAuth.getPassword().equals(passwordEncoder.encode(request.getOldPass()))){*/
+            updatePass(userAuth.getUsername(), passwordEncoder.encode(request.getNewPass()));
+            return AuthResponse.builder()
+                .token("Contraseña modificada con exito.")
+                .build();
+        /* }
+        return AuthResponse.builder()
+                .token("Contraseña actual no coincide.")
+                .build();
+        }*/
+    }}

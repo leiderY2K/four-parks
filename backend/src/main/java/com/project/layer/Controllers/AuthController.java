@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.project.layer.Controllers.Requests.LoginRequest;
+import com.project.layer.Controllers.Requests.PassRequest;
 import com.project.layer.Controllers.Requests.RegisterRequest;
 import com.project.layer.Controllers.Requests.UnlockRequest;
 import com.project.layer.Controllers.Responses.AuthResponse;
@@ -71,6 +72,15 @@ public class AuthController {
         List<String> messages = Arrays.asList("Register", respuesta.getContra());
         mailservice.sendMail(request.getEmail(), "Bienvenido a four-parks Colombia", messages);
         return ResponseEntity.ok(respuesta);
+    }
+
+    @PostMapping(value = "change-pass")
+    public ResponseEntity<AuthResponse> changePass(@RequestBody PassRequest request) {
+        try {
+        return ResponseEntity.ok(authService.changePass(request));
+    } catch (BadCredentialsException e) {
+        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(new AuthResponse("Credenciales incorrectas", null));
+    }
     }
 
 }
