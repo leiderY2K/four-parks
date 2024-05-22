@@ -1,7 +1,6 @@
 import { useState, useEffect } from 'react';
 import { MapContainer, TileLayer, Marker, Popup, useMap } from 'react-leaflet';
-import { Icon, divIcon, point } from 'leaflet';
-import MarkerClusterGroup from 'react-leaflet-cluster'
+import { Icon } from 'leaflet';
 import axios from "axios";
 import coveredWhiteIcon from '../../assets/Parking Icons/Covered-White.png';
 import coveredOrangeIcon from '../../assets/Parking Icons/Covered-Orange.png';
@@ -21,8 +20,10 @@ const Map = ({ url, city, parkingType, availability, vehicleType, date, startTim
     useEffect(() => {
         if(city) {
             const token = sessionStorage.getItem('token').replace(/"/g, '');
-    
-            axios.get(`${url}/client/getCity`,  {params: {city: city}, headers: {Authorization: `Bearer ${token}`}})
+
+            const urlCity = (city == "" ? "Bogota": city);
+
+            axios.get(`${url}/city/${urlCity}`, {headers: {Authorization: `Bearer ${token}`}})
             .then(res => {
                 const cityObject = {
                     id: res.data.idCity,
@@ -44,7 +45,7 @@ const Map = ({ url, city, parkingType, availability, vehicleType, date, startTim
         const token = sessionStorage.getItem('token').replace(/"/g, '');
         const params = {};
 
-        (city ? params.city = city : params.city = 'Bogota');
+        const urlCity = (city == "" ? "Bogota": city);
         if (parkingType) params.type = parkingType;
         if (availability) params.scheduleType = availability;
         if (vehicleType) params.vehicleType = vehicleType;
@@ -52,15 +53,14 @@ const Map = ({ url, city, parkingType, availability, vehicleType, date, startTim
         if (startTime) params.startTime = startTime;
         if (endTime) params.endTime = endTime;
         
-        axios.get(`${url}/client/getParkings`, {
-            params: params,
-            headers: { Authorization: `Bearer ${token}` }
+        axios.get(`${url}/parking/city/${urlCity}`, {params: params, headers: { Authorization: `Bearer ${token}` }
         })
         .then(res => {
             const parkingArray = res.data.map(parking => ({
-                id: parking.idParking,
+                id: parking.parkingId.idParking,
                 name: parking.namePark,
-                coords: [parking.addressCoordinatesX, parking.addressCoordinatesY],
+                address: parking.address.descAddress,
+                coords: [parking.address.coordinatesX, parking.address.coordinatesY],
                 type: parking.parkingType.idParkingType,
                 ocupability: parking.ocupability
             }));
@@ -85,20 +85,10 @@ const Map = ({ url, city, parkingType, availability, vehicleType, date, startTim
         }
     };
 
-    const createCustomClusterIcon = (cluster) => {
-        return new divIcon({
-            html: `<div class="flex justify-center items-center w-12 h-12 rounded-full bg-blue-dark opacity-85 font-semibold text-lg -translate-x-1/4 -translate-y-1/4"> 
-            ${cluster.getChildCount()} </div>`,
-            className: 'custom-marker-cluster',
-            iconSize: point(35, 35, true)
-        })
-    }
-
     const handleChangeParking = (parking) => {
         const token = sessionStorage.getItem('token').replace(/"/g, '');
         
-        axios.get(`${url}/client/getParkingByCoordinates`, {params: {coordinateX: parking.coords[0], coordinateY: parking.coords[1]}, 
-        headers: {Authorization: `Bearer ${token}`}})
+        axios.get(`${url}/parking/coordinates/${parking.coords[0]}/${parking.coords[1]}/${date}`, {headers: {Authorization: `Bearer ${token}`}})
         .then(res => {
             setActualParking([res.data.parking, res.data.capacity]);
             setOnReservationForm(false);
@@ -134,14 +124,16 @@ const Map = ({ url, city, parkingType, availability, vehicleType, date, startTim
             <UpdateMap city={city} center={actualCity.centerCoords} bounds={[actualCity.northLim, actualCity.southLim]} />
 
 
-            <MarkerClusterGroup chunkedLoading iconCreateFunction={createCustomClusterIcon}>
-                {parkings.map(parking => (
-                    <Marker key={parking.id} position={parking.coords} icon={getIcon(parking.type, parking.ocupability)} 
-                    eventHandlers={{click: () => handleChangeParking(parking)}}> 
-                        <Popup>{parking.name}</Popup>
-                    </Marker>
-                ))}
-            </MarkerClusterGroup>
+            {parkings.map(parking => (
+                <Marker key={parking.id} position={parking.coords} icon={getIcon(parking.type, parking.ocupability)} eventHandlers={{click: () => handleChangeParking(parking)}}> 
+                    <Popup> 
+                        <div className='flex flex-col font-title'>
+                            <span className='font-semibold mb-1'> {parking.name} </span> 
+                            <span className='text-xs'> {parking.address} </span>
+                        </div>
+                    </Popup>
+                </Marker>
+            ))}
         </MapContainer>
     );
 }

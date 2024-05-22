@@ -48,7 +48,7 @@ export default function Login({ url }) {
                                 replace: ("/inicio-sesion", true)
                             });
                         } else if(tokenDecoded.role == "ADMIN") {
-                            navigate("/manager-inicio", {
+                            navigate("/admin-inicio", {
                                 replace: ("/inicio-sesion", true)
                             });
                         } else if(tokenDecoded.role == "MANAGER") {

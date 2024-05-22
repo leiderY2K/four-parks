@@ -176,6 +176,7 @@ CREATE TABLE IF NOT EXISTS `FOURPARKSDATABASE`.`PARKING` (
   `FK_ADMIN_IDDOCTYPE` VARCHAR(3) NOT NULL,
   `FK_IDPARKINGTYPE` VARCHAR(3) NOT NULL,
   PRIMARY KEY (`IDPARKING`, `FK_IDCITY`),
+  UNIQUE INDEX `UNQ_PARKING_ADMIN` (`FK_ADMIN_IDUSER`, `FK_ADMIN_IDDOCTYPE`),
   INDEX `FK_PARKING_CITY_IDX` (`FK_IDCITY` ASC) VISIBLE,
   INDEX `FK_PARKING_SCHEDULE_IDX` (`FK_IDSCHEDULE` ASC) VISIBLE,
   INDEX `FK_PARKING_ADDRESS` (`FK_COORDINATESX` ASC, `FK_COORDINATESY` ASC) VISIBLE,
@@ -286,8 +287,9 @@ DEFAULT CHARACTER SET = UTF8MB4;
 -- -----------------------------------------------------
 CREATE TABLE IF NOT EXISTS `FOURPARKSDATABASE`.`RESERVATION` (
   `IDRESERVATION` INT NOT NULL AUTO_INCREMENT,
-  `DATERES` DATE NOT NULL,
+  `STARTDATERES` DATE NOT NULL,
   `STARTTIMERES` TIME NOT NULL,
+  `ENDDATERES` DATE NOT NULL,
   `ENDTIMERES` TIME NOT NULL,
   `CREATIONDATERES` DATE NOT NULL,
   `TOTALRES` FLOAT NULL DEFAULT NULL,
@@ -370,6 +372,7 @@ FOR EACH ROW
 BEGIN
     DECLARE total_spaces INT;
     DECLARE parking_type VARCHAR(3);
+    DECLARE error_message VARCHAR(255);
 
     -- Obtener el tipo de estacionamiento
     SELECT FK_IDPARKINGTYPE INTO parking_type
@@ -378,13 +381,15 @@ BEGIN
 
     -- Validar el valor de ISUNCOVERED
     IF parking_type = 'UNC' AND NEW.ISUNCOVERED = 0 THEN
+        SET error_message = CONCAT('El valor en ISUNCOVERED no es válido para este tipo de estacionamiento (Sin cubrir). Tupla con ID: ', NEW.IDPARKINGSPACE, NEW.FK_IDPARKING);
         SIGNAL SQLSTATE '45000'
-        SET MESSAGE_TEXT = 'El valor en ISUNCOVERED no es válido para este tipo de estacionamiento (Sin cubrir)';
+        SET MESSAGE_TEXT = error_message;
     END IF;
 
     IF parking_type = 'COV' AND NEW.ISUNCOVERED = 1 THEN
+        SET error_message = CONCAT('El valor en ISUNCOVERED no es válido para este tipo de estacionamiento (Cubierto). Tupla con ID: ', NEW.IDPARKINGSPACE, NEW.FK_IDPARKING);
         SIGNAL SQLSTATE '45000'
-        SET MESSAGE_TEXT = 'El valor en ISUNCOVERED no es válido para este tipo de estacionamiento (Cubierto)';
+        SET MESSAGE_TEXT = error_message;
     END IF;
 
     -- Calcula el total de espacios de estacionamiento en el parqueadero
@@ -429,8 +434,12 @@ CREATE TRIGGER before_insert_reservation
 BEFORE INSERT ON `FOURPARKSDATABASE`.`RESERVATION`
 FOR EACH ROW
 BEGIN
-    IF NEW.CREATIONDATERES > NEW.DATERES THEN
-        SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = 'CREATIONDATERES must be before or equal to DATERES';
+    IF NEW.CREATIONDATERES > NEW.STARTDATERES THEN
+        SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = 'CREATIONDATERES must be before or equal to STARTDATERES';
+    END IF;
+    
+    IF NEW.STARTDATERES > NEW.ENDDATERES THEN
+        SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = 'STARTDATERES must be before or equal to ENDDATERES';
     END IF;
     
     IF NEW.STARTTIMERES >= NEW.ENDTIMERES THEN

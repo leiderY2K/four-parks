@@ -5,17 +5,17 @@ import axios from "axios";
 
 ChartJS.register(CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend);
 
-const BarHours = ({url, actualParkingID, startDate, endDate}) => {
+const BarHours = ({url, actualParking, startDate, endDate}) => {
     const [hoursAverage, setHoursAverage] = useState([]);
 
     useEffect(() => {
         const token = sessionStorage.getItem('token').replace(/"/g, '');
         setHoursAverage([]);
       
-        axios.get(`${url}/admin/getStatistics`, {
+        axios.get(`${url}/getStatistics`, {
             initialDate: startDate,
             finalDate: endDate,
-            idParking: 2
+            idParking: actualParking.id
         }, {headers: {Authorization: `Bearer ${token}`}})
         .then((res) => {
             console.log(res.data)
@@ -27,7 +27,7 @@ const BarHours = ({url, actualParkingID, startDate, endDate}) => {
         .catch((err) => {
             console.log(err);
         });
-    }, [actualParkingID, startDate, endDate]);      
+    }, [actualParking, startDate, endDate]);      
 
     const labels = hoursAverage.map((item) => item.hour);
     const average = hoursAverage.map((item) => item.average);

@@ -47,23 +47,21 @@ export default function SignUp({ url }) {
             axios.post(`${url}/auth/register`, {
                 idUser: idNumber,
                 idDocTypeFk: idType,
-                firstName: name,
+                username: username,
                 role: 'CLIENT',
+                firstName: name,
                 lastName: lastName,
                 email: email,
                 phone: phone,
-                username: username,
-                password: 'temporal',
                 serialCard: cardNumber,
                 ExpiryMonthCard: month,
                 ExpiryYearCard: year,
                 cvc: cvv
-
             })
-                .then(res => {
-                    console.log(res);
+            .then(res => {
+                console.log(res);
 
-                    Swal.fire({
+                Swal.fire({
                         icon: 'success',
                         title: `Registro exitoso`
                     });

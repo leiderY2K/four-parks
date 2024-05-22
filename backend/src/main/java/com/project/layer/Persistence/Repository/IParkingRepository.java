@@ -2,19 +2,16 @@ package com.project.layer.Persistence.Repository;
 
 import java.sql.Time;
 import java.util.List;
-import java.util.Optional;
-
-import org.antlr.v4.runtime.atn.SemanticContext.AND;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import com.project.layer.Persistence.Entity.Parking;
-import com.project.layer.Persistence.Entity.User;
+import com.project.layer.Persistence.Entity.ParkingId;
 
 @Repository
-public interface IParkingRepository extends JpaRepository<Parking, Integer> {
+public interface IParkingRepository extends JpaRepository<Parking, ParkingId> {
 
     @Query(value = "SELECT DISTINCT p.* FROM PARKING p " +
             "JOIN CITY c ON p.FK_IDCITY = c.IDCITY " +
@@ -54,7 +51,7 @@ public interface IParkingRepository extends JpaRepository<Parking, Integer> {
     @Query(value = "SELECT * FROM PARKING p " +
             "WHERE p.FK_ADMIN_IDUSER = :idUser " +
             "AND p.FK_ADMIN_IDDOCTYPE = :idDoctype ", nativeQuery = true)
-    List<Parking> findByAdminId(
+    Parking findByAdminId(
             @Param("idUser") String idUser,
             @Param("idDoctype") String idDoctype);
 }

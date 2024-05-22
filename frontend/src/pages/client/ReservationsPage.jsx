@@ -10,21 +10,10 @@ const ReservationPage = ({ url }) => {
   const user = JSON.parse(sessionStorage.getItem('userLogged'));
   const idNumber = user.idNumber;
   const idType = user.idType;
-  /*const idNumber = "6543210987654"
-  const idType = "TI"
-  const params = {};*/
   
   useEffect(() => {
     const token = sessionStorage.getItem('token').replace(/"/g, '');
-    axios.post(`http://localhost:8080/client/postReservations`, {
-      clientId: {
-        idUser: idNumber, idDocType: idType
-      },
- 
-      ...(resState ? {status: resState} : {})
-
-
-    }, { headers: { Authorization: `Bearer ${token}` } })
+    axios.post(`http://localhost:8080/reservation/client/${idType}/${idNumber}`, {...(resState ? {status: resState} : {})}, {headers: { Authorization: `Bearer ${token}` } })
       .then(res => {
         const reservationArray = []; 
         res.data.map(reservation => {reservationArray.push(reservation)})

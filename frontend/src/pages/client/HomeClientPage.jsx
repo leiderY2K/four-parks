@@ -15,8 +15,6 @@ const Home = ({url, initialCoords}) => {
   const [endTime, setEndTime] = useState("");
   const [onReservationForm, setOnReservationForm] = useState(false);
   const [actualCity, setActualCity] = useState({
-    id: 'BGT',
-    name: 'Bogota',
     northLim: [4.7694, -74.2034],
     southLim: [4.4861, -74.0232],
     centerCoords: [4.6596, -74.0915]
@@ -26,8 +24,6 @@ const Home = ({url, initialCoords}) => {
   useEffect(() => {
     if(initialCoords.length > 0) {
       setActualCity({
-        id: 'BGT',
-        name: 'Bogota',
         northLim: [4.7694, -74.2034],
         southLim: [4.4861, -74.0232],
         centerCoords: initialCoords

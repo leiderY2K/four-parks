@@ -29,7 +29,11 @@ import lombok.NoArgsConstructor;
     )
 })
 public class RateId implements Serializable{
+
     private int idParking;
+    
     private int idCity;
+    
     private String idVehicleType;
+
 }

@@ -5,7 +5,6 @@ import java.io.Serializable;
 import jakarta.persistence.Column;
 import jakarta.persistence.Embeddable;
 import jakarta.persistence.JoinColumn;
-import jakarta.persistence.JoinColumns;
 import jakarta.persistence.ManyToOne;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -17,16 +16,12 @@ import lombok.NoArgsConstructor;
 @Data
 @Builder
 @Embeddable
-public class ParkingSpaceId implements Serializable {
-    
-    @Column(name = "IDPARKINGSPACE")
-    private Integer idParkingSpace;
+public class ParkingId implements Serializable{
+
+    @Column(name = "IDPARKING")
+    private Integer idParking;
 
     @ManyToOne
-    @JoinColumns({
-        @JoinColumn(name = "FK_IDPARKING", referencedColumnName = "IDPARKING"),
-        @JoinColumn(name = "FK_IDCITY", referencedColumnName = "FK_IDCITY")
-    })
-    private Parking parking;
-
+    @JoinColumn(name = "FK_IDCITY", referencedColumnName = "IDCITY")
+    private City city;
 }

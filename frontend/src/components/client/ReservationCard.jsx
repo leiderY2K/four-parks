@@ -10,8 +10,6 @@ function ReservationCard({url, setOnReservationForm, actualParking, actualCity})
     const [resDate, setResDate]= useState('');
     const [resStart, setResStart] = useState('');
     const [resEnd, setResEnd] = useState('');
-    const [resCreationDate, setResCreationDate] = useState('');
-    const [resTotal, setResTotal] = useState('');
     const [licensePlate, setLicensePlate] = useState('');
     const [vehicleType, setVehicleType] = useState('');
     const [resPayMethod, setResPayMethod] = useState('');
@@ -46,10 +44,10 @@ function ReservationCard({url, setOnReservationForm, actualParking, actualCity})
                 title: `Por favor llene todos los campos`
             });
         } else {
-            console.log(resDate,resStart,resEnd,licensePlate)
-            axios.post(`${url}/client/startReservation`, {
-                dateRes: resDate, 
+            axios.post(`${url}/reservation/start`, {
+                startDateRes: resDate, 
                 startTimeRes: resStart, 
+                endDateRes: "2024-05-22", 
                 endTimeRes: resEnd, 
                 licensePlate: licensePlate,
                 clientId:{
@@ -57,16 +55,13 @@ function ReservationCard({url, setOnReservationForm, actualParking, actualCity})
                 },
                 cityId:idCiudad,
                 parkingId:idParqueadero,
-                vehicleType:vehicleType
-                //creationDateRes: 'Hoy',
-                //totalRes: "0", 
-                //vehicleType: vehicleType, 
-                //username: resPayMethod, 
+                vehicleType:vehicleType,
+                isUncovered: true
             },{headers: {Authorization: `Bearer ${token}`}})
             .then(res => {
                 console.log(res)
                 console.log(res.data);
-                if ((res.data)==("No hay espacios disponibles")) {
+                if ((res.data.message)==("No hay espacios disponibles")) {
                     Swal.fire({
                         icon: 'error',
                         title: `No hay espacios disponibles` ,
@@ -78,17 +73,21 @@ function ReservationCard({url, setOnReservationForm, actualParking, actualCity})
                 });
 
                 setOnReservationForm(false)}
-                
-
-                //navigate("/inicio-sesion");
             })
             .catch(err => {
-                Swal.fire({
-                    icon: 'error',
-                    title: `Hubo un error al realizar la reserva` ,
-                });
+                if ((err.response.data.message)=="¡No se encontró espacio libre!") {
+                    Swal.fire({
+                        icon: 'error',
+                        title: `No hay espacios disponibles` ,
+                    });
+                }else{
+                    Swal.fire({
+                        icon: 'error',
+                        title: `Hubo un error al realizar la reserva` ,
+                    });
+                }
 
-                console.log(err);
+                console.log(err.data);
             })
         }
     }

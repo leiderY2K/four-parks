@@ -8,38 +8,36 @@ const StatisticsAdminPage = ({url}) => {
   const [graphicType, setGraphicType] = useState('');
   const [startDate, setStartDate] = useState('');
   const [endDate, setEndDate] = useState('');
-  const [parkings, setParkings] = useState([]);
-  const [actualParkingID, setActualParkingID] = useState();
+  const [actualParking, setActualParking] = useState({
+    id: "",
+    name: ""
+  });
 
   useEffect(() => {
-        const token = sessionStorage.getItem('token').replace(/"/g, '');
-        const user = JSON.parse(sessionStorage.getItem('userLogged'));
-        
-        axios.post(`${url}/admin/searchParkings`, {idUser: user.idNumber, idDocType: user.idType}, {headers: { Authorization: `Bearer ${token}` }})
-        .then(res => {
-            const parkingArray = res.data.map(parking => ({
-                id: parking.parking.idParking,
-                name: parking.parking.namePark,
-            }));
-
-            setParkings(parkingArray);
-        })
-        .catch(err => {
-            console.error(err.response || err);
+    const token = sessionStorage.getItem('token').replace(/"/g, '');
+    const user = JSON.parse(sessionStorage.getItem('userLogged'));
+    
+    axios.get(`${url}/parking/admin/${user.idType}/${user.idNumber}`, {headers: {Authorization: `Bearer ${token}`}})
+    .then(res => {
+        setActualParking({
+          id: res.data.parking.parkingId.idParking, 
+          name: res.data.parking.namePark
         });
-    }, []);
+    })
+    .catch(err => {
+        console.error(err);
+    });
+  }, []);
 
     const createHoursGraph = () => {
-      if(actualParkingID && infoType && graphicType && startDate && endDate) {
+      if(actualParking && infoType && graphicType && startDate && endDate) {
         switch (graphicType) {
             case 'bars':
                 return (
-                  <section>
-                    <div className="bg-white p-6 rounded-md shadow-md">
-                      <div className="w-full border rounded-md overflow-hidden">
-                        <BarHours url={url} actualParkingID={actualParkingID} startDate={startDate} endDate={endDate} />
+                  <section className="w-10/12 mt-5">
+                      <div className="border bg-white p-6 rounded-md shadow-md overflow-hidden">
+                        <BarHours url={url} actualParking={actualParking} startDate={startDate} endDate={endDate} />
                       </div>
-                    </div>
                   </section> 
                 );
             case 'circle':
@@ -56,8 +54,10 @@ const StatisticsAdminPage = ({url}) => {
     <>
         <Header />
 
-        <section className='h-screen px-12 py-36 bg-gray-light'>   
+        <section className='h-screen px-12 py-36 mb-28 bg-gray-light'>   
           <section className="flex justify-between w-full">
+            <div id="statistics-parkings" className="w-1/6 h-12 mr-12 mb-6 p-3 rounded-md bg-white shadow-md font-paragraph"> {actualParking.name} </div>
+
             <select id="statistics-info" value={infoType} className="w-1/6 h-12 mr-12 mb-6 p-3 rounded-md bg-white shadow-md font-paragraph" 
             onChange={(e) => setInfoType(e.target.value)}>
                 <option value="" disabled selected hidden> Tipo de información </option>
@@ -75,15 +75,6 @@ const StatisticsAdminPage = ({url}) => {
                 <option value="lines"> Línea </option>
             </select>
             
-            <select id="statistics-parkings" value={actualParkingID} className="w-1/6 h-12 mr-12 mb-6 p-3 rounded-md bg-white shadow-md font-paragraph" 
-            onChange={(e) => setActualParkingID(e.target.value)}>
-                <option value="" disabled selected hidden> Parqueadero </option>
-                <option value=""></option>
-                {parkings.map((parking) => (
-                  <option key={parking.id} value={parking.id}> {parking.name} </option>
-                ))}
-            </select>
-
             <input type="date" id="statistics-startDate" value={startDate} className="w-1/6 h-12 mr-12 mb-6 p-3 rounded-md bg-white shadow-md font-paragraph"
             onChange={(e) => setStartDate(e.target.value)}></input>
             
@@ -91,7 +82,7 @@ const StatisticsAdminPage = ({url}) => {
             onChange={(e) => setEndDate(e.target.value)}></input>
           </section>
 
-          {infoType == 'SEC' ? createHoursGraph() : null}
+          {createHoursGraph()}
         </section>
     </>
   )
