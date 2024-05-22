@@ -7,7 +7,7 @@ ChartJS.register(ArcElement, CategoryScale, LinearScale, BarElement, Title, Tool
 
 const BarHours = ({url, actualParking, startDate, endDate}) => {
     const [hoursAverage, setHoursAverage] = useState([]);
-
+ 
     useEffect(() => {
         const token = sessionStorage.getItem('token').replace(/"/g, '');
         setHoursAverage([]);
@@ -25,14 +25,14 @@ const BarHours = ({url, actualParking, startDate, endDate}) => {
             console.log(err);
         });
     }, [actualParking, startDate, endDate]);      
-
+ 
     const labels = hoursAverage.map((item) => item.hour);
     const average = hoursAverage.map((item) => item.average);
 
     const customPastelColors = [
         '#b1d4e6'
     ];
-
+ 
     const data = {
         labels: labels,
         datasets: [{
@@ -43,7 +43,7 @@ const BarHours = ({url, actualParking, startDate, endDate}) => {
             borderWidth: 1,
         }]
     };
-
+ 
     const options = {
         plugins: {
             title: {
@@ -57,8 +57,8 @@ const BarHours = ({url, actualParking, startDate, endDate}) => {
             },
         },
     };
-
+ 
     return <Bar data={data} options={options} />;
 };
-
+ 
 export default BarHours;
