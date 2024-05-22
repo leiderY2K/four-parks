@@ -1,12 +1,9 @@
 import { useState, useEffect } from "react";
 import axios from "axios";
-import Header from "../../components/admin/Header"
-import BarHours from "../../components/admin/graphics/BarHours";
-import { jsPDF } from "jspdf";
-import { read, writeFileXLSX } from "xlsx";
+import Header from "../../components/manager/Header"
+import BarHours from "../../components/manager/graphics/BarHours";
 
-
-const StatisticsPage = ({url}) => {
+const StatisticsManagerPage = ({url}) => {
   const [infoType, setInfoType] = useState('');
   const [graphicType, setGraphicType] = useState('');
   const [startDate, setStartDate] = useState('');
@@ -32,49 +29,28 @@ const StatisticsPage = ({url}) => {
         });
     }, []);
 
-    useEffect(() => {
+    const createHoursGraph = () => {
       if(actualParkingID && infoType && graphicType && startDate && endDate) {
-        if(infoType == 'hours') {
-          
-        }
-      }
-    }, [actualParkingID, infoType, graphicType, startDate, endDate])
-
-    const handleParkingChange = (e) => {
-      const selectedIndex = e.target.value;
-      setActualParkingID(parkings[selectedIndex]);
-    };
-    
-    const createHoursGraphic = () => {
-      return <BarHours url={url} actualParkingID={actualParkingID} startDate={startDate} endDate={endDate} />
-    }
-
-    const renderSelectedGraph = () => {
-      /*switch (selectedGraph) {
-          case 'bar':
-              return <BarGraphic bdurl={bdurl}/>;
-          case 'doughnut':
-              return <Pies bdurl={bdurl} />;
-          case 'map':
-              return <Map bdurl={bdurl} />;
-          default:
-              return null;
-      }*/
-
-
-      if(actualParkingID && infoType && graphicType && startDate && endDate) {
-        if(infoType == 'hours') {
-          return <BarHours url={url} actualParkingID={actualParkingID} startDate={startDate} endDate={endDate} />
+        switch (graphicType) {
+            case 'bars':
+                return (
+                  <section>
+                    <div className="bg-white p-6 rounded-md shadow-md">
+                      <div className="w-full border rounded-md overflow-hidden">
+                        <BarHours url={url} actualParkingID={actualParkingID} startDate={startDate} endDate={endDate} />
+                      </div>
+                    </div>
+                  </section> 
+                );
+            case 'circle':
+                return null;
+            case 'lines':
+                return null;
+            default:
+                return null;
         }
       }
   };
-
-
-  const GenPDF = ()=>{
-    const doc = new jsPDF();
-    doc.text("Gráfica:", 95,20);
-    doc.save("Estadisticas.pdf");
-  }
 
   return (
     <>
@@ -115,25 +91,10 @@ const StatisticsPage = ({url}) => {
             onChange={(e) => setEndDate(e.target.value)}></input>
           </section>
 
-          <section>
-            <div className="bg-white p-6 rounded-md shadow-md">
-
-              <div className="w-full border rounded-md overflow-hidden">
-                  {renderSelectedGraph()}
-              </div>
-            </div>
-          </section>        
-          <section className="mt-6 flex justify-end">
-                <div className="">
-                <button onClick={GenPDF} className='shadow-xl px-16 py-3 mr-6 bg-blue-dark hover:bg-blue-darkest rounded-xl text-white font-title font-semibold'> Generar PDF </button>
-                <button className='shadow-xl px-16 py-3 bg-blue-dark hover:bg-blue-darkest rounded-xl text-white font-title font-semibold'> Generar Excel </button>
-                
-                </div>
-
-          </section>
+          {infoType == 'hours' ? createHoursGraph() : null}
         </section>
     </>
   )
 }
 
-export default StatisticsPage
+export default StatisticsManagerPage

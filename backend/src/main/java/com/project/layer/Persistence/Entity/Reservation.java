@@ -30,11 +30,14 @@ public class Reservation {
     @Column(name = "IDRESERVATION", nullable = false)
     private Integer idReservation;
 
-    @Column(name = "DATERES", nullable = false)
-    private Date dateRes;
+    @Column(name = "STARTDATERES", nullable = false)
+    private Date startDateRes;
 
     @Column(name = "STARTTIMERES", nullable = false)
     private Time startTimeRes;
+
+    @Column(name = "ENDDATERES", nullable = false)
+    private Date endDateRes;
 
     @Column(name = "ENDTIMERES", nullable = false)
     private Time endTimeRes;

@@ -9,42 +9,55 @@ import '../../css/login.css'
 
 export default function PasswordChange({ url }) {
 
-    const [email, setEmail] = useState("");
+    const [username, setUsername] = useState("");
     const [actualPass, setActualPass] = useState("");
     const [newPass, setNewPass] = useState("");
     const [newPassConfim, setNewPassConfirm] = useState("");
 
-
     const handleChange = (e) => {
         e.preventDefault();
 
-
-        let nueva1 = newPass
-        let nueva2 = newPassConfim
-        if (!actualPass || !newPass || !newPassConfim) {
+        // Verificar que todos los campos estén llenos
+        if (!username || !actualPass || !newPass || !newPassConfim) {
             Swal.fire({
                 icon: 'info',
                 title: `Por favor llene todos los campos`
             });
-            if (nueva1!==nueva2) {
-                Swal.fire({
-                    icon: 'info',
-                    title: `Las contraseña no coinciden`
-                });
-            } 
-
-
-            else{
-            
-
-
-            }
+            return; // Detener la ejecución si faltan campos
         }
-    
 
+        // Verificar si las contraseñas coinciden
+        if (newPass !== newPassConfim) {
+            Swal.fire({
+                icon: 'info',
+                title: `Las contraseñas no coinciden`
+            });
+            return; // Detener la ejecución si las contraseñas no coinciden
+        }
 
-
+        // Si todas las validaciones pasan, enviar la solicitud Axios
+        axios.post(`${url}/auth/change-pass`, { username: username, oldPass: actualPass, newPass: newPass })
+            .then(res => {
+                console.log(res);
+                // Aquí puedes manejar la respuesta exitosa, por ejemplo, mostrar un mensaje de éxito
+                Swal.fire({
+                    icon: 'success',
+                    title: `Contraseña cambiada exitosamente`
+                });
+            })
+            .catch(err => {
+                console.log(err);
+                // Manejar errores de la solicitud Axios, por ejemplo, mostrar un mensaje de error
+                Swal.fire({
+                    icon: 'error',
+                    title: `Hubo un error al cambiar la contraseña`
+                });
+            });
     }
+
+
+
+
 
     return (
         <article id="loginCard" className="pt-6 md:pt-10 2xl:pt-6 rounded-2xl shadow-xl bg-gradient-to-b from-red-light from-75% to-red-dark">
@@ -52,8 +65,8 @@ export default function PasswordChange({ url }) {
                 <img src={logo} alt="Logo de Four Parks" className="w-24 h-24" />
 
                 <section className="flex flex-col justify-between items-center w-full h-56 mt-6 md:mt-10 2xl:mt-8">
-                <input type="text" id="email" className="w-full p-3 rounded-md bg-white font-paragraph placeholder:text-gray-dark"
-                        placeholder="Ingrese correo electrónico" value={email} onChange={(e) => setEmail(e.target.value)} ></input>
+                    <input type="text" id="username" className="w-full p-3 rounded-md bg-white font-paragraph placeholder:text-gray-dark"
+                        placeholder="Ingrese nombre de usuario" value={username} onChange={(e) => setUsername(e.target.value)} ></input>
 
                     <input type="password" id="actualPass" className="w-full p-3 rounded-md bg-white font-paragraph placeholder:text-gray-dark"
                         placeholder="Ingrese contraseña actual" value={actualPass} onChange={(e) => setActualPass(e.target.value)} ></input>
@@ -77,7 +90,7 @@ export default function PasswordChange({ url }) {
                 <a href="/registro" className="ml-1 font-semibold text-white hover:text-blue-darkest"> Regístrarse </a>
             </div>
 
-            <div className="flex justify-center mt-2 font-paragraph text-sm text-white"> ¿Ya tiene una cuenta?
+            <div className="flex justify-center mt-2 font-paragraph text-sm text-white"> ¿Recuerda su contraseña?
                 <a href="/" className="ml-1 font-semibold text-white hover:text-blue-darkest"> Iniciar sesión </a>
             </div>
         </article>

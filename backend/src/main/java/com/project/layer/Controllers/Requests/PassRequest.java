@@ -9,6 +9,8 @@ import lombok.NoArgsConstructor;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class searchParkingRequest {
-    public String adminId;
+public class PassRequest {
+    String username;
+    String oldPass;
+    String newPass;
 }

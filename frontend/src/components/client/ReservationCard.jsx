@@ -11,14 +11,13 @@ function ReservationCard({url, setOnReservationForm, actualParking, actualCity }
     const [resEndDate, setResEndDate]= useState('');
     const [resStart, setResStart] = useState('');
     const [resEnd, setResEnd] = useState('');
-    const [resCreationDate, setResCreationDate] = useState('');
-    const [resTotal, setResTotal] = useState('');
     const [licensePlate, setLicensePlate] = useState('');
     const [vehicleType, setVehicleType] = useState('');
     const [resPayMethod, setResPayMethod] = useState('');
     const [price, setPrice] = useState('');
     const [fieldParking, setFieldParking] = useState('');
 
+    
 
     const carCompData = actualParking[1].CAR;
     const motCompData = actualParking[1].MOT;
@@ -42,7 +41,7 @@ function ReservationCard({url, setOnReservationForm, actualParking, actualCity }
     //Hacer calculo de tarifa
     const idCiudad = actualCity.id;
     let tipoParkeadero = actualParking[0].parkingType.idParkingType;
-
+    const idParqueadero = actualParking[0].parkingId.idParking;
 
     useEffect(() => {
         if (tipoParkeadero !== "SEC") {
@@ -135,11 +134,11 @@ function ReservationCard({url, setOnReservationForm, actualParking, actualCity }
                 title: `Por favor llene todos los campos`
             });
         } else {
-            console.log(resStartDate,resStart,resEnd,licensePlate)
-            axios.post(`${url}/client/startReservation`, {
-                dateRes: resStartDate, 
-                //xxxdateendresxxx: resEndDate,
+            axios.post(`${url}/reservation/start`, {
+                startDateRes: resStartDate, 
+                endDateRes: resEndDate,
                 startTimeRes: resStart, 
+                endDateRes: resEndDate, 
                 endTimeRes: resEnd, 
                 licensePlate: licensePlate,
                 clientId:{
@@ -147,16 +146,13 @@ function ReservationCard({url, setOnReservationForm, actualParking, actualCity }
                 },
                 cityId:idCiudad,
                 parkingId:idParqueadero,
-                vehicleType:vehicleType
-                //creationDateRes: 'Hoy',
-                //totalRes: "0", 
-                //vehicleType: vehicleType, 
-                //username: resPayMethod, 
+                vehicleType:vehicleType,
+                isUncovered: true
             },{headers: {Authorization: `Bearer ${token}`}})
             .then(res => {
                 console.log(res)
                 console.log(res.data);
-                if ((res.data)==("No hay espacios disponibles")) {
+                if ((res.data.message)==("No hay espacios disponibles")) {
                     Swal.fire({
                         icon: 'error',
                         title: `No hay espacios disponibles` ,
@@ -168,17 +164,21 @@ function ReservationCard({url, setOnReservationForm, actualParking, actualCity }
                 });
 
                 setOnReservationForm(false)}
-                
-
-                //navigate("/inicio-sesion");
             })
             .catch(err => {
-                Swal.fire({
-                    icon: 'error',
-                    title: `Hubo un error al realizar la reserva` ,
-                });
+                if ((err.response.data.message)=="¡No se encontró espacio libre!") {
+                    Swal.fire({
+                        icon: 'error',
+                        title: `No hay espacios disponibles` ,
+                    });
+                }else{
+                    Swal.fire({
+                        icon: 'error',
+                        title: `Hubo un error al realizar la reserva` ,
+                    });
+                }
 
-                console.log(err);
+                console.log(err.data);
             })
         }
     }
@@ -257,7 +257,7 @@ function ReservationCard({url, setOnReservationForm, actualParking, actualCity }
                     </div>
 
                     <div className="flex justify-between w-full mt-5">
-                        <div className="text font-semibold text-lg">Total Reserva: ${resStart=="" || resEnd=="" ? " " :price}</div>
+                        <div className="text font-semibold text-lg">Precio Reserva: ${resStart=="" || resEnd=="" ? " " :price}</div>
                         <hr className="h-0.5 rounded-full bg-blue-light"></hr>
                     </div>
                 </section>  

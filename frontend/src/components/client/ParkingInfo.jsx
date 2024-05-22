@@ -31,7 +31,7 @@ const ParkingInfo = ({parkingType, vehicleType, setOnReservationForm, actualPark
                 </section>
 
                 <section className="ml-5 mb-5">
-                    <h2 className="mb-5 text-title text-md"> <span className="font-semibold"> Ciudad: </span> {actualParking[0].city.name} </h2>
+                    <h2 className="mb-5 text-title text-md"> <span className="font-semibold"> Ciudad: </span> {actualParking[0].parkingId.city.name} </h2>
 
                     <section className="mb-5">
                         <h2 className="text-title text-md"> <span className="font-semibold"> Disponibilidad: </span> {actualParking[0].schedule.scheduleType}  </h2>

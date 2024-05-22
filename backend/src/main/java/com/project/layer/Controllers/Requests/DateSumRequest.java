@@ -1,20 +1,26 @@
 package com.project.layer.Controllers.Requests;
 
-import com.project.layer.Persistence.Entity.UserId;
+
+import java.sql.Date;
+
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
+
 
 @Data
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class UserReservationRequest {
+@Getter
+@Setter
+public class DateSumRequest {
 
-    UserId clientId;
+    public Date date;
 
-    String status;
-    
+    public float sum;
 }

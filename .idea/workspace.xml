@@ -5,13 +5,88 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="97b10058-78d6-4bfd-893d-26e93a9f15dd" name="Changes" comment="">
+      <change afterPath="$PROJECT_DIR$/backend/src/main/java/com/project/layer/Controllers/CityController.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/backend/src/main/java/com/project/layer/Controllers/ParkingController.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/backend/src/main/java/com/project/layer/Controllers/ReservationController.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/backend/src/main/java/com/project/layer/Controllers/Responses/ReservationResponse.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/backend/src/main/java/com/project/layer/Controllers/StatisticsController.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/backend/src/main/java/com/project/layer/Controllers/UserActionController.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/backend/src/main/java/com/project/layer/Persistence/Entity/ParkingId.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/backend/src/main/java/com/project/layer/Persistence/Entity/UserAction.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/backend/src/main/java/com/project/layer/Persistence/Error/UserBlockedException.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/backend/src/main/java/com/project/layer/Persistence/Repository/IUserActionRepository.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/backend/src/main/java/com/project/layer/Services/Audit/AuditService.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/backend/src/main/java/com/project/layer/Services/Parameterization/StatisticsService.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/backend/src/main/java/com/project/layer/Services/Parking/ParkingService.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/backend/src/main/resources/templates/Purchase.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/backend/src/main/resources/templates/Purchase_Failed.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/backend/src/main/resources/templates/Register.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/backend/src/main/resources/templates/Reserve.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/backend/src/main/resources/templates/Reserve_Cancellation.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/frontend/public/Logo.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/frontend/src/components/manager/Header.jsx" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/frontend/src/components/manager/Map.jsx" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/frontend/src/components/manager/ParamsInfo.jsx" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/frontend/src/components/manager/QuotaManager.jsx" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/frontend/src/components/manager/graphics/BarHours.jsx" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/frontend/src/pages/admin/StatisticsAdminPage.jsx" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/frontend/src/pages/manager/HomeManagerPage.jsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/src/main/java/com/project/layer/Controllers/AdminController.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/src/main/java/com/project/layer/Controllers/AuthController.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/src/main/java/com/project/layer/Controllers/AuthController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/src/main/java/com/project/layer/Controllers/ClientController.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/src/main/java/com/project/layer/Controllers/ManagerController.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/src/main/java/com/project/layer/Controllers/PaymentController.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/src/main/java/com/project/layer/Controllers/PaymentController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/src/main/java/com/project/layer/Controllers/Requests/ParkingSpaceRequest.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/src/main/java/com/project/layer/Controllers/Requests/ParkingSpaceRequest.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/src/main/java/com/project/layer/Controllers/Requests/RegisterRequest.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/src/main/java/com/project/layer/Controllers/Requests/RegisterRequest.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/src/main/java/com/project/layer/Controllers/Requests/ReservationRequest.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/src/main/java/com/project/layer/Controllers/Requests/PassRequest.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/src/main/java/com/project/layer/Controllers/Requests/StartReservationRequest.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/src/main/java/com/project/layer/Controllers/Requests/StartReservationRequest.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/src/main/java/com/project/layer/Controllers/Requests/StatisticsRequest.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/src/main/java/com/project/layer/Controllers/Requests/StatisticsRequest.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/src/main/java/com/project/layer/Controllers/Requests/StripeChargeRequest.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/src/main/java/com/project/layer/Controllers/Requests/StripeChargeRequest.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/src/main/java/com/project/layer/Controllers/Requests/UserReservationRequest.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/src/main/java/com/project/layer/Controllers/Requests/DateSumRequest.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/src/main/java/com/project/layer/Controllers/Requests/searchParkingRequest.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/src/main/java/com/project/layer/Controllers/Requests/UnlockRequest.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/src/main/java/com/project/layer/Controllers/Responses/StripeTokenResponse.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/src/main/java/com/project/layer/Controllers/Responses/StripeTokenResponse.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/src/main/java/com/project/layer/Persistence/Entity/City.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/src/main/java/com/project/layer/Persistence/Entity/City.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/src/main/java/com/project/layer/Persistence/Entity/Parking.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/src/main/java/com/project/layer/Persistence/Entity/Parking.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/src/main/java/com/project/layer/Persistence/Entity/ParkingSpaceId.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/src/main/java/com/project/layer/Persistence/Entity/ParkingSpaceId.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/src/main/java/com/project/layer/Persistence/Entity/RateId.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/src/main/java/com/project/layer/Persistence/Entity/RateId.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/src/main/java/com/project/layer/Persistence/Entity/Reservation.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/src/main/java/com/project/layer/Persistence/Entity/Reservation.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/src/main/java/com/project/layer/Persistence/Entity/User.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/src/main/java/com/project/layer/Persistence/Entity/User.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/src/main/java/com/project/layer/Persistence/Entity/UserAuthentication.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/src/main/java/com/project/layer/Persistence/Entity/UserAuthentication.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/src/main/java/com/project/layer/Persistence/Repository/IParkingRepository.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/src/main/java/com/project/layer/Persistence/Repository/IParkingRepository.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/src/main/java/com/project/layer/Persistence/Repository/IParkingSpaceRepository.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/src/main/java/com/project/layer/Persistence/Repository/IParkingSpaceRepository.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/src/main/java/com/project/layer/Persistence/Repository/IReservationRepository.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/src/main/java/com/project/layer/Persistence/Repository/IReservationRepository.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/src/main/java/com/project/layer/Persistence/Repository/IUserAuthRepository.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/src/main/java/com/project/layer/Persistence/Repository/IUserAuthRepository.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/src/main/java/com/project/layer/Services/Authentication/AuthService.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/src/main/java/com/project/layer/Services/Authentication/AuthService.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/src/main/java/com/project/layer/Services/Authentication/SecurityConfig.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/src/main/java/com/project/layer/Services/Authentication/SecurityConfig.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/src/main/java/com/project/layer/Services/Map/MapService.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/src/main/java/com/project/layer/Services/Map/MapService.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/src/main/java/com/project/layer/Services/Parameterization/ParameterizationService.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/src/main/java/com/project/layer/Services/Reservation/ReservationService.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/src/main/java/com/project/layer/Services/Reservation/ReservationService.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/src/main/resources/email.properties" beforeDir="false" afterPath="$PROJECT_DIR$/backend/src/main/resources/email.properties" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/src/main/resources/templates/Registro.html" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/src/main/resources/templates/Reserva.html" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/src/main/resources/templates/email.html" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/database/database.sql" beforeDir="false" afterPath="$PROJECT_DIR$/database/database.sql" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/database/datainserts.sql" beforeDir="false" afterPath="$PROJECT_DIR$/database/datainserts.sql" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/database/datainserts_new.sql" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/frontend/index.html" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/index.html" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/frontend/package-lock.json" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/package-lock.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/package.json" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/package.json" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/frontend/src/App.jsx" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/App.jsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/frontend/src/components/admin/Header.jsx" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/components/admin/Header.jsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/frontend/src/components/admin/Map.jsx" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/components/admin/Map.jsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/frontend/src/components/admin/ParamsInfo.jsx" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/components/admin/ParamsInfo.jsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/frontend/src/components/admin/QuotaManager.jsx" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/components/admin/QuotaManager.jsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/frontend/src/components/admin/graphics/BarHours.jsx" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/components/admin/graphics/BarHours.jsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/frontend/src/components/client/Map.jsx" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/components/client/Map.jsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/frontend/src/components/client/ParkingFilters.jsx" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/components/client/ParkingFilters.jsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/frontend/src/components/client/ParkingInfo.jsx" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/components/client/ParkingInfo.jsx" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/frontend/src/components/client/ReservationCard.jsx" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/components/client/ReservationCard.jsx" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/frontend/src/components/client/SignUp.jsx" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/components/client/SignUp.jsx" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/frontend/src/components/general/Login.jsx" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/components/general/Login.jsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/src/pages/admin/StatisticsPage.jsx" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/pages/admin/StatisticsPage.jsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/frontend/src/pages/admin/HomeAdminPage.jsx" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/pages/admin/HomeAdminPage.jsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/frontend/src/pages/admin/StatisticsPage.jsx" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/pages/manager/StatisticsManagerPage.jsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/frontend/src/pages/client/HomeClientPage.jsx" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/pages/client/HomeClientPage.jsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/frontend/src/pages/client/ReservationsPage.jsx" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/pages/client/ReservationsPage.jsx" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -30,14 +105,14 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent">{
-  &quot;keyToString&quot;: {
-    &quot;Application.BackApplication.executor&quot;: &quot;Run&quot;,
-    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
-    &quot;git-widget-placeholder&quot;: &quot;feature/cambiocontraseña&quot;,
-    &quot;kotlin-language-version-configured&quot;: &quot;true&quot;
+  <component name="PropertiesComponent"><![CDATA[{
+  "keyToString": {
+    "Application.BackApplication.executor": "Run",
+    "RunOnceActivity.ShowReadmeOnStart": "true",
+    "git-widget-placeholder": "Merging feature/cambiocontraseña",
+    "kotlin-language-version-configured": "true"
   }
-}</component>
+}]]></component>
   <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
   <component name="TaskManager">
     <task active="true" id="Default" summary="Default task">

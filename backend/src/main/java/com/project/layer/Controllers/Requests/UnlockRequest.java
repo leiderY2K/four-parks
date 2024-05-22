@@ -9,8 +9,7 @@ import lombok.NoArgsConstructor;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class ReservationRequest {
-    
-    private int idReservation;
-
+public class UnlockRequest {
+    String username;
+    String idUser;
 }

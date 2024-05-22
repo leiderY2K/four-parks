@@ -1,22 +1,15 @@
 package com.project.layer.Controllers.Requests;
 
-import com.project.layer.Persistence.Entity.UserId;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import javax.validation.constraints.*;
-import java.text.SimpleDateFormat;
-import java.util.regex.Pattern;
-
 import com.fasterxml.jackson.annotation.JsonProperty;
 import org.hibernate.validator.constraints.Length;
-
-import java.util.regex.Matcher;
 
 @Data
 @Builder
 @AllArgsConstructor
-//@NoArgsConstructor
 public class RegisterRequest {
 
     @Length(min = 7, max = 12, message = "El numero de documento debe tener entre 7 y 12 caracteres")

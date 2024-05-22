@@ -2,41 +2,39 @@ import { Chart as ChartJS, CategoryScale, LinearScale, BarElement, Title, Toolti
 import { Bar } from 'react-chartjs-2';
 import { useEffect, useState } from "react";
 import axios from "axios";
-
+ 
 ChartJS.register(CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend);
-
-const BarHours = ({url, actualParkingID, startDate, endDate}) => {
+ 
+const BarHours = ({url, actualParking, startDate, endDate}) => {
     const [hoursAverage, setHoursAverage] = useState([]);
-
+ 
     useEffect(() => {
         const token = sessionStorage.getItem('token').replace(/"/g, '');
         setHoursAverage([]);
-      
-        axios.get(`${url}/admin/getStatistics`, {
+ 
+        axios.get(`${url}/statistics/average-hour/`, {params: {
             initialDate: startDate,
             finalDate: endDate,
-            idParking: 2
-        }, {headers: {Authorization: `Bearer ${token}`}})
+            idParking: actualParking.id
+        }, headers: {Authorization: `Bearer ${token}`}})
         .then((res) => {
-            console.log(res.data)
             const hoursData = res.data
-            .map(item => ({ nombre: item.hour, calificacion: item.average }));
-      
+            .map(item => ({ hour: item.hour, average: item.average }));
+ 
             setHoursAverage(element => [...element, ...hoursData]);
         })
         .catch((err) => {
             console.log(err);
         });
-    }, [actualParkingID, startDate, endDate]);      
-
+    }, [actualParking, startDate, endDate]);      
+ 
     const labels = hoursAverage.map((item) => item.hour);
     const average = hoursAverage.map((item) => item.average);
-
-    
+ 
     const customPastelColors = [
         'rgba(255, 182, 193, 0.8)',
     ];
-
+ 
     const data = {
         labels: labels,
         datasets: [{
@@ -47,7 +45,7 @@ const BarHours = ({url, actualParkingID, startDate, endDate}) => {
             label: 'Reservaciones',
         }]
     };
-
+ 
     const options = {
         plugins: {
             title: {
@@ -61,8 +59,8 @@ const BarHours = ({url, actualParkingID, startDate, endDate}) => {
             },
         },
     };
-
+ 
     return <Bar data={data} options={options} />;
 };
-
+ 
 export default BarHours;

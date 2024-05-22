@@ -9,7 +9,6 @@ import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
-import com.project.layer.Persistence.Entity.Role;
 import com.project.layer.Services.JWT.JwtAuthenticationFilter;
 
 import lombok.RequiredArgsConstructor;
@@ -32,12 +31,13 @@ public class SecurityConfig {
             .authorizeHttpRequests(authRequest -> {
                 authRequest
                     //Peticiones publicas
+                    .requestMatchers("/").permitAll()
                     .requestMatchers("/auth/**").permitAll()
                     .requestMatchers("/error").permitAll()
 
                     //Peticiones privadas
-                    .requestMatchers("/client/**").hasAuthority("ROLE_" + Role.CLIENT.name())
-                    .requestMatchers("/admin/**").hasAuthority("ROLE_" + Role.ADMIN.name())
+                    //.requestMatchers("/client/**").hasAuthority("ROLE_" + Role.CLIENT.name())
+                    //.requestMatchers("/admin/**").hasAuthority("ROLE_" + Role.ADMIN.name())
 
                     .anyRequest().authenticated();
                 })

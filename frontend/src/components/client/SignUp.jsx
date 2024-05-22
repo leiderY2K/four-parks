@@ -20,22 +20,14 @@ export default function SignUp({ url }) {
     const [masterCardNumbers, setMasterCardNumbers] = useState([5555555555554444, 2223003122003222, 5200828282828210, 5105105105105100])
     const [visaNumbers, setVisaNumbers] = useState([4242424242424242, 4000056655665556])
 
-    //const [year, setYear] = useState("");
-    //const [month, setMonth] = useState("");
-
-    //Select si es mastercard o visa y dependiendo muestre uno de los dos  
-
 
     const navigate = useNavigate();
-
-
 
     const handleSignUp = (e) => {
         e.preventDefault();
         let arr = expirationDate.split('-');
         let year = arr[0].substr(arr[0].length - 2)
         let month = arr[1]
-
 
         if (!idType || !idNumber || !name || !lastName || !phone || !username || !email ||!cardNumber ||!cvv ||!payMethod ||!expirationDate) {
             Swal.fire({
@@ -46,25 +38,24 @@ export default function SignUp({ url }) {
             axios.post(`${url}/auth/register`, {
                 idUser: idNumber,
                 idDocTypeFk: idType,
-                firstName: name,
+                username: username,
                 role: 'CLIENT',
+                firstName: name,
                 lastName: lastName,
                 email: email,
                 phone: phone,
-                username: username,
-                password: 'temporal',
                 serialCard: cardNumber,
                 ExpiryMonthCard: month,
                 ExpiryYearCard: year,
                 cvc: cvv
-
             })
-                .then(res => {
-                    console.log(res);
+            .then(res => {
+                console.log(res);
 
-                    Swal.fire({
+                Swal.fire({
                         icon: 'success',
-                        title: `Registro exitoso`
+                        title: `Registro exitoso`,
+                        text: 'Se le ha enviado un correo con su contraseña temporal'
                     });
 
                     navigate("/inicio-sesion");

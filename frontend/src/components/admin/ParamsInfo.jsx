@@ -1,36 +1,29 @@
 import { useState, useEffect } from "react";
 import axios from "axios";
 
-function ParamsInfo({url, cities, actualParking, setCanEditSpaces}) {
+function ParamsInfo({url, actualCity, actualParking, setCanEditSpaces}) {
     const [parkName, setParkName]= useState('');
-    const [parkCity, setParkCity]= useState('');
     const [coordX, setCoordX]= useState('');
     const [coordY, setCoordY]= useState('');
     const [email, setEmail]= useState('');
     const [phone, setPhone]= useState('');
     const [parkType, setParkType]= useState('');
-    const [car, setCar]= useState(false);
-    const [motorcycle, setMotorcycle]= useState(false);
-    const [bicycle, setBicycle]= useState(false);
     const [parkAvailability, setParkAvailability]= useState('');
     const [parkStart, setParkStart]= useState('');
     const [parkEnd, setParkEnd]= useState('');
     const [canEdit, setCanEdit] = useState(false);
 
-    
-
     useEffect(() => {
         if(actualParking) {
-            setParkName(actualParking.name);
-            setParkCity(actualParking.city);
-            setCoordX(actualParking.coords[0]);
-            setCoordY(actualParking.coords[1]);
-            setEmail(actualParking.email);
-            setPhone(actualParking.phone);
-            setParkType(actualParking.idType);
-            setParkAvailability(actualParking.availability);
-            setParkStart(actualParking.startTime);
-            setParkEnd(actualParking.endTime);
+            setParkName(actualParking[0].namePark);
+            setCoordX(actualParking[0].address.coordinatesX);
+            setCoordY(actualParking[0].address.coordinatesY);
+            setEmail(actualParking[0].email);
+            setPhone(actualParking[0].phone);
+            setParkType(actualParking[0].parkingType.idParkingType);
+            setParkAvailability(actualParking[0].schedule.scheduleType);
+            setParkStart(actualParking[0].startTime);
+            setParkEnd(actualParking[0].endTime);
         }
     }, [actualParking])
     
@@ -44,7 +37,28 @@ function ParamsInfo({url, cities, actualParking, setCanEditSpaces}) {
     };
 
     const handleUpdateParking = () => {
+        const token = sessionStorage.getItem('token').replace(/"/g, '');
+        const params = {};
 
+        if(parkName) params.namePark = parkName;
+        if(coordX) params.coordinatesX = coordX;
+        if(coordY) params.coordinatesY = coordY;
+        if(email) params.email = email;
+        if(phone) params.phone = phone;
+        if(parkType) params.idParkingType = parkType;
+        if(parkAvailability) params.scheduleType = parkAvailability;
+        if(parkStart) params.startTime = parkStart;
+        if(parkEnd) params.endTime = parkEnd;
+        console.log(params)
+        
+        axios.put(`${url}/parking/${actualParking[0].parkingId.idParking}/${actualParking[0].parkingId.city.idCity}`, {params, headers: {Authorization: `Bearer ${token}`}
+        })
+        .then(res => {
+            console.log(res);
+        })
+        .catch(err => {
+            console.error(err);
+        });
     }
 
     return(
@@ -77,7 +91,6 @@ function ParamsInfo({url, cities, actualParking, setCanEditSpaces}) {
                         <label className='text-lg font-semibold mb-2'>Tipo de parqueadero</label>
                         <select className='w-full shadow-xl p-3 rounded-md bg-white font-paragraph' value={parkType} disabled={!canEdit} 
                         onChange={(e) => setParkType(e.target.value)}>
-                            <option value=""> </option>
                             <option value="COV"> Cubierto </option>
                             <option value="SEC"> Semi-cubierto </option>
                             <option value="UNC"> Descubierto </option>
@@ -101,12 +114,8 @@ function ParamsInfo({url, cities, actualParking, setCanEditSpaces}) {
                 <section className='flex flex-col w-72'>
                     <div className='flex flex-col mt-5'>
                         <label className='text-lg font-semibold mb-2'>Ciudad</label>
-                        <select className='w-full shadow-xl p-3 rounded-md bg-white font-paragraph' value={parkCity} disabled={!canEdit} 
-                        onChange={(e) => setParkCity(e.target.value)}>
-                            <option value=""> </option>
-                            {cities.map((city, index) => (
-                                <option key={index} value={city}> {city} </option>
-                            ))}
+                        <select className='w-full shadow-xl p-3 rounded-md bg-white font-paragraph' disabled={!canEdit}>
+                            {actualCity !== undefined ? (<option value={actualCity.name}> {actualCity.name} </option>) : null}
                         </select>
                     </div>
 
@@ -126,10 +135,9 @@ function ParamsInfo({url, cities, actualParking, setCanEditSpaces}) {
                         <label className='text-lg font-semibold mb-2'>Disponibilidad</label>
                         <select className='w-full shadow-xl p-3 rounded-md bg-white font-paragraph' value={parkAvailability} disabled={!canEdit}
                         onChange={(e) => setParkAvailability(e.target.value)}>
-                            <option value=""> </option>
-                            <option value="Dias de semana"> Lunes a viernes </option>
+                            <option value="Dias de semana"> Días de semana </option>
                             <option value="Fines de semana"> Fines de semana </option>
-                            <option value="Todos los días"> 24/7 </option>
+                            <option value="Todos los días"> Todos los días </option>
                         </select>
                     </div>
                 </section>
@@ -153,13 +161,8 @@ function ParamsInfo({url, cities, actualParking, setCanEditSpaces}) {
                 )}
                 
             </section>
-
         </article>
-
-
-
-
-    )
+    );
 }
 
 export default ParamsInfo;

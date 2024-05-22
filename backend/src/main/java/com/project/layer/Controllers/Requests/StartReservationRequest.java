@@ -1,7 +1,7 @@
 package com.project.layer.Controllers.Requests;
 
-import java.util.Date;
-import java.sql.Time;
+import java.time.LocalDate;
+import java.time.LocalTime;
 
 import com.project.layer.Persistence.Entity.UserId;
 
@@ -16,11 +16,13 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class StartReservationRequest {
 
-    private Date dateRes;
+    private LocalDate startDateRes;
 
-    private Time startTimeRes;
+    private LocalTime startTimeRes;
 
-    private Time endTimeRes;
+    private LocalDate endDateRes;
+
+    private LocalTime endTimeRes;
 
     private String licensePlate;
 
@@ -31,5 +33,7 @@ public class StartReservationRequest {
     private int parkingId;
 
     private String vehicleType;
+
+    private Boolean isUncovered;
 
 }
