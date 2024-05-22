@@ -15,10 +15,10 @@ import java.util.Optional;
 public interface IUserRepository extends JpaRepository<User, UserId> {
 
     @Query(
-            value ="SELECT * FROM USER u WHERE u.IDUSER = :userId",
+            value ="SELECT * FROM USER u WHERE u.IDUSER = :userId AND u.FK_IDDOCTYPE = :idDocType",
             nativeQuery = true
     )
-    Optional<User> findByUserId(@Param("userId") String userId );
+    Optional<User> findByUserId(@Param("userId") String userId, @Param("idDocType") String idDocType);
 
     @Query(
             value ="SELECT * FROM USER u WHERE u.PHONE = :phone",

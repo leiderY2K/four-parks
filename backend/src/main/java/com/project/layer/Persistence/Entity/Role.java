@@ -7,8 +7,8 @@ import lombok.AllArgsConstructor;
 
 @AllArgsConstructor
 public enum Role {
-    CLIENT(Arrays.asList(Permission.READ_ALL_PRODUCTS)),
-    ADMIN(Arrays.asList(Permission.READ_ALL_PRODUCTS)),
+    CLIENT(Arrays.asList(Permission.READ_ALL_PRODUCTS,Permission.CREATE_CLIENT)),
+    ADMIN(Arrays.asList(Permission.READ_ALL_PRODUCTS,Permission.CREATE_CLIENT)),
     MANAGER(Arrays.asList(Permission.READ_ALL_PRODUCTS, Permission.SAVE_ONE_PRODUCT));
 
     private List<Permission> permissions;

@@ -4,7 +4,6 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.project.layer.Controllers.UserActionController;
 import com.project.layer.Persistence.Entity.UserAction;
 import com.project.layer.Persistence.Repository.IUserActionRepository;
 

@@ -4,7 +4,9 @@ import java.sql.Date;
 import java.sql.Time;
 import java.time.Duration;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.LocalTime;
+import java.time.temporal.ChronoUnit;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -60,6 +62,7 @@ public class ReservationService {
                 reservationRequest.getVehicleType(),
                 reservationRequest.getStartDateRes(),
                 startTime,
+                reservationRequest.getEndDateRes(),
                 endTime
             );
 
@@ -87,6 +90,7 @@ public class ReservationService {
         List<ParkingSpace> parkingSpaces = parkingSpaceRepository.findAllByParking(
                 reservationRequest.getParkingId(),
                 reservationRequest.getCityId(),
+                reservationRequest.getVehicleType(),
                 reservationRequest.getIsUncovered()
             );
 
@@ -94,7 +98,7 @@ public class ReservationService {
         Optional<ParkingSpace> selectedParkingSpace = parkingSpaces.stream()
         .filter(parkingSpace -> 
                 !busyParkingSpacesIds.contains(parkingSpace.getParkingSpaceId().getIdParkingSpace()) &&
-                parkingSpace.getIdVehicleType().equals(reservationRequest.getVehicleType()))
+                parkingSpace.getVehicleType().getIdVehicleType().equals(reservationRequest.getVehicleType()))
         .findFirst();
 
         if (selectedParkingSpace.isPresent()) {
@@ -103,14 +107,19 @@ public class ReservationService {
             return new ReservationResponse(null,"¡No se encontró espacio libre!");
         }
 
-        int rate = rateRepository.getHourCostByParkingSpace(
+        float rate = rateRepository.getHourCostByParkingSpace(
                     selectedParkingSpace.get().getParkingSpaceId().getParking().getParkingId().getIdParking(),
                     selectedParkingSpace.get().getParkingSpaceId().getParking().getParkingId().getCity().getIdCity(),
                     reservationRequest.getVehicleType(),
                     reservationRequest.getIsUncovered()
             );
 
-        long totalSeconds = Duration.between(reservationRequest.getStartTimeRes(), reservationRequest.getEndTimeRes()).getSeconds();
+        // Combinar fechas y horas en LocalDateTime
+        LocalDateTime startDateTime = LocalDateTime.of(reservationRequest.getStartDateRes(), reservationRequest.getStartTimeRes());
+        LocalDateTime endDateTime = LocalDateTime.of(reservationRequest.getEndDateRes(), reservationRequest.getEndTimeRes());
+
+        // Calcular la duración en segundos
+        long totalSeconds = Duration.between(startDateTime, endDateTime).getSeconds();
 
         // Se hace de esta manera ya que en la BD el cobro se hace por horas
         float totalHours = totalSeconds / 3600.0f;
@@ -130,7 +139,6 @@ public class ReservationService {
                 .totalRes(totalCost)
                 .licensePlate(reservationRequest.getLicensePlate())
                 .client(client)
-                .vehicleType(reservationRequest.getVehicleType())
                 .parkingSpace(selectedParkingSpace.get())
                 .status(ResStatus.PENDING.getId())
                 .build();
@@ -140,11 +148,28 @@ public class ReservationService {
         return new ReservationResponse(reservation,"¡La reserva se realizo exitosamente!");
     }
 
-    @Transactional
-    @Modifying
-    public List<Reservation> selectNearReservations() {
+    public boolean isReservationNearStarting(Reservation reservation) {
 
-        LocalTime targetTime = LocalTime.of(LocalTime.now().getHour()+1, 0, 0);
+        LocalTime targetTime = (LocalTime.now().getHour() == 23) ? targetTime = LocalTime.of(0,0,0): LocalTime.of(LocalTime.now().getHour()+1, 0, 0);
+        LocalTime reservationTime = reservation.getStartTimeRes().toLocalTime();
+        Date targetDate = Date.valueOf(LocalDate.now());
+
+        if (
+            reservation.getStatus().equals(ResStatus.PENDING.name()) &&
+            reservation.getStartDateRes().equals(targetDate)
+            && ChronoUnit.SECONDS.between(reservationTime, targetTime) < 1800
+        ) {
+            return true;
+        }
+
+        return false;
+    }
+
+    public List<Reservation> getNearStartingReservations() {
+
+        LocalTime targetTime = (LocalTime.now().getHour() == 23) ? targetTime = LocalTime.of(0,0,0): LocalTime.of(LocalTime.now().getHour()+1, 0, 0);
+        
+        System.out.println(targetTime);
 
         Date sqlDate = Date.valueOf(LocalDate.now());
         List<Reservation> reservations = reservationRepository.findByStartTime(targetTime, sqlDate, ResStatus.PENDING.getId());
@@ -202,7 +227,7 @@ public class ReservationService {
         int cancellationCost = rateRepository.getCancellationCostByParkingSpace(
                 reservation.getParkingSpace().getParkingSpaceId().getParking().getParkingId().getIdParking(),
                 reservation.getParkingSpace().getParkingSpaceId().getParking().getParkingId().getCity().getIdCity(),
-                reservation.getVehicleType(),
+                reservation.getParkingSpace().getVehicleType().getIdVehicleType(),
                 reservation.getParkingSpace().isUncovered());
 
         System.out.println("Costo de tarifa: " + cancellationCost);
@@ -254,7 +279,7 @@ public class ReservationService {
             float rate = rateRepository.getHourCostByParkingSpace(
                     reservation.getParkingSpace().getParkingSpaceId().getParking().getParkingId().getIdParking(),
                     reservation.getParkingSpace().getParkingSpaceId().getParking().getParkingId().getCity().getIdCity(),
-                    reservation.getVehicleType(),
+                    reservation.getParkingSpace().getVehicleType().getIdVehicleType(),
                     reservation.getParkingSpace().isUncovered());
 
             float extraCost = extraHours * rate;
@@ -270,6 +295,11 @@ public class ReservationService {
 
         return 0.0f;
 
+    }
+
+    public void setTotalRes(Reservation reservation, float applyDiscount) {
+        reservation.setTotalRes(applyDiscount);
+        reservationRepository.save(reservation);
     }
 
 }

@@ -3,6 +3,8 @@ package com.project.layer.Persistence.Entity;
 import jakarta.persistence.Column;
 import jakarta.persistence.EmbeddedId;
 import jakarta.persistence.Entity;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -23,7 +25,8 @@ public class ParkingSpace {
     @Column(name = "ISUNCOVERED", nullable = false)
     private boolean isUncovered;
 
-    @Column(name = "FK_IDVEHICLETYPE", nullable = false)
-    private String idVehicleType;
+    @OneToOne
+    @JoinColumn(name = "FK_IDVEHICLETYPE", referencedColumnName = "IDVEHICLETYPE", nullable = false)
+    private VehicleType vehicleType;
 
 }

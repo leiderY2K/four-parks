@@ -3,10 +3,12 @@ package com.project.layer.Persistence.Repository;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
+import org.springframework.stereotype.Repository;
 
 import com.project.layer.Persistence.Entity.Rate;
 import com.project.layer.Persistence.Entity.RateId;
 
+@Repository
 public interface IRateRepository extends JpaRepository<Rate, RateId> {
     
     @Query(

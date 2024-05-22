@@ -51,9 +51,6 @@ public class Reservation {
     @Column(name = "LICENSEPLATE", nullable = false)
     private String licensePlate;
 
-    @Column(name = "FK_IDVEHICLETYPE", nullable = false)
-    private String vehicleType;
-
     @ManyToOne
     @JoinColumns({
         @JoinColumn(name = "FK_IDPARKINGSPACE", referencedColumnName = "IDPARKINGSPACE"),

@@ -7,13 +7,19 @@ import java.util.function.Function;
 import javax.crypto.SecretKey;
 
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.HttpHeaders;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
+import org.springframework.util.StringUtils;
+
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.project.layer.Persistence.Entity.UserId;
 
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
+import jakarta.servlet.http.HttpServletRequest;
 
 @Service
 public class JwtService {
@@ -45,6 +51,16 @@ public class JwtService {
         return getClaim(token, Claims::getSubject);
 	}
 
+    public String getTokenFromRequest(HttpServletRequest request) {
+        final String authHeader = request.getHeader(HttpHeaders.AUTHORIZATION);
+
+        if(StringUtils.hasText(authHeader) && authHeader.startsWith("Bearer ")){
+            return authHeader.substring(7);
+        }
+
+        return null;
+    }
+
     public boolean isTokenValid(String token, UserDetails userDetails) {
         final String username = getUserNameFromToken(token);
         return (username.equals(userDetails.getUsername()) && !isTokenExpired(token));
@@ -71,4 +87,18 @@ public class JwtService {
     private boolean isTokenExpired(String token){
         return getExpiration(token).before(new Date());
     }
+
+    public UserId getUserIdFromToken(String token){
+        
+        @SuppressWarnings("unchecked")
+        Map<String, Object> userIdMap = getClaim(token, claims -> claims.get("userId", Map.class));
+        UserId userId = null;
+        if (userIdMap != null) {
+            ObjectMapper objectMapper = new ObjectMapper();
+            userId = objectMapper.convertValue(userIdMap, UserId.class);
+        }
+        return userId;
+    }
+    
+
 }
