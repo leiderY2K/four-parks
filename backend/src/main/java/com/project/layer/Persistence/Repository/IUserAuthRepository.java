@@ -39,5 +39,10 @@ public interface IUserAuthRepository extends JpaRepository<UserAuthentication, U
     @Query(value = "UPDATE USER_AUTHENTICATION u SET u.ISBLOCKED = 0 WHERE u.USERNAME = :username", nativeQuery = true)
     void unBlockPassword(@Param("username") String username);
 
+    @Transactional
+    @Modifying
+    @Query(value = "UPDATE USER_AUTHENTICATION u SET u.PASSWORD = :pass WHERE u.USERNAME = :username", nativeQuery = true)
+    void updatePass(@Param("username") String username, @Param("pass") String pass);
+
 
 }
