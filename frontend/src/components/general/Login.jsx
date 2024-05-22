@@ -11,10 +11,11 @@ export default function Login({ url }) {
     const [user, setUser] = useState("");
     const [password, setPassword] = useState("");
     const [captchaState, setCaptchaState] = useState(false);
+    
 
     const navigate = useNavigate();
     const captcha = useRef(null);
-    
+    let intentos = 0
     const handleLogin = (e) => {
         e.preventDefault();
 
@@ -37,7 +38,7 @@ export default function Login({ url }) {
 
                         sessionStorage.setItem("userLogged", JSON.stringify(userLogged));
                         sessionStorage.setItem("token", JSON.stringify(res.data.token));
-
+                        intentos = 0
                         Swal.fire({
                             icon: 'success',
                             title: `Bienvenid@ ${user}`
@@ -51,13 +52,25 @@ export default function Login({ url }) {
                             navigate("/admin-inicio", {
                                 replace: ("/inicio-sesion", true)
                             });
+                        } else if(tokenDecoded.role == "MANAGER") {
+                            navigate("/manager-inicio", {
+                                replace: ("/inicio-sesion", true)
+                            });
                         }
                     })
                     .catch(err => {
+                        intentos=intentos+1;
+
+                        if (intentos>=2) {
+                            Swal.fire({
+                                icon: 'error',
+                                title: `Usuario bloqueado por límite de intentos`,
+                            });
+                        }else{
                         Swal.fire({
                             icon: 'error',
                             title: `Hubo un error al iniciar sesión`,
-                        });
+                        });}
 
                         console.log(err);
                     })
@@ -98,7 +111,7 @@ export default function Login({ url }) {
             <hr className="h-0.5 mt-8 2xl:mt-6  rounded-full bg-white"></hr>
 
             <div className="flex justify-center mt-4 font-paragraph text-sm text-white"> ¿Olvidó su contraseña?
-                <a href="/" className="ml-1 font-semibold text-white hover:text-blue-darkest"> Recuperar </a>
+                <a href="/cambio-contraseña" className="ml-1 font-semibold text-white hover:text-blue-darkest"> Recuperar </a>
             </div>
 
             <div className="flex justify-center mt-2 font-paragraph text-sm text-white"> ¿Aún no tiene una cuenta?

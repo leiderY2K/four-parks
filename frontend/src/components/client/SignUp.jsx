@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import Swal from 'sweetalert2'
 import logo from '../../assets/Logo.png'
+import { useEffect } from "react";
 
 export default function SignUp({ url }) {
     const [idType, setIdType] = useState('');
@@ -19,24 +20,14 @@ export default function SignUp({ url }) {
     const [masterCardNumbers, setMasterCardNumbers] = useState([5555555555554444, 2223003122003222, 5200828282828210, 5105105105105100])
     const [visaNumbers, setVisaNumbers] = useState([4242424242424242, 4000056655665556])
 
-    //const [year, setYear] = useState("");
-    //const [month, setMonth] = useState("");
-
-    //Select si es mastercard o visa y dependiendo mestre uno de los dos 
-    //
 
     const navigate = useNavigate();
-
-
 
     const handleSignUp = (e) => {
         e.preventDefault();
         let arr = expirationDate.split('-');
-        console.log(arr)
         let year = arr[0].substr(arr[0].length - 2)
-        console.log(year)
         let month = arr[1]
-
 
         if (!idType || !idNumber || !name || !lastName || !phone || !username || !email ||!cardNumber ||!cvv ||!payMethod ||!expirationDate) {
             Swal.fire({
@@ -47,25 +38,24 @@ export default function SignUp({ url }) {
             axios.post(`${url}/auth/register`, {
                 idUser: idNumber,
                 idDocTypeFk: idType,
-                firstName: name,
+                username: username,
                 role: 'CLIENT',
+                firstName: name,
                 lastName: lastName,
                 email: email,
                 phone: phone,
-                username: username,
-                password: 'temporal',
                 serialCard: cardNumber,
                 ExpiryMonthCard: month,
                 ExpiryYearCard: year,
                 cvc: cvv
-
             })
-                .then(res => {
-                    console.log(res);
+            .then(res => {
+                console.log(res);
 
-                    Swal.fire({
+                Swal.fire({
                         icon: 'success',
-                        title: `Registro exitoso`
+                        title: `Registro exitoso`,
+                        text: 'Se le ha enviado un correo con su contraseña temporal'
                     });
 
                     navigate("/inicio-sesion");
@@ -80,6 +70,8 @@ export default function SignUp({ url }) {
                 })
         }
     }
+
+
 
     return (
         <article className="bg-gradient-to-b from-red-light from-75% to-red-dark pt-6 pb-6 relative rounded-2xl shadow-xl">
@@ -108,7 +100,7 @@ export default function SignUp({ url }) {
                     </div>
 
                     <div className="flex justify-between w-full">
-                        <input id="phone" className="w-2/5 p-3 rounded-md bg-white font-paragraph placeholder:text-gray-dark" placeholder="Telefono"
+                        <input id="phone" className="w-2/5 p-3 rounded-md bg-white font-paragraph placeholder:text-gray-dark" placeholder="Teléfono"
                             value={phone} onChange={(e) => setPhone(e.target.value)}></input>
 
                         <input id="username" className="w-2/5 p-3 rounded-md bg-white font-paragraph placeholder:text-gray-dark" placeholder="Nombre de usuario"
@@ -159,7 +151,7 @@ export default function SignUp({ url }) {
                     </div>
 
                     <div className="flex justify-between w-full mt-5">
-                        <input type="date" id="expirationDate" value={expirationDate} className="p-4 rounded-md bg-white shadow-md font-paragraph"
+                        <input type="month" id="expirationDate" value={expirationDate} className="p-4 rounded-md bg-white shadow-md font-paragraph"
                             onChange={(e) => setExpirationDate(e.target.value)}></input>
 
                         <input id="cvv" className="w-2/5 p-3 rounded-md bg-white font-paragraph placeholder:text-gray-dark" placeholder="cvv"

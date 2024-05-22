@@ -1,7 +1,7 @@
 import React from 'react';
 import { useState } from "react";
 
-function QuotaManager({ url, actualParking, setCanEditSpaces }) {
+function QuotaManager({ url, setCanEditSpaces }) {
     //Cupos Cubiertos
     const [quotaCarCov, setQuotaCarCov] = useState('');
     const [quotaMotoCov, setQuotaMotoCov] = useState('');
@@ -18,10 +18,6 @@ function QuotaManager({ url, actualParking, setCanEditSpaces }) {
     const [RateCarUnc, setRateCarUnc] = useState('');
     const [RateMotoUnc, setRateMotoUnc] = useState('');
     const [RateBicUnc, setRateBicUnc] = useState('');
-
-    const handleAddSpaces = () => {
-
-    }
 
     return (
         <article className="w-full py-4 rounded-2xl shadow-xl bg-blue-light">
@@ -148,8 +144,7 @@ function QuotaManager({ url, actualParking, setCanEditSpaces }) {
             </section>
 
             <section className='flex items-center justify-between w-full mt-12 mb-2 px-14'>
-                <button className='shadow-xl px-24 py-3 bg-blue-dark hover:bg-blue-darkest rounded-xl text-white font-title font-semibold'
-                onClick={handleAddSpaces}> Confirmar </button>
+                <button className='shadow-xl px-24 py-3 bg-blue-dark hover:bg-blue-darkest rounded-xl text-white font-title font-semibold'> Confirmar </button>
                 <button className='shadow-xl px-24 py-3 bg-red-dark hover:bg-red-darkest rounded-xl text-white font-title font-semibold'
                 onClick={() => setCanEditSpaces(false)}> Cancelar </button>
             </section>

@@ -8,7 +8,7 @@ setStartTime, endTime, setEndTime}) => {
   useEffect(() => {
     const token = sessionStorage.getItem('token').replace(/"/g, '');
 
-    axios.get(`${url}/client/cityList`,  {headers: {Authorization: `Bearer ${token}`}})
+    axios.get(`${url}/city/list`,  {headers: {Authorization: `Bearer ${token}`}})
     .then(res=>{
       const cityArray = res.data.map(city => (city))
       setCities(cityArray);

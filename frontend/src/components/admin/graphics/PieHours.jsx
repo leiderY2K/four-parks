@@ -1,13 +1,13 @@
-import { Chart as ChartJS, CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend, ArcElement } from 'chart.js';
-import { Bar } from 'react-chartjs-2';
+import { Chart as ChartJS, CategoryScale, LinearScale, Title, Tooltip, Legend } from 'chart.js';
+import { Pie } from 'react-chartjs-2';
 import { useEffect, useState } from "react";
 import axios from "axios";
 
-ChartJS.register(ArcElement, CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend);
+ChartJS.register(CategoryScale, LinearScale, Title, Tooltip, Legend);
 
-const BarHours = ({url, actualParking, startDate, endDate}) => {
+const PieHours = ({url, actualParking, startDate, endDate}) => {
     const [hoursAverage, setHoursAverage] = useState([]);
- 
+
     useEffect(() => {
         const token = sessionStorage.getItem('token').replace(/"/g, '');
         setHoursAverage([]);
@@ -25,14 +25,37 @@ const BarHours = ({url, actualParking, startDate, endDate}) => {
             console.log(err);
         });
     }, [actualParking, startDate, endDate]);      
- 
+
     const labels = hoursAverage.map((item) => item.hour);
     const average = hoursAverage.map((item) => item.average);
 
     const customPastelColors = [
-        '#b1d4e6'
+        '#C3E8FA',
+        '#B1D4E6',
+        '#85D6FF',
+        '#B0EBFF',
+        '#1A7691', 
+        '#95D6F0', 
+        '#76AFCC',
+        '#AEE0EB', 
+        '#99C8E0', 
+        '#ADD9E8', 
+        '#96E0ED', 
+        '#48AADB', 
+        '#7EBEDE',
+        '#2d6a88', 
+        '#77BBDB',
+        '#7DBED4',
+        '#448EB3',
+        '#C0DDEB',
+        '#A2CADE',
+        '#1A4B63', 
+        '#4C839E',
+        '#87B3C9',
+        '#5D94B0',
+        '#205d7b' 
     ];
- 
+
     const data = {
         labels: labels,
         datasets: [{
@@ -43,22 +66,17 @@ const BarHours = ({url, actualParking, startDate, endDate}) => {
             borderWidth: 1,
         }]
     };
- 
+
     const options = {
         plugins: {
             title: {
                 display: true,
                 text: 'PROMEDIO DE RESERVAS POR HORA',
             },
-        },
-        scales: {
-            y: {
-                beginAtZero: true
-            },
-        },
+        }
     };
- 
-    return <Bar data={data} options={options} />;
+
+    return <Pie data={data} options={options} />;
 };
- 
-export default BarHours;
+
+export default PieHours;

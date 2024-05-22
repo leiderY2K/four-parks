@@ -1,9 +1,9 @@
 import { useState, useEffect } from "react";
 import axios from "axios";
-import Header from "../../components/admin/Header"
-import BarHours from "../../components/admin/graphics/BarHours";
+import Header from "../../components/manager/Header"
+import BarHours from "../../components/manager/graphics/BarHours";
 
-const StatisticsPage = ({url}) => {
+const StatisticsManagerPage = ({url}) => {
   const [infoType, setInfoType] = useState('');
   const [graphicType, setGraphicType] = useState('');
   const [startDate, setStartDate] = useState('');
@@ -97,4 +97,4 @@ const StatisticsPage = ({url}) => {
   )
 }
 
-export default StatisticsPage
+export default StatisticsManagerPage
