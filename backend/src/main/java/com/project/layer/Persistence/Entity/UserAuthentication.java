@@ -8,6 +8,7 @@ import java.util.stream.Collectors;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -19,6 +20,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
+@Getter
 public class UserAuthentication implements UserDetails {
 
     @EmbeddedId
@@ -34,7 +36,7 @@ public class UserAuthentication implements UserDetails {
     private int attempts;
 
     @Column(name = "ISBLOCKED", nullable = false)
-    private boolean isBlocked;
+    private int isBlocked;
 
     @Column(name = "ROLE", nullable = false)
     @Enumerated(EnumType.STRING)
