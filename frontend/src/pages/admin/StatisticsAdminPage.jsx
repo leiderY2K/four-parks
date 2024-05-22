@@ -2,6 +2,8 @@ import { useState, useEffect } from "react";
 import axios from "axios";
 import Header from "../../components/admin/Header"
 import BarHours from "../../components/admin/graphics/BarHours";
+import PieHours from "../../components/admin/graphics/PieHours";
+import LineHours from "../../components/admin/graphics/LineHours";
 
 const StatisticsAdminPage = ({url}) => {
   const [infoType, setInfoType] = useState('');
@@ -34,16 +36,28 @@ const StatisticsAdminPage = ({url}) => {
         switch (graphicType) {
             case 'bars':
                 return (
-                  <section className="w-10/12 mt-5">
+                  <section className="w-10/12 mt-5 mx-auto">
                       <div className="border bg-white p-6 rounded-md shadow-md overflow-hidden">
                         <BarHours url={url} actualParking={actualParking} startDate={startDate} endDate={endDate} />
                       </div>
                   </section> 
                 );
             case 'circle':
-                return null;
+                return (
+                  <section className="w-10/12 mt-5 mx-auto">
+                      <div className="border bg-white p-6 rounded-md shadow-md overflow-hidden">
+                        <PieHours url={url} actualParking={actualParking} startDate={startDate} endDate={endDate} />
+                      </div>
+                  </section> 
+                );
             case 'lines':
-                return null;
+                return (
+                  <section className="w-10/12 mt-5 mx-auto">
+                      <div className="border bg-white p-6 rounded-md shadow-md overflow-hidden">
+                        <LineHours url={url} actualParking={actualParking} startDate={startDate} endDate={endDate} />
+                      </div>
+                  </section> 
+                );
             default:
                 return null;
         }

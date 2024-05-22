@@ -1,11 +1,11 @@
-import { Chart as ChartJS, CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend, ArcElement } from 'chart.js';
-import { Bar } from 'react-chartjs-2';
+import { Chart as ChartJS, CategoryScale, LinearScale, PointElement, LineElement, Title, Tooltip, Legend } from 'chart.js';
+import { Line } from 'react-chartjs-2';
 import { useEffect, useState } from "react";
 import axios from "axios";
 
-ChartJS.register(ArcElement, CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend);
+ChartJS.register(CategoryScale, LinearScale, PointElement, LineElement, Title, Tooltip, Legend);
 
-const BarHours = ({url, actualParking, startDate, endDate}) => {
+const LineHours = ({url, actualParking, startDate, endDate}) => {
     const [hoursAverage, setHoursAverage] = useState([]);
 
     useEffect(() => {
@@ -58,7 +58,7 @@ const BarHours = ({url, actualParking, startDate, endDate}) => {
         },
     };
 
-    return <Bar data={data} options={options} />;
+    return <Line data={data} options={options} />;
 };
 
-export default BarHours;
+export default LineHours;

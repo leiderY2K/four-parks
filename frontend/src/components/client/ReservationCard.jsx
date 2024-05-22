@@ -18,7 +18,7 @@ function ReservationCard({url, setOnReservationForm, actualParking, actualCity})
     const navigate = useNavigate();
     //Hacer calculo de tarifa
     const idCiudad = actualCity.id;
-    const idParqueadero = actualParking[0].idParking;
+    const idParqueadero = actualParking[0].parkingId.idParking;
 
     const handleTimeChange = (setter) => (event) => {
         const time = new Date(event.target.valueAsNumber);
@@ -29,7 +29,6 @@ function ReservationCard({url, setOnReservationForm, actualParking, actualCity})
         }
       };
 
-    
     const handleReservation = (e) => {
         e.preventDefault();
         const token = sessionStorage.getItem('token').replace(/"/g, '');
@@ -59,20 +58,12 @@ function ReservationCard({url, setOnReservationForm, actualParking, actualCity})
                 isUncovered: true
             },{headers: {Authorization: `Bearer ${token}`}})
             .then(res => {
-                console.log(res)
-                console.log(res.data);
-                if ((res.data.message)==("No hay espacios disponibles")) {
-                    Swal.fire({
-                        icon: 'error',
-                        title: `No hay espacios disponibles` ,
-                    });
-                }else{
-                    Swal.fire({
+                console.log(res);
+                
+                Swal.fire({
                     icon: 'success',
                     title: `Reserva exitosa`
                 });
-
-                setOnReservationForm(false)}
             })
             .catch(err => {
                 if ((err.response.data.message)=="¡No se encontró espacio libre!") {
