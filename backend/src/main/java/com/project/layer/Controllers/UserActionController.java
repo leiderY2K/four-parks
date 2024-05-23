@@ -1,20 +1,17 @@
 package com.project.layer.Controllers;
 
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.project.layer.Persistence.Entity.UserAction;
-import com.project.layer.Persistence.Entity.UserId;
 import com.project.layer.Services.Audit.AuditService;
 
-import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 
-import java.sql.Time;
 import java.util.Date;
 import java.util.List;
 
-import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
