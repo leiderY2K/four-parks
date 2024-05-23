@@ -88,7 +88,7 @@ const Map = ({ url, city, parkingType, availability, vehicleType, date, startTim
     const handleChangeParking = (parking) => {
         const token = sessionStorage.getItem('token').replace(/"/g, '');
         
-        axios.get(`${url}/parking/coordinates/${parking.coords[0]}/${parking.coords[1]}/${date}`, {headers: {Authorization: `Bearer ${token}`}})
+        axios.get(`${url}/parking/coordinates/${parking.coords[0]}/${parking.coords[1]}`, {headers: {Authorization: `Bearer ${token}`}})
         .then(res => {
             setActualParking([res.data.parking, res.data.capacity]);
             setOnReservationForm(false);

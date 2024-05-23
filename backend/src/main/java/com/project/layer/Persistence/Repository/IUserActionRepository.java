@@ -1,5 +1,7 @@
 package com.project.layer.Persistence.Repository;
 
+import java.sql.Time;
+import java.util.Date;
 import java.util.List;
 
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -7,6 +9,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
+import com.project.layer.Persistence.Entity.Parking;
 import com.project.layer.Persistence.Entity.UserAction;
 
 @Repository
@@ -26,8 +29,35 @@ public interface IUserActionRepository extends JpaRepository<UserAction, Integer
         nativeQuery=true)
     List<UserAction> getAllActions();
 
-    //Trae el listado de todas las acciones por fecha 
-    
+    //Trae el listado de todas las acciones por fecha
+
+    @Query(
+        value = "SELECT * FROM CUSTOMERACTION "+
+        "WHERE DATEACTION = :dateAction", 
+        nativeQuery=true)
+        List<UserAction> getActionsByDate(
+            @Param("dateAction") Date dateAction
+        );
+
+    //Trae el listado de todas las acciones por ip
+
+    @Query(
+        value = "SELECT * FROM CUSTOMERACTION "+
+        "WHERE IPUSER = :ipUser", 
+        nativeQuery=true)
+        List<UserAction> getActionsByDate(
+            @Param("ipUser") String ipUser
+        );
+
+    //Realiza el filtro para traer las acciones segun IP, IDUSER y DATEUSER
+         @Query(value = "SELECT * FROM CUSTOMERACTION "+
+         "WHERE (:idUser IS NULL OR FK_IDUSER = :idUser) "+ 
+         "AND (:dateAction IS NULL OR DATEACTION = :dateAction) "+
+         "AND (:ipUser IS NULL OR IPUSER = :ipUser)", nativeQuery = true)
+    List<UserAction> getUserActionsByArgs(
+            @Param("idUser") String idUser,
+            @Param("dateAction") Date dateAction,
+            @Param("ipUser") String ipUser);
 
 
 

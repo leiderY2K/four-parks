@@ -8,6 +8,9 @@ import HomeAdminPage from "./pages/admin/HomeAdminPage";
 import StatisticsAdminPage from "./pages/admin/StatisticsAdminPage";
 import HomeManagerPage from "./pages/manager/HomeManagerPage";
 import StatisticsManagerPage from "./pages/manager/StatisticsManagerPage";
+//import StatisticsPage from "./pages/admin/StatisticsPage";
+import PasswordChangePage from "./pages/general/PasswordChangePage";
+
 
 function App() {
   const url = "http://localhost:8080";
@@ -77,6 +80,8 @@ function App() {
           
           <Route path="/manager-inicio" element={<HomeManagerPage url={url} initialCoords={initialCoords} />}/>
           <Route path="/manager-ver-estadisticas" element={<StatisticsManagerPage url={url} />}/>
+          <Route path="/ver-estadisticas" element={<StatisticsAdminPage url={url} />}/>
+          <Route path="/cambio-contraseña" element={<PasswordChangePage url={url}/>} />
       </Routes>
     </BrowserRouter>
   )

@@ -13,7 +13,7 @@ const ReservationPage = ({ url }) => {
   
   useEffect(() => {
     const token = sessionStorage.getItem('token').replace(/"/g, '');
-    axios.post(`http://localhost:8080/reservation/client/${idType}/${idNumber}`, {...(resState ? {status: resState} : {})}, {headers: { Authorization: `Bearer ${token}` } })
+    axios.get(`http://localhost:8080/reservation/client/${idType}/${idNumber}`, {params: {status: resState}}, {headers: { Authorization: `Bearer ${token}` } })
       .then(res => {
         const reservationArray = []; 
         res.data.map(reservation => {reservationArray.push(reservation)})

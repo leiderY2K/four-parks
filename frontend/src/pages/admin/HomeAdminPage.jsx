@@ -35,12 +35,12 @@ const HomeManagerPage = ({url}) => {
   return (
     <>
         <Header />
-        <section className='flex h-screen px-12 py-36 bg-gray-light'> 
+        <section className='flex h-screen px-12 py-40 bg-gray-light'> 
           <section className="w-1/2 rounded-2xl z-0"> 
             <Map url={url} actualCity={actualCity} setActualCity={setActualCity} actualParking={actualParking} setActualParking={setActualParking} />
           </section>
 
-          <section className='w-2/5 ml-48 mt-16 z-0'>
+          <section className='w-2/5 ml-48 z-0'>
             {
               !canEditSpaces ? (<ParamsInfo url={url} actualCity={actualCity} actualParking={actualParking} setCanEditSpaces={setCanEditSpaces} />) : 
               (<QuotaManager url={url} actualParking={actualParking} setCanEditSpaces={setCanEditSpaces} />)
