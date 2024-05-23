@@ -2,7 +2,6 @@ package com.project.layer.Services.JWT;
 
 import java.io.IOException;
 
-import org.springframework.http.HttpHeaders;
 import org.springframework.lang.NonNull;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -10,7 +9,6 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
 import org.springframework.stereotype.Component;
-import org.springframework.util.StringUtils;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 
@@ -32,7 +30,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     protected void doFilterInternal(@NonNull HttpServletRequest request,@NonNull HttpServletResponse response,@NonNull FilterChain filterChain)
         throws ServletException, IOException {
 
-        final String token = getTokenFromRequest(request);
+        final String token = jwtService.getTokenFromRequest(request);
         final String username;
 
         if (token == null) {
@@ -57,14 +55,6 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     }
 
 
-    private String getTokenFromRequest(HttpServletRequest request) {
-        final String authHeader = request.getHeader(HttpHeaders.AUTHORIZATION);
-
-        if(StringUtils.hasText(authHeader) && authHeader.startsWith("Bearer ")){
-            return authHeader.substring(7);
-        }
-
-        return null;
-    }
+    
     
 }

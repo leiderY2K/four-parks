@@ -6,7 +6,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.stereotype.Service;
 
-import com.project.layer.Controllers.UserActionController;
 import com.project.layer.Persistence.Entity.UserAction;
 import com.project.layer.Persistence.Entity.UserId;
 import com.project.layer.Persistence.Repository.IUserActionRepository;

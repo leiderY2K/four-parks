@@ -1,13 +1,14 @@
 package com.project.layer.Services.Authentication;
 
+import java.lang.reflect.Field;
 import java.security.SecureRandom;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 
 import com.project.layer.Persistence.Entity.*;
 import com.project.layer.Persistence.Error.CustomException;
@@ -19,12 +20,15 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.validation.annotation.Validated;
 
 import com.project.layer.Controllers.Requests.LoginRequest;
 import com.project.layer.Controllers.Requests.PassRequest;
 import com.project.layer.Controllers.Requests.RegisterRequest;
 import com.project.layer.Controllers.Requests.UnlockRequest;
+import com.project.layer.Controllers.Requests.UserRequest;
 import com.project.layer.Controllers.Responses.AuthResponse;
+import com.project.layer.Controllers.Responses.UserResponse;
 import com.project.layer.Persistence.Repository.IUserAuthRepository;
 import com.project.layer.Persistence.Repository.IUserRepository;
 import com.project.layer.Services.JWT.JwtService;
@@ -192,9 +196,10 @@ public class AuthService {
         cardRepository.save(newCard);
 
         return AuthResponse.builder()
-                .token(jwtService.getToken(null, userAuthentication))
-                .contra(randomPassword) // es para iniciar sesion mientras
-                .build();
+            .token(jwtService.getToken(null, userAuthentication))
+            .contra(randomPassword) //es para iniciar sesion mientras
+            .message("El registro fue exitoso")
+            .build();
     }
 
     private String generateRandomPassword() {
@@ -230,4 +235,46 @@ public class AuthService {
                 .token("Contraseña actual no coincide.")
                 .build();
         }*/
-    }}
+    }
+    
+    public UserResponse update(@Validated UserRequest request) {
+
+        UserAuthentication userAuth = userAuthRepository.findByUsername(request.getUsername()).get();
+        User user = userRepository.findByUserId(userAuth.getUserId().getIdUser(),userAuth.getUserId().getIdDocType()).get();
+
+        if (user != null) {
+ 
+            // Obtener todas las variables declaradas en la clase User
+            Field[] userAuthFields = userAuth.getClass().getDeclaredFields();
+            Field[] userFields = user.getClass().getDeclaredFields();
+            
+            List<Field> fields = new ArrayList<>();
+            fields.addAll(Arrays.asList(userAuthFields));
+            fields.addAll(Arrays.asList(userFields));            
+
+            for (Field field : fields) {
+                // Hacer que el campo sea accesible, incluso si es privado
+                field.setAccessible(true);
+ 
+                try {
+                    // Obtener el valor del campo en el objeto parkingChanges
+                    Object value = field.get(request);
+ 
+                    // Si el valor no es nulo, establecerlo en el objeto user original
+                    if (value != null) {
+                        field.set(user, value);
+                    }
+                } catch (IllegalAccessException e) {
+                    return new UserResponse(null, null, "No se puede modificar el campo "+ field);
+                    // Manejar la excepción si se produce un error al acceder al campo
+                }
+            }
+ 
+            userRepository.save(user);
+            return new UserResponse(user,null,"Se realizó la modificación");
+        } else {
+            return new UserResponse(null,null,"No se encontró ningún estacionamiento con el ID proporcionado");
+        }
+    }
+
+}

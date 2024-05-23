@@ -59,13 +59,19 @@ public interface IReservationRepository extends JpaRepository<Reservation, Integ
         @Param("status") String status);
 
     @Query(
-        value = "SELECT DISTINCT r.* FROM RESERVATION r " +
+        value = "SELECT DISTINCT r.* FROM RESERVATION r, PARKINGSPACE ps " +
             "WHERE r.FK_IDCITY = :cityId " +
             "AND r.FK_IDPARKING = :parkingId " +
-            "AND r.FK_IDVEHICLETYPE = :vehicleType " +
+            "AND r.FK_IDPARKINGSPACE = ps.IDPARKINGSPACE " +
+            "AND ps.FK_IDVEHICLETYPE = :vehicleType " +
             "AND r.STARTDATERES = :startDateRes " +
-            "AND r.STARTTIMERES <= :endTimeRes "+
-            "AND r.ENDTIMERES >= :startTimeRes ", 
+            "AND r.ENDDATERES = :endDateRes " +
+            "AND ("+
+                "((r.ENDDATERES = r.STARTDATERES) " +
+                    "AND (r.STARTTIMERES <= :endTimeRes AND r.ENDTIMERES >= :startTimeRes)) " +
+                "OR ((r.ENDDATERES > r.STARTDATERES) " +
+                    "AND (r.STARTTIMERES > :startTimeRes AND r.ENDTIMERES < :endTimeRes))"+
+            ")",
         nativeQuery = true
     )
     List<Reservation> findBusyParkingSpaces(
@@ -74,6 +80,7 @@ public interface IReservationRepository extends JpaRepository<Reservation, Integ
         @Param("vehicleType") String vehicleType,
         @Param("startDateRes") LocalDate startDateRes,
         @Param("startTimeRes") Time startTimeRes,
+        @Param("endDateRes") LocalDate endDateRes,
         @Param("endTimeRes") Time endTimeRes);
 
     @Query(
@@ -82,9 +89,15 @@ public interface IReservationRepository extends JpaRepository<Reservation, Integ
             "LEFT JOIN PARKINGSPACE ps ON r.FK_IDPARKINGSPACE = ps.IDPARKINGSPACE " +
             "WHERE r.FK_IDCITY = :cityId " +
             "AND r.FK_IDPARKING = :parkingId " +
-            "AND (:vehicleType IS NULL OR r.FK_IDVEHICLETYPE = :vehicleType) " +
-            "AND (:startDateRes IS NULL OR r.STARTDATERES = :startDateRes) " +
-            "AND (r.STARTTIMERES <= :endTimeRes AND r.ENDTIMERES >= :startTimeRes)",
+            "AND (:vehicleType IS NULL OR ps.FK_IDVEHICLETYPE = :vehicleType) " +
+            "AND r.STARTDATERES = :startDateRes " +
+            "AND r.ENDDATERES = :endDateRes " +
+            "AND ("+
+            "((r.ENDDATERES = r.STARTDATERES) " +
+                    "AND (r.STARTTIMERES <= :endTimeRes AND r.ENDTIMERES >= :startTimeRes)) " +
+                "OR ((r.ENDDATERES > r.STARTDATERES) " +
+                    "AND (r.STARTTIMERES > :startTimeRes AND r.ENDTIMERES < :endTimeRes))"+
+            ")",
         nativeQuery = true
     )
     Integer findCountOfBusyParkingSpaces(
@@ -93,14 +106,9 @@ public interface IReservationRepository extends JpaRepository<Reservation, Integ
         @Param("vehicleType") String vehicleType,
         @Param("startDateRes") Date startDateRes,
         @Param("startTimeRes") Time startTimeRes,
-        @Param("endTimeRes") Time endTimeRes);
-
-
-    /*@Query(
-        value ="SELECT * FROM CARD u WHERE u.FK_CLIENT_IDUSER LIKE %:userId%",
-        nativeQuery = true
-    )
-    List<Card> findByUserId();*/
+        @Param("endDateRes") Date endDateRes,
+        @Param("endTimeRes") Time endTimeRes
+    );
 
     @Query(
         value = "SELECT COUNT(*) " +

@@ -37,34 +37,41 @@ public class ParkingController {
     private final ParkingService parkingService;
 
     @GetMapping("/city/{city}")
-    public List<Parking> getParkingbyCity(
+    public List<Parking> getParkingsByCity(
         @PathVariable("city") String city,
         @RequestParam(required = false) String type,
         @RequestParam(required = false) Date startDate,
         @RequestParam(required = false) Time startTime,
+        @RequestParam(required = false) Date endDate,
         @RequestParam(required = false) Time endTime,
         @RequestParam(required = false) String scheduleType,
         @RequestParam(required = false) String vehicleType
     ) {
-        return parkingService.getParkingsFilter(city, type, startDate, startTime, endTime, scheduleType, vehicleType);
+        return parkingService.getParkingsByCity(city, type, startDate, startTime, endDate, endTime, scheduleType, vehicleType);
     }
 
+    
+    @GetMapping("/coordinates/{coordinateX}/{coordinateY}")
+    public ParkingResponse getParkingByCoordinates(
+        @PathVariable("coordinateX") float coordinateX,
+        @PathVariable("coordinateY") float coordinateY,
+        @RequestParam(required = false) Date startDate,
+        @RequestParam(required = false) Time startTime,
+        @RequestParam(required = false) Date endDate,
+        @RequestParam(required = false) Time endTime,
+        @RequestParam(required = false) String vehicleType
+
+    ) {
+        return parkingService.getParkingsByCoordinates(coordinateX, coordinateY, startDate, startTime, endDate, endTime, vehicleType);
+    }
     @GetMapping("/admin/{idDoctype}/{idUser}")
     public ParkingResponse getParkingByAdmin(
         @PathVariable("idDoctype") String idDoctype,
         @PathVariable("idUser") String idUser
     ){
-        return parkingService.searchParking(UserId.builder().idDocType(idDoctype).idUser(idUser).build());
+        return parkingService.getParkingByAdmin(UserId.builder().idDocType(idDoctype).idUser(idUser).build());
     }
-
-    @GetMapping("/coordinates/{coordinateX}/{coordinateY}")
-    public ParkingResponse getParkingByCoordinates(
-        @PathVariable("coordinateX") float coordinateX,
-        @PathVariable("coordinateY") float coordinateY
-    ) {
-        return parkingService.getParkingsByCoordinates(coordinateX, coordinateY);
-    }
-    
+        
     @PostMapping("{idParking}/{idCity}/parking-space/insert") 
     public ResponseEntity<String> insertParkingSpace(
         @PathVariable("idParking") Integer idParking,
@@ -77,6 +84,7 @@ public class ParkingController {
         );
     }
 
+    
     @PutMapping("{idParking}/{idCity}")
     public ResponseEntity<String> update(
         @PathVariable("idParking") Integer idParking,
@@ -89,6 +97,7 @@ public class ParkingController {
         );
     }
 
+    
     @DeleteMapping("{idParking}/{idCity}/parking-space/delete") 
     public ResponseEntity<String> deleteParkingSpace(
         @PathVariable("idParking") Integer idParking,
