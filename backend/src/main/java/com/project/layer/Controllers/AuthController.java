@@ -116,7 +116,7 @@ public class AuthController {
         try {
         return ResponseEntity.ok(authService.changePass(request));
     } catch (BadCredentialsException e) {
-        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(new AuthResponse("Credenciales incorrectas", null));
+        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(new AuthResponse(null, null,"Credenciales incorrectas"));
     }
     }
 
