@@ -53,11 +53,12 @@ public class AuthController {
     public ResponseEntity<AuthResponse> login(@RequestBody LoginRequest request) {
         try {
             //Se almacena la accion del usuario
-            auditService.setAction(authService.getUserAction(request));
+            auditService.setAction(authService.getUserAction(request.getUsername(),"Ingreso","8.8.8.8"));
             return ResponseEntity.ok(authService.login(request));
         } catch (BadCredentialsException e) {
             // Incrementar intentos fallidos
             try {
+                auditService.setAction(authService.getUserAction(request.getUsername(),"Usuario Bloqueado","8.8.8.8"));
                 authService.incrementFailedAttempts(request.getUsername());
             } catch (UserBlockedException ex) {
                 return ResponseEntity.status(HttpStatus.FORBIDDEN).body(new AuthResponse(null, null, ex.getMessage()));
@@ -105,6 +106,8 @@ public class AuthController {
         List<String> messages = Arrays.asList("Register", response.getContra());
         mailservice.sendMail(request.getEmail(), "Bienvenido a four-parks Colombia", messages);
 
+        auditService.setAction(authService.getUserAction(request.getUsername(), "Registro", "9.9.9.9"));
+
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
@@ -127,6 +130,7 @@ public class AuthController {
     @PostMapping(value = "change-pass")
     public ResponseEntity<AuthResponse> changePass(@RequestBody PassRequest request) {
         try {
+            auditService.setAction(authService.getUserAction(request.getUsername(), "Cambio de contraseña", "9.9.9.9"));
             return ResponseEntity.ok(authService.changePass(request));
         } catch (BadCredentialsException e) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
