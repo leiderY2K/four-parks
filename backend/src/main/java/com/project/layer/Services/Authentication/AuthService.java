@@ -2,6 +2,7 @@ package com.project.layer.Services.Authentication;
 
 import java.lang.reflect.Field;
 import java.security.SecureRandom;
+import java.sql.Date;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
@@ -14,6 +15,8 @@ import com.project.layer.Persistence.Entity.*;
 import com.project.layer.Persistence.Error.CustomException;
 import com.project.layer.Persistence.Error.UserBlockedException;
 import com.project.layer.Persistence.Repository.ICardRepository;
+import com.project.layer.Persistence.Repository.IUserActionRepository;
+
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -45,6 +48,7 @@ public class AuthService {
     private final IUserRepository userRepository;
     private final IUserAuthRepository userAuthRepository;
     private final ICardRepository cardRepository;
+    private final IUserActionRepository userActionRepository;
     private final PasswordEncoder passwordEncoder;
     private final JwtService jwtService;
     private final MailService mailservice;
@@ -55,36 +59,71 @@ public class AuthService {
     public AuthResponse login(LoginRequest request) {
 
         try {
-            authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(request.getUsername(), request.getPassword()));
+            authenticationManager.authenticate(
+                    new UsernamePasswordAuthenticationToken(request.getUsername(), request.getPassword()));
         } catch (BadCredentialsException e) {
             // Lanzar la excepción para que sea capturada en el controlador
             throw new BadCredentialsException("Credenciales incorrectas", e);
         }
-    
+
         // Si la autenticación es exitosa, restablecer los intentos fallidos
-        UserAuthentication user = userAuthRepository.findByUsername(request.getUsername()).orElseThrow(() -> new UsernameNotFoundException("Usuario no encontrado"));
+        UserAuthentication user = userAuthRepository.findByUsername(request.getUsername())
+                .orElseThrow(() -> new UsernameNotFoundException("Usuario no encontrado"));
         resetFailedAttempts(user.getUsername());
-    
+
         String token = jwtService.getToken(generateExtraClaims(user), user);
         return AuthResponse.builder()
                 .token(token)
                 .build();
     }
 
+    // Metodo que retorna los parametros para la auditoria
+
+    @Transactional
+    public UserAction getUserAction(String username, String descAction, String ipUser) {
+
+        // obtenemos la fecha actual en la que se hizo el registro
+        LocalDate currentDate = LocalDate.now();
+
+        // Convertir LocalDate a java.sql.Date
+        Date dateAction = Date.valueOf(currentDate);
+
+        // obtenemos la informacion del usuario
+
+        //Revisamos los datos del login
+        UserAuthentication userAuthentication = userAuthRepository.findByUsername(username)
+                .orElseThrow(() -> new UsernameNotFoundException("Usuario no encontrado"));
+
+        //una vez confirmado traemos al usuario
+        User user = userRepository
+                .findByUserId(userAuthentication.getUserId().getIdUser(), userAuthentication.getUserId().getIdDocType())
+                .orElseThrow(() -> new UsernameNotFoundException("Usuario no encontrado"));
+
+        UserAction userAction = UserAction.builder()
+                .dateAction(dateAction)
+                .descAction(descAction)
+                .ipUser(ipUser)
+                .userActionId(user)
+                .build();
+        return userAction;
+    }
+
     @Transactional
     public AuthResponse unlock(UnlockRequest request) throws MessagingException {
-        UserAuthentication userAuth = userAuthRepository.findByUsername(request.getUsername()).orElseThrow(() -> new UsernameNotFoundException("Usuario no encontrado"));
-        if(userAuth.getUsername().equals(request.getUsername())&&userAuth.getUserId().getIdUser().equals(request.getIdUser())){
+        UserAuthentication userAuth = userAuthRepository.findByUsername(request.getUsername())
+                .orElseThrow(() -> new UsernameNotFoundException("Usuario no encontrado"));
+        if (userAuth.getUsername().equals(request.getUsername())
+                && userAuth.getUserId().getIdUser().equals(request.getIdUser())) {
             resetFailedAttempts(userAuth.getUsername());
             unBlockPassword(userAuth.getUsername());
             String randomPassword = generateRandomPassword();
-            User user= userRepository.getReferenceById(userAuth.getUserId());
+            User user = userRepository.getReferenceById(userAuth.getUserId());
             updatePass(userAuth.getUsername(), passwordEncoder.encode(randomPassword));
             List<String> messages = Arrays.asList("Register", randomPassword);
             mailservice.sendMail(user.getEmail(), "Bienvenido a four-parks Colombia", messages);
             return AuthResponse.builder()
-                .token("Usuario desbloqueado.")
-                .build();
+                    .token("Usuario desbloqueado.")
+                    .build();
         }
         return AuthResponse.builder()
                 .token("Usuario no coincide.")
@@ -92,8 +131,9 @@ public class AuthService {
     }
 
     public void incrementFailedAttempts(String username) {
-        UserAuthentication user = userAuthRepository.findByUsername(username).orElseThrow(() -> new UsernameNotFoundException("Usuario no encontrado"));
-        if(user.getAttempts()>=3){
+        UserAuthentication user = userAuthRepository.findByUsername(username)
+                .orElseThrow(() -> new UsernameNotFoundException("Usuario no encontrado"));
+        if (user.getAttempts() >= 3) {
             blockPassword(username);
             throw new UserBlockedException("Se ha bloqueado el usuario por multiples intentos de inicio de sesión.");
         }
@@ -112,6 +152,7 @@ public class AuthService {
     public void unBlockPassword(String username) {
         userAuthRepository.unBlockPassword(username);
     }
+
     public void resetFailedAttempts(String username) {
         userAuthRepository.resetFailedAttempts(username);
     }
@@ -196,10 +237,10 @@ public class AuthService {
         cardRepository.save(newCard);
 
         return AuthResponse.builder()
-            .token(jwtService.getToken(null, userAuthentication))
-            .contra(randomPassword) //es para iniciar sesion mientras
-            .message("El registro fue exitoso")
-            .build();
+                .token(jwtService.getToken(null, userAuthentication))
+                .contra(randomPassword) // es para iniciar sesion mientras
+                .message("El registro fue exitoso")
+                .build();
     }
 
     private String generateRandomPassword() {
@@ -213,67 +254,76 @@ public class AuthService {
         return sb.toString();
     }
 
-    public AuthResponse changePass(PassRequest request){
+    public AuthResponse changePass(PassRequest request) {
 
         try {
-            authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(request.getUsername(), request.getOldPass()));
+            authenticationManager
+                    .authenticate(new UsernamePasswordAuthenticationToken(request.getUsername(), request.getOldPass()));
         } catch (BadCredentialsException e) {
             // Lanzar la excepción para que sea capturada en el controlador
             throw new BadCredentialsException("Credenciales incorrectas", e);
         }
-        UserAuthentication userAuth = userAuthRepository.findByUsername(request.getUsername()).orElseThrow(() -> new UsernameNotFoundException("Usuario no encontrado"));
-        /*System.out.println("Contra base de datos :    "+ userAuth.getPassword());
-        System.out.println("Contra base de datos :    "+ userAuth.getPassword());
-        System.out.println("Contra traida de front :    "+ passwordEncoder.encode(request.getOldPass()));
-        if(userAuth.getUsername().equals(request.getUsername())&&userAuth.getPassword().equals(passwordEncoder.encode(request.getOldPass()))){*/
-            updatePass(userAuth.getUsername(), passwordEncoder.encode(request.getNewPass()));
-            return AuthResponse.builder()
+        UserAuthentication userAuth = userAuthRepository.findByUsername(request.getUsername())
+                .orElseThrow(() -> new UsernameNotFoundException("Usuario no encontrado"));
+        /*
+         * System.out.println("Contra base de datos :    "+ userAuth.getPassword());
+         * System.out.println("Contra base de datos :    "+ userAuth.getPassword());
+         * System.out.println("Contra traida de front :    "+
+         * passwordEncoder.encode(request.getOldPass()));
+         * if(userAuth.getUsername().equals(request.getUsername())&&userAuth.getPassword
+         * ().equals(passwordEncoder.encode(request.getOldPass()))){
+         */
+        updatePass(userAuth.getUsername(), passwordEncoder.encode(request.getNewPass()));
+        return AuthResponse.builder()
                 .token("Contraseña modificada con exito.")
                 .build();
-        /* }
-        return AuthResponse.builder()
-                .token("Contraseña actual no coincide.")
-                .build();
-        }*/
+        /*
+         * }
+         * return AuthResponse.builder()
+         * .token("Contraseña actual no coincide.")
+         * .build();
+         * }
+         */
     }
-    
+
     public UserResponse update(@Validated UserRequest request) {
 
         UserAuthentication userAuth = userAuthRepository.findByUsername(request.getUsername()).get();
-        User user = userRepository.findByUserId(userAuth.getUserId().getIdUser(),userAuth.getUserId().getIdDocType()).get();
+        User user = userRepository.findByUserId(userAuth.getUserId().getIdUser(), userAuth.getUserId().getIdDocType())
+                .get();
 
         if (user != null) {
- 
+
             // Obtener todas las variables declaradas en la clase User
             Field[] userAuthFields = userAuth.getClass().getDeclaredFields();
             Field[] userFields = user.getClass().getDeclaredFields();
-            
+
             List<Field> fields = new ArrayList<>();
             fields.addAll(Arrays.asList(userAuthFields));
-            fields.addAll(Arrays.asList(userFields));            
+            fields.addAll(Arrays.asList(userFields));
 
             for (Field field : fields) {
                 // Hacer que el campo sea accesible, incluso si es privado
                 field.setAccessible(true);
- 
+
                 try {
                     // Obtener el valor del campo en el objeto parkingChanges
                     Object value = field.get(request);
- 
+
                     // Si el valor no es nulo, establecerlo en el objeto user original
                     if (value != null) {
                         field.set(user, value);
                     }
                 } catch (IllegalAccessException e) {
-                    return new UserResponse(null, null, "No se puede modificar el campo "+ field);
+                    return new UserResponse(null, null, "No se puede modificar el campo " + field);
                     // Manejar la excepción si se produce un error al acceder al campo
                 }
             }
- 
+
             userRepository.save(user);
-            return new UserResponse(user,null,"Se realizó la modificación");
+            return new UserResponse(user, null, "Se realizó la modificación");
         } else {
-            return new UserResponse(null,null,"No se encontró ningún estacionamiento con el ID proporcionado");
+            return new UserResponse(null, null, "No se encontró ningún estacionamiento con el ID proporcionado");
         }
     }
 

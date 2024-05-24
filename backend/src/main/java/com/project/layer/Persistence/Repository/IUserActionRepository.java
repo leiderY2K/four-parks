@@ -1,6 +1,6 @@
 package com.project.layer.Persistence.Repository;
 
-import java.util.Date;
+import java.sql.Date;
 import java.util.List;
 
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -56,8 +56,4 @@ public interface IUserActionRepository extends JpaRepository<UserAction, Integer
             @Param("idUser") String idUser,
             @Param("dateAction") Date dateAction,
             @Param("ipUser") String ipUser);
-
-
-
-
 }
