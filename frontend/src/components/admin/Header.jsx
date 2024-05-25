@@ -22,6 +22,11 @@ const Header = () => {
                             onClick={() => {setOnToggle(false);}}>Ver estadísticas</Link>
                         </li>
 
+                        <li className="mr-16 relative">
+                            <Link to="/registrar-cliente" className="inline-block font-title font-medium text-white hover:scale-105 py-2 px-4" 
+                            onClick={() => {setOnToggle(false);}}>Registrar Cliente</Link>
+                        </li>
+
                         <li className="mr-6 relative">
                             <button className="flex items-center font-title font-medium text-white hover:scale-105 py-2 px-4 focus:outline-none"
                                 onClick={() => setOnToggle(!onToggle)}>
