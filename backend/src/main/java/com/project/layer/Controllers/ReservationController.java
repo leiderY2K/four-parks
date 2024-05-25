@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import com.project.layer.Services.Payment.PaymentService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -52,6 +53,10 @@ public class ReservationController {
     @Autowired
     private final AuditService auditService;
     private final RequestService requestService;
+
+    @Autowired
+    private final PaymentService paymentService;
+    private String token;
 
     @GetMapping("/client/{idDocType}/{idUser}")
     public List<Reservation> getReservationsByClient(
@@ -103,16 +108,22 @@ public class ReservationController {
 
     }
 
-    public void makePayment(Reservation reservation) { //revisar con cristian para ver como seria la logica 
-
-
-        // Validar si se ajusta el costo de la reserva o que pex
-        reservationService.setTotalRes(reservation, scoreSystemService.applyDiscount(
-                reservation.getClient(),
-                reservation.getParkingSpace(),
-                reservation.getTotalRes()));
+    public void makePayment(Reservation reservation) {
+//        revisar con cristian para ver como seria la logica
+//
+//
+//         Validar si se ajusta el costo de la reserva o que pex
+//        reservationService.setTotalRes(reservation, scoreSystemService.applyDiscount(
+//                reservation.getClient(),
+//                reservation.getParkingSpace(),
+//                reservation.getTotalRes()));
 
         // Aqui va la parte del pago
+        String userId = String.valueOf(reservation.getClient().getUserId().getIdUser());
+        token = paymentService.createCardToken(userId);
+        paymentService.charge(token, reservation.getTotalRes());
+        System.out.println("usted pago: " + reservation.getTotalRes());
+
 
         // Si el pago sale bien, el estado cambia a confirmado
         reservationService.setStatus(reservation, ResStatus.CONFIRMED.getId());
@@ -122,10 +133,10 @@ public class ReservationController {
                 "Pago auomatico",
                 "8.8.8.8"));
 
-        scoreSystemService.increaseScore(
-                reservation.getClient(),
-                reservation.getParkingSpace().getParkingSpaceId().getParking(),
-                reservation.getTotalRes());
+//        scoreSystemService.increaseScore(
+//                reservation.getClient(),
+//                reservation.getParkingSpace().getParkingSpaceId().getParking(),
+//                reservation.getTotalRes());
 
         // Se debe enviar los correos pertinentes
         // mailService.sendMail(reservation.getClient().getEmail(), "Reserva
@@ -161,6 +172,10 @@ public class ReservationController {
 
         // Se debe hacer el cobro, la variable totalRes se seteo para que costara lo de
         // la cancelación
+        String userId = reservationResponse.getReservation().getClient().getUserId().getIdUser();
+        token = paymentService.createCardToken(userId);
+        paymentService.charge(token, reservationResponse.getReservation().getTotalRes());
+        System.out.println("usted pago: " + reservationResponse.getReservation().getTotalRes());
 
         reservationService.setStatus(reservationResponse.getReservation(), ResStatus.CANCELLED.getId());
 

@@ -216,6 +216,7 @@ public class ReservationService {
     public ReservationResponse cancelReservation(int idReservation) {
 
         Optional<Reservation> optionalReservation = reservationRepository.findById(idReservation);
+        List<Card> optionalCard =  reservationRepository.findByUserId();
 
         if (optionalReservation.isEmpty()) {
             return new ReservationResponse(null,"La reserva no fue encontrada");

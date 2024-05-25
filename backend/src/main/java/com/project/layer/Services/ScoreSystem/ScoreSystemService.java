@@ -22,18 +22,18 @@ public class ScoreSystemService {
     IRateRepository rateRepository;
 
 
-    @Transactional
-    @Modifying
-    public void increaseScore(User client, Parking parking, Float totalRes) {
-        ScoreSystem scoreSystem = scoreSystemRepository.findById(new ScoreSystemId(client, parking)).get();
-
-        while (totalRes < scoreSystem.getTargetValue()) {
-            totalRes -= scoreSystem.getTargetValue();
-            scoreSystem.setScorePoints(scoreSystem.getScorePoints() + 1);
-        }
-
-        scoreSystemRepository.save(scoreSystem);
-    }
+//    @Transactional
+//    @Modifying
+//    public void increaseScore(User client, Parking parking, Float totalRes) {
+//        ScoreSystem scoreSystem = scoreSystemRepository.findById(new ScoreSystemId(client, parking)).get();
+//
+//        while (totalRes < scoreSystem.getTargetValue()) {
+//            totalRes -= scoreSystem.getTargetValue();
+//            scoreSystem.setScorePoints(scoreSystem.getScorePoints() + 1);
+//        }
+//
+//        scoreSystemRepository.save(scoreSystem);
+//    }
 
     @Transactional
     @Modifying
