@@ -26,11 +26,13 @@ import com.project.layer.Persistence.Entity.ResStatus;
 import com.project.layer.Persistence.Entity.Reservation;
 import com.project.layer.Persistence.Entity.UserId;
 import com.project.layer.Services.Audit.AuditService;
+import com.project.layer.Services.IpRequest.RequestService;
 import com.project.layer.Services.Mail.MailService;
 import com.project.layer.Services.Reservation.ReservationService;
 import com.project.layer.Services.ScoreSystem.ScoreSystemService;
 
 import jakarta.mail.MessagingException;
+import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 
 @RestController
@@ -49,6 +51,7 @@ public class ReservationController {
     private final ScoreSystemService scoreSystemService;
     @Autowired
     private final AuditService auditService;
+    private final RequestService requestService;
 
     @GetMapping("/client/{idDocType}/{idUser}")
     public List<Reservation> getReservationsByClient(
@@ -60,13 +63,15 @@ public class ReservationController {
     }
 
     @PostMapping("/start")
-    public ResponseEntity<ReservationResponse> start(@RequestBody StartReservationRequest reservationRequest)
-            throws MessagingException {
+    public ResponseEntity<ReservationResponse> start(@RequestBody StartReservationRequest reservationRequest,
+            HttpServletRequest ipUser) throws MessagingException {
+
         ReservationResponse reservationResponse = reservationService.startReservation(reservationRequest);
 
         if (reservationResponse.getReservation() == null)
             return new ResponseEntity<>(reservationResponse, HttpStatus.BAD_REQUEST);
 
+        // se envia el correo electronico de confirmacion con los detalles de la resreva
         mailService.sendMail(
                 reservationResponse.getReservation().getClient().getEmail(),
                 "[Four-parks] Información de su reserva",
@@ -76,12 +81,13 @@ public class ReservationController {
             makePayment(reservationResponse.getReservation());
         }
 
-        // Es almacenada la accion realizada por el usuario
+        // Es almacenada la accion realizada por el usuario en este caso realizo la
+        // reserva
         auditService.setAction(reservationService.getUserAction(
                 reservationResponse.getReservation().getClient().getUserId().getIdUser(),
                 reservationResponse.getReservation().getClient().getUserId().getIdDocType(),
                 "Realizo reserva",
-                "9.9.9.9"));
+                requestService.getClientIp(ipUser)));
 
         return new ResponseEntity<>(reservationResponse, HttpStatus.OK);
     }
@@ -97,7 +103,8 @@ public class ReservationController {
 
     }
 
-    public void makePayment(Reservation reservation) {
+    public void makePayment(Reservation reservation) { //revisar con cristian para ver como seria la logica 
+
 
         // Validar si se ajusta el costo de la reserva o que pex
         reservationService.setTotalRes(reservation, scoreSystemService.applyDiscount(
@@ -126,7 +133,8 @@ public class ReservationController {
     }
 
     @PutMapping("{id}/check-in")
-    public ResponseEntity<ReservationResponse> checkIn(@PathVariable("id") Integer idReservation) {
+    public ResponseEntity<ReservationResponse> checkIn(@PathVariable("id") Integer idReservation,
+    HttpServletRequest ipUser) {
 
         ReservationResponse reservationResponse = reservationService.checkInReservation(idReservation);
 
@@ -138,14 +146,14 @@ public class ReservationController {
                 reservationResponse.getReservation().getClient().getUserId().getIdUser(),
                 reservationResponse.getReservation().getClient().getUserId().getIdDocType(),
                 "Hizo check-in",
-                "8.8.8.8"));
+                requestService.getClientIp(ipUser)));
 
         return new ResponseEntity<>(reservationResponse, HttpStatus.ACCEPTED);
     }
 
     @PutMapping("{id}/cancel")
-    public ResponseEntity<ReservationResponse> cancel(@PathVariable("id") Integer idReservation)
-            throws MessagingException {
+    public ResponseEntity<ReservationResponse> cancel(@PathVariable("id") Integer idReservation,
+            HttpServletRequest ipUser) throws MessagingException {
         ReservationResponse reservationResponse = reservationService.cancelReservation(idReservation);
 
         if (reservationResponse.getReservation() == null)
@@ -161,7 +169,7 @@ public class ReservationController {
                 reservationResponse.getReservation().getClient().getUserId().getIdUser(),
                 reservationResponse.getReservation().getClient().getUserId().getIdDocType(),
                 "Cancelo la reserva",
-                "8.8.8.8"));
+                requestService.getClientIp(ipUser)));
 
         // Se envian los correos
         mailService.sendMail(
@@ -173,7 +181,9 @@ public class ReservationController {
     }
 
     @PutMapping("{id}/check-out")
-    public ResponseEntity<ReservationResponse> checkOut(@PathVariable("id") Integer idReservation) {
+    public ResponseEntity<ReservationResponse> checkOut(@PathVariable("id") Integer idReservation,
+            HttpServletRequest ipUser) {
+
         ReservationResponse reservationResponse = reservationService.checkOutReservation(idReservation);
 
         if (reservationResponse.getReservation() == null)
@@ -191,7 +201,7 @@ public class ReservationController {
                 reservationResponse.getReservation().getClient().getUserId().getIdUser(),
                 reservationResponse.getReservation().getClient().getUserId().getIdDocType(),
                 "Hizo check-out",
-                "8.8.8.8"));
+                requestService.getClientIp(ipUser)));
 
         // Se envian los correos
 
@@ -207,7 +217,7 @@ public class ReservationController {
             if (extraCost != 0) {
                 // Aqui se hace el pago utilizando el extra cost
 
-                // Es almacenada la accion realizada por el usuario
+                // Es almacenada la accion realizada por el usuario revisar con cristian depronto no es necesario
                 auditService.setAction(reservationService.getUserAction(
                         reservation.getClient().getUserId().getIdUser(),
                         reservation.getClient().getUserId().getIdDocType(),
