@@ -13,6 +13,7 @@ import java.util.stream.Collectors;
 import com.project.layer.Persistence.Entity.*;
 
 import org.springframework.data.jpa.repository.Modifying;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
 import com.project.layer.Controllers.Requests.StartReservationRequest;
@@ -300,6 +301,30 @@ public class ReservationService {
     public void setTotalRes(Reservation reservation, float applyDiscount) {
         reservation.setTotalRes(applyDiscount);
         reservationRepository.save(reservation);
+    }
+
+    @Transactional
+    public UserAction getUserAction(String userId, String docType, String descAction, String ipUser) {
+
+        // obtenemos la fecha actual en la que se hizo el registro
+        LocalDate currentDate = LocalDate.now();
+
+        // Convertir LocalDate a java.sql.Date
+        Date dateAction = Date.valueOf(currentDate);
+
+        // obtenemos la informacion del usuario
+
+        //Traemos los datos del usuario
+        User user = userRepository.findByUserId(userId, docType)
+                .orElseThrow(() -> new UsernameNotFoundException("Usuario no encontrado"));
+
+        UserAction userAction = UserAction.builder()
+                .dateAction(dateAction)
+                .descAction(descAction)
+                .ipUser(ipUser)
+                .userActionId(user)
+                .build();
+        return userAction;
     }
 
 }
