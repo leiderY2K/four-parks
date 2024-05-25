@@ -7,34 +7,29 @@ import { decodeJWT } from "../../javascript/decodeJWT"
 import logo from '../../assets/Logo.png'
 import '../../css/login.css'
 
-export default function PasswordChange({ url }) {
+export default function ForgotPass({ url }) {
 
-    const [username, setUsername] = useState("");
-    const [actualPass, setActualPass] = useState("");
-    const [newPass, setNewPass] = useState("");
-    const [newPassConfim, setNewPassConfirm] = useState("");
+    const [email, setEmail] = useState("");
 
     const handleChange = (e) => {
         e.preventDefault();
-        if (!username || !actualPass || !newPass || !newPassConfim) {
+
+        
+        if (!email) {
             Swal.fire({
                 icon: 'info',
-                title: `Por favor llene todos los campos`
-            });
-            return; 
-        }
-        if (newPass !== newPassConfim) {
-            Swal.fire({
-                icon: 'info',
-                title: `Las contraseñas no coinciden`
+                title: `Por favor ingrese su email`
             });
             return; 
         }
 
-
+    }
+/*
+        // Si todas las validaciones pasan, enviar la solicitud Axios
         axios.post(`${url}/auth/change-pass`, { username: username, oldPass: actualPass, newPass: newPass })
             .then(res => {
                 console.log(res);
+                // Aquí puedes manejar la respuesta exitosa, por ejemplo, mostrar un mensaje de éxito
                 Swal.fire({
                     icon: 'success',
                     title: `Contraseña cambiada exitosamente`
@@ -42,12 +37,14 @@ export default function PasswordChange({ url }) {
             })
             .catch(err => {
                 console.log(err);
+                // Manejar errores de la solicitud Axios, por ejemplo, mostrar un mensaje de error
                 Swal.fire({
                     icon: 'error',
                     title: `Hubo un error al cambiar la contraseña`
                 });
             });
     }
+    */
 
 
 
@@ -60,21 +57,12 @@ export default function PasswordChange({ url }) {
 
                 <section className="flex flex-col justify-between items-center w-full h-56 mt-6 md:mt-10 2xl:mt-8">
                     <input type="text" id="username" className="w-full p-3 rounded-md bg-white font-paragraph placeholder:text-gray-dark"
-                        placeholder="Ingrese nombre de usuario" value={username} onChange={(e) => setUsername(e.target.value)} ></input>
-
-                    <input type="password" id="actualPass" className="w-full p-3 rounded-md bg-white font-paragraph placeholder:text-gray-dark"
-                        placeholder="Ingrese contraseña actual" value={actualPass} onChange={(e) => setActualPass(e.target.value)} ></input>
-
-                    <input type="password" id="newPass" className="w-full p-3 rounded-md bg-white font-paragraph placeholder:text-gray-dark"
-                        placeholder="Ingrese contraseña nueva" value={newPass} onChange={(e) => setNewPass(e.target.value)} ></input>
-
-                    <input type="password" id="newPassConfim" className="w-full p-3 rounded-md bg-white font-paragraph placeholder:text-gray-dark"
-                        placeholder="Confirme contraseña nueva" value={newPassConfim} onChange={(e) => setNewPassConfirm(e.target.value)}></input>
+                        placeholder="Ingrese su email" value={email} onChange={(e) => setEmail(e.target.value)} ></input>
 
                 </section>
 
-                <button className="mt-8 2xl:mt-6  md:px-12 px-16 py-3 bg-blue-dark hover:bg-blue-darkest rounded-xl text-white font-title font-semibold text-xl"
-                    onClick={handleChange}>Cambiar Contraseña</button>
+                <button className="md:px-12 px-16 py-3 bg-blue-dark hover:bg-blue-darkest rounded-xl text-white font-title font-semibold text-xl"
+                    onClick={handleChange}>Recuperar</button>
             </section>
 
             <hr className="h-0.5 mt-8 2xl:mt-6  rounded-full bg-white"></hr>

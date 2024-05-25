@@ -10,7 +10,9 @@ import HomeManagerPage from "./pages/manager/HomeManagerPage";
 import StatisticsManagerPage from "./pages/manager/StatisticsManagerPage";
 //import StatisticsPage from "./pages/admin/StatisticsPage";
 import PasswordChangePage from "./pages/general/PasswordChangePage";
-
+import SignUpClientAdminPage from "./pages/admin/SignUpClientAdminPage";
+import SignUpAdminPage from "./pages/manager/SignUpAdminPage";
+import ForgotPassPage from "./pages/general/ForgotPassPage";
 
 function App() {
   const url = "http://localhost:8080";
@@ -77,11 +79,18 @@ function App() {
 
           <Route path="/admin-inicio" element={<HomeAdminPage url={url} initialCoords={initialCoords} />}/>
           <Route path="/admin-ver-estadisticas" element={<StatisticsAdminPage url={url} />}/>
+          <Route path="/registrar-cliente" element={<SignUpClientAdminPage url={url}/>} />
           
           <Route path="/manager-inicio" element={<HomeManagerPage url={url} initialCoords={initialCoords} />}/>
           <Route path="/manager-ver-estadisticas" element={<StatisticsManagerPage url={url} />}/>
           <Route path="/ver-estadisticas" element={<StatisticsAdminPage url={url} />}/>
           <Route path="/cambio-contraseña" element={<PasswordChangePage url={url}/>} />
+          <Route path="/agregar-administrador" element={<SignUpAdminPage url={url}/>} />
+          <Route path="/recuperacion-contraseña" element={<ForgotPassPage url={url}/>} />
+
+          
+
+
       </Routes>
     </BrowserRouter>
   )
