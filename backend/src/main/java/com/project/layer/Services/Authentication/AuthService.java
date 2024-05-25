@@ -15,7 +15,6 @@ import com.project.layer.Persistence.Entity.*;
 import com.project.layer.Persistence.Error.CustomException;
 import com.project.layer.Persistence.Error.UserBlockedException;
 import com.project.layer.Persistence.Repository.ICardRepository;
-import com.project.layer.Persistence.Repository.IUserActionRepository;
 
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.BadCredentialsException;
@@ -48,7 +47,6 @@ public class AuthService {
     private final IUserRepository userRepository;
     private final IUserAuthRepository userAuthRepository;
     private final ICardRepository cardRepository;
-    private final IUserActionRepository userActionRepository;
     private final PasswordEncoder passwordEncoder;
     private final JwtService jwtService;
     private final MailService mailservice;
