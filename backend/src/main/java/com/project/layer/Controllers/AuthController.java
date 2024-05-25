@@ -5,6 +5,7 @@ import com.project.layer.Persistence.Error.CustomException;
 import com.project.layer.Persistence.Error.UserBlockedException;
 
 import jakarta.mail.MessagingException;
+import jakarta.servlet.http.HttpServletRequest;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -16,6 +17,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
@@ -29,6 +31,8 @@ import com.project.layer.Controllers.Responses.AuthResponse;
 import com.project.layer.Controllers.Responses.UserResponse;
 import com.project.layer.Services.Audit.AuditService;
 import com.project.layer.Services.Authentication.AuthService;
+import com.project.layer.Services.IpRequest.RequestIpService;
+import com.project.layer.Services.IpRequest.RequestService;
 import com.project.layer.Services.JWT.JwtService;
 import com.project.layer.Services.Mail.MailService;
 
@@ -48,17 +52,26 @@ public class AuthController {
     private final MailService mailservice;
     private final JwtService jwtService;
     private final AuditService auditService;
+    private final RequestService requestService;
 
     @PostMapping(value = "login")
-    public ResponseEntity<AuthResponse> login(@RequestBody LoginRequest request) {
+    public ResponseEntity<AuthResponse> login(@RequestBody LoginRequest request, HttpServletRequest ipUser) {
         try {
-            //Se almacena la accion del usuario
-            auditService.setAction(authService.getUserAction(request.getUsername(),"Ingreso","8.8.8.8"));
+            // Se almacena la accion del usuario
+            auditService.setAction(
+                    authService.getUserAction(request.getUsername(), "Ingreso", 
+                    requestService.getClientIp(ipUser)));
+
             return ResponseEntity.ok(authService.login(request));
         } catch (BadCredentialsException e) {
             // Incrementar intentos fallidos
             try {
-                auditService.setAction(authService.getUserAction(request.getUsername(),"Usuario Bloqueado","8.8.8.8"));
+                //se almacena la acción de bloqueo de usuario revisar con cristian 
+                auditService
+                        .setAction(authService.getUserAction(request.getUsername(), 
+                        "Usuario Bloqueado",
+                        requestService.getClientIp(ipUser)));
+                
                 authService.incrementFailedAttempts(request.getUsername());
             } catch (UserBlockedException ex) {
                 return ResponseEntity.status(HttpStatus.FORBIDDEN).body(new AuthResponse(null, null, ex.getMessage()));
@@ -80,7 +93,8 @@ public class AuthController {
 
     @PostMapping(value = "register")
     public ResponseEntity<AuthResponse> register(@RequestBody @Validated RegisterRequest request,
-            BindingResult bindingResult) throws MessagingException, CustomException {
+            BindingResult bindingResult,
+            HttpServletRequest ipUser) throws MessagingException, CustomException {
 
         String role = null;
 
@@ -106,7 +120,10 @@ public class AuthController {
         List<String> messages = Arrays.asList("Register", response.getContra());
         mailservice.sendMail(request.getEmail(), "Bienvenido a four-parks Colombia", messages);
 
-        auditService.setAction(authService.getUserAction(request.getUsername(), "Registro", "9.9.9.9"));
+        //se establece la acción del usuario por el registro
+        auditService.setAction(authService.getUserAction(request.getUsername(), 
+        "Registro", 
+        requestService.getClientIp(ipUser)));
 
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
@@ -128,9 +145,15 @@ public class AuthController {
     }
 
     @PostMapping(value = "change-pass")
-    public ResponseEntity<AuthResponse> changePass(@RequestBody PassRequest request) {
+    public ResponseEntity<AuthResponse> changePass(@RequestBody PassRequest request, HttpServletRequest ipUser) {
         try {
-            auditService.setAction(authService.getUserAction(request.getUsername(), "Cambio de contraseña", "9.9.9.9"));
+            
+            //Se establece la acción de cambio de contraseña
+            auditService.setAction(authService.getUserAction(request.getUsername(), 
+            "Cambio de contraseña",
+            requestService.getClientIp(ipUser)));
+
+
             return ResponseEntity.ok(authService.changePass(request));
         } catch (BadCredentialsException e) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
