@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import axios from "axios";
-import Header from "../../components/admin/Header"
+import Header from "../../components/admin/Header";
 import BarHours from "../../components/admin/graphics/BarHours";
 import PieHours from "../../components/admin/graphics/PieHours";
 import LineHours from "../../components/admin/graphics/LineHours";

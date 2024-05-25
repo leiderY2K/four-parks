@@ -16,30 +16,25 @@ export default function PasswordChange({ url }) {
 
     const handleChange = (e) => {
         e.preventDefault();
-
-        // Verificar que todos los campos estén llenos
         if (!username || !actualPass || !newPass || !newPassConfim) {
             Swal.fire({
                 icon: 'info',
                 title: `Por favor llene todos los campos`
             });
-            return; // Detener la ejecución si faltan campos
+            return; 
         }
-
-        // Verificar si las contraseñas coinciden
         if (newPass !== newPassConfim) {
             Swal.fire({
                 icon: 'info',
                 title: `Las contraseñas no coinciden`
             });
-            return; // Detener la ejecución si las contraseñas no coinciden
+            return; 
         }
 
-        // Si todas las validaciones pasan, enviar la solicitud Axios
+
         axios.post(`${url}/auth/change-pass`, { username: username, oldPass: actualPass, newPass: newPass })
             .then(res => {
                 console.log(res);
-                // Aquí puedes manejar la respuesta exitosa, por ejemplo, mostrar un mensaje de éxito
                 Swal.fire({
                     icon: 'success',
                     title: `Contraseña cambiada exitosamente`
@@ -47,7 +42,6 @@ export default function PasswordChange({ url }) {
             })
             .catch(err => {
                 console.log(err);
-                // Manejar errores de la solicitud Axios, por ejemplo, mostrar un mensaje de error
                 Swal.fire({
                     icon: 'error',
                     title: `Hubo un error al cambiar la contraseña`

@@ -12,7 +12,7 @@ import StatisticsManagerPage from "./pages/manager/StatisticsManagerPage";
 import PasswordChangePage from "./pages/general/PasswordChangePage";
 import SignUpClientAdminPage from "./pages/admin/SignUpClientAdminPage";
 import SignUpAdminPage from "./pages/manager/SignUpAdminPage";
-import ForgotPassPage from "./pages/client/ForgotPassPage";
+import ForgotPassPage from "./pages/general/ForgotPassPage";
 
 function App() {
   const url = "http://localhost:8080";

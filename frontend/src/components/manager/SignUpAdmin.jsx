@@ -33,7 +33,7 @@ export default function SignUpClient({ url }) {
                 idUser: idNumber,
                 idDocTypeFk: idType,
                 username: username,
-                //role: 'CLIENT',
+                role: 'ADMIN',
                 firstName: name,
                 lastName: lastName,
                 email: email,

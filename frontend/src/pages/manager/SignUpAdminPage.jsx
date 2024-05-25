@@ -1,22 +1,21 @@
 import { useEffect } from 'react';
 import bgImage from '../../assets/BG-PC.jpeg'
-//import SignUp from '../../components/client/SignUp';
-import SignUpClient from "../../components/admin/SignUpClient";
+import SignUpAdmin from "../../components/manager/SignUpAdmin";
+import Header from "../../components/manager/Header";
 
-const backgroundStyle = {
-    backgroundImage: `url(${bgImage})`,
-    backgroundSize: 'cover'
-};
 
-const SignUpClientAdminPage = ({url}) => {
+const SignUpAdminPage = ({ url }) => {
 
     return (
-        <div className="h-screen" style={backgroundStyle}>
-            <div className="flex items-center justify-center h-screen">
-                <SignUpClient url={url} />
+        <section>
+            <Header/>
+            <div className="h-screen">
+                <div className="flex items-center justify-center h-screen">
+                    <SignUpAdmin url={url} />
+                </div>
             </div>
-        </div>
+        </section>
     )
 }
 
-export default SignUpClientAdminPage
+export default SignUpAdminPage
