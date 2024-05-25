@@ -21,7 +21,10 @@ import com.project.layer.Controllers.Responses.ReservationResponse;
 import com.project.layer.Persistence.Repository.IParkingSpaceRepository;
 import com.project.layer.Persistence.Repository.IRateRepository;
 import com.project.layer.Persistence.Repository.IReservationRepository;
+import com.project.layer.Persistence.Repository.IUserActionRepository;
+import com.project.layer.Persistence.Repository.IUserAuthRepository;
 import com.project.layer.Persistence.Repository.IUserRepository;
+
 import jakarta.mail.MessagingException;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
@@ -32,8 +35,8 @@ public class ReservationService {
 
     private final IReservationRepository reservationRepository;
     private final IParkingSpaceRepository parkingSpaceRepository;
-    private final IUserRepository userRepository;
     private final IRateRepository rateRepository;
+    private final IUserRepository userRepository;
 
     public List<Reservation> getReservationsByClientId(UserId userId, String status) {
         return reservationRepository.findAllByClientId(
@@ -45,7 +48,7 @@ public class ReservationService {
 
     @Transactional
     @Modifying
-    public ReservationResponse startReservation(StartReservationRequest reservationRequest) throws MessagingException {
+    public ReservationResponse startReservation(User client, StartReservationRequest reservationRequest) throws MessagingException {
         
         LocalDate actualDate = LocalDate.now();
         LocalTime actualTime = LocalTime.now();
@@ -70,8 +73,8 @@ public class ReservationService {
         // Filtrar y contar las reservas activas del cliente específico
         long clientActiveReservations = busyParkingSpacesInReservations.stream()
         .filter(reservation -> 
-            reservation.getClient().getUserId().getIdUser().equals(reservationRequest.getClientId().getIdUser()) &&
-            reservation.getClient().getUserId().getIdDocType().equals(reservationRequest.getClientId().getIdDocType())
+            reservation.getClient().getUserId().getIdUser().equals(client.getUserId().getIdUser()) &&
+            reservation.getClient().getUserId().getIdDocType().equals(client.getUserId().getIdDocType())
         )
         .count();
 
@@ -129,8 +132,6 @@ public class ReservationService {
 
         System.out.println("el costo es: " + totalCost);
 
-        User client = userRepository.getReferenceById(reservationRequest.getClientId());
-
         Reservation reservation = Reservation.builder()
                 .startDateRes(Date.valueOf(reservationRequest.getStartDateRes()))
                 .startTimeRes(Time.valueOf(reservationRequest.getStartTimeRes()))
@@ -150,16 +151,15 @@ public class ReservationService {
     }
 
     public boolean isReservationNearStarting(Reservation reservation) {
-
         LocalTime targetTime = (LocalTime.now().getHour() == 23) ? targetTime = LocalTime.of(0,0,0): LocalTime.of(LocalTime.now().getHour()+1, 0, 0);
         LocalTime reservationTime = reservation.getStartTimeRes().toLocalTime();
         Date targetDate = Date.valueOf(LocalDate.now());
-
+        
+        System.out.println("El tiempo supuesto:"+ChronoUnit.SECONDS.between(targetTime, reservationTime));
         if (
-            reservation.getStatus().equals(ResStatus.PENDING.name()) &&
             reservation.getStartDateRes().equals(targetDate)
-            && ChronoUnit.SECONDS.between(reservationTime, targetTime) < 1800
-        ) {
+            && ChronoUnit.SECONDS.between(targetTime, reservationTime) < 1800
+        ) {                
             return true;
         }
 
@@ -184,6 +184,8 @@ public class ReservationService {
         return reservations;
     }
 
+    @Transactional
+    @Modifying
     public ReservationResponse setStatus(Reservation reservation, String status){
         reservation.setStatus(status);
 
@@ -298,6 +300,8 @@ public class ReservationService {
 
     }
 
+    @Modifying
+    @Transactional
     public void setTotalRes(Reservation reservation, float applyDiscount) {
         reservation.setTotalRes(applyDiscount);
         reservationRepository.save(reservation);

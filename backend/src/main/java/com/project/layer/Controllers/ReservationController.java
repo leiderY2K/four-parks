@@ -19,15 +19,21 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.context.request.RequestContextHolder;
+import org.springframework.web.context.request.ServletRequestAttributes;
 
 import com.project.layer.Controllers.Requests.StartReservationRequest;
 import com.project.layer.Controllers.Responses.ReservationResponse;
 import com.project.layer.Persistence.Entity.ResStatus;
 import com.project.layer.Persistence.Entity.Reservation;
+import com.project.layer.Persistence.Entity.User;
 import com.project.layer.Persistence.Entity.UserId;
+import com.project.layer.Services.Authentication.AuthService;
+import com.project.layer.Services.JWT.JwtService;
 import com.project.layer.Services.Audit.AuditService;
 import com.project.layer.Services.IpRequest.RequestService;
 import com.project.layer.Services.Mail.MailService;
+import com.project.layer.Services.Parking.ParkingService;
 import com.project.layer.Services.Reservation.ReservationService;
 import com.project.layer.Services.ScoreSystem.ScoreSystemService;
 
@@ -50,7 +56,14 @@ public class ReservationController {
     @Autowired
     private final ScoreSystemService scoreSystemService;
     @Autowired
+    private final JwtService jwtService;
+    @Autowired
+    private final AuthService authService;
+    @Autowired
+    private final ParkingService parkingService;
+    @Autowired
     private final AuditService auditService;
+    @Autowired
     private final RequestService requestService;
 
     @GetMapping("/client/{idDocType}/{idUser}")
@@ -66,19 +79,25 @@ public class ReservationController {
     public ResponseEntity<ReservationResponse> start(@RequestBody StartReservationRequest reservationRequest,
             HttpServletRequest ipUser) throws MessagingException {
 
-        ReservationResponse reservationResponse = reservationService.startReservation(reservationRequest);
+        String token = jwtService.getTokenFromRequest(((ServletRequestAttributes)RequestContextHolder.currentRequestAttributes()).getRequest());
+        
+        User client = authService.getUser(jwtService.getUserIdFromToken(token));
+        
+        ReservationResponse reservationResponse = reservationService.startReservation(client, reservationRequest);
 
-        if (reservationResponse.getReservation() == null)
-            return new ResponseEntity<>(reservationResponse, HttpStatus.BAD_REQUEST);
+        Reservation reservation = reservationResponse.getReservation();
+
+        if(reservation == null) return new ResponseEntity<>(reservationResponse, HttpStatus.BAD_REQUEST);
 
         // se envia el correo electronico de confirmacion con los detalles de la resreva
         mailService.sendMail(
-                reservationResponse.getReservation().getClient().getEmail(),
-                "[Four-parks] Información de su reserva",
-                getReservationMailParameters(reservationResponse.getReservation(), "Reserve"));
+            client.getEmail(),
+            "[Four-parks] Información de su reserva",
+            getReservationMailParameters(reservationResponse.getReservation(),"Reserve")
+        );
 
-        if (reservationService.isReservationNearStarting(reservationResponse.getReservation())) {
-            makePayment(reservationResponse.getReservation());
+        if (reservationService.isReservationNearStarting(reservation)){
+            makePayment(reservation);
         }
 
         // Es almacenada la accion realizada por el usuario en este caso realizo la
@@ -106,15 +125,23 @@ public class ReservationController {
     public void makePayment(Reservation reservation) { //revisar con cristian para ver como seria la logica 
 
 
-        // Validar si se ajusta el costo de la reserva o que pex
-        reservationService.setTotalRes(reservation, scoreSystemService.applyDiscount(
-                reservation.getClient(),
-                reservation.getParkingSpace(),
-                reservation.getTotalRes()));
-
-        // Aqui va la parte del pago
-
-        // Si el pago sale bien, el estado cambia a confirmado
+        if(scoreSystemService.existsParkingScore(reservation.getParkingSpace().getParkingSpaceId().getParking())){
+            if(scoreSystemService.isAfiliated(reservation.getClient(), reservation.getParkingSpace().getParkingSpaceId().getParking())){
+                reservationService.setTotalRes(reservation, scoreSystemService.applyDiscount(
+                    reservation.getClient(),
+                    reservation.getParkingSpace().getParkingSpaceId().getParking(),
+                    parkingService.getRateByParkingSpace(reservation.getParkingSpace()),
+                    reservation.getTotalRes())
+                );
+            }else{
+                System.out.println("Si necesita que se afilie:");
+                scoreSystemService.insertClient(reservation.getClient(), reservation.getParkingSpace().getParkingSpaceId().getParking());
+            }
+        }
+        
+        //Aqui va la parte del pago
+        
+        //Si el pago sale bien, el estado cambia a confirmado
         reservationService.setStatus(reservation, ResStatus.CONFIRMED.getId());
         // Es almacenada la accion realizada por el usuario
         auditService.setAction(reservationService.getUserAction(reservation.getClient().getUserId().getIdUser(),
@@ -122,10 +149,13 @@ public class ReservationController {
                 "Pago auomatico",
                 "8.8.8.8"));
 
-        scoreSystemService.increaseScore(
+        if(scoreSystemService.existsParkingScore(reservation.getParkingSpace().getParkingSpaceId().getParking())){
+            scoreSystemService.increaseScore(
                 reservation.getClient(),
                 reservation.getParkingSpace().getParkingSpaceId().getParking(),
-                reservation.getTotalRes());
+                reservation.getTotalRes()
+            );
+        }
 
         // Se debe enviar los correos pertinentes
         // mailService.sendMail(reservation.getClient().getEmail(), "Reserva

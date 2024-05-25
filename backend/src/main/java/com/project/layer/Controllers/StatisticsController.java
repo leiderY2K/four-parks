@@ -9,7 +9,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.project.layer.Controllers.Requests.DateSumRequest;
 import com.project.layer.Controllers.Requests.HourAveragemRequest;
-import com.project.layer.Services.Parameterization.StatisticsService;
+import com.project.layer.Services.Statistics.StatisticsService;
 
 import lombok.RequiredArgsConstructor;
 
