@@ -98,7 +98,7 @@ public class ReservationController {
     }
 
     // se ejecuta a la media hora antes de que empiece la reserva
-    @Scheduled(cron = "0 30 * * * *")
+    @Scheduled(cron = "0 50 * * * *")
     public void confirm() {
         List<Reservation> reservations = reservationService.getNearStartingReservations();
 
