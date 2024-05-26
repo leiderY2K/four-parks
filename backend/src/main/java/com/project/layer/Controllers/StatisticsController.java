@@ -1,4 +1,5 @@
 package com.project.layer.Controllers;
+
 import java.sql.Date;
 import java.util.List;
 
@@ -9,6 +10,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.project.layer.Controllers.Requests.DateSumRequest;
 import com.project.layer.Controllers.Requests.HourAveragemRequest;
+import com.project.layer.Controllers.Requests.HourOccupationRequest;
 import com.project.layer.Services.Statistics.StatisticsService;
 
 import lombok.RequiredArgsConstructor;
@@ -17,7 +19,7 @@ import lombok.RequiredArgsConstructor;
 @RequestMapping("/statistics")
 @RequiredArgsConstructor
 public class StatisticsController {
-    
+
     private final StatisticsService statisticsService;
 
     @GetMapping("/average-hour/")
@@ -26,10 +28,36 @@ public class StatisticsController {
         return statisticsService.getHourAverage(initialDate, finalDate, idParking);
     }
 
+    @GetMapping("/all-average-hour/")
+    public List<HourAveragemRequest> getHourAverage(@RequestParam Date initialDate, @RequestParam Date finalDate) {
+        return statisticsService.getHourAverage(initialDate, finalDate);
+    }
+
+    @GetMapping("/city-average-hour/")
+    public List<HourAveragemRequest> getHourAverage(@RequestParam Date initialDate, @RequestParam Date finalDate,
+            @RequestParam String city) {
+        return statisticsService.getHourAverage(initialDate, finalDate, city);
+    }
+
     @GetMapping("/sales")
     public List<DateSumRequest> getSales(@RequestParam Date initialDate, @RequestParam Date finalDate,
             @RequestParam int idParking) {
         return statisticsService.getSales(initialDate, finalDate, idParking);
     }
 
+    @GetMapping("/all-sales")
+    public List<DateSumRequest> getAllSales(@RequestParam Date initialDate, @RequestParam Date finalDate) {
+        return statisticsService.getAllSales(initialDate, finalDate);
+    }
+
+    @GetMapping("/city-sales")
+    public List<DateSumRequest> getCitySales(@RequestParam Date initialDate, @RequestParam Date finalDate,
+            @RequestParam String city) {
+        return statisticsService.getCitySales(initialDate, finalDate, city);
+    }
+
+    @GetMapping("/occupation")
+    public List<HourOccupationRequest> getOccupation(@RequestParam Date date, @RequestParam int idParking) {
+        return statisticsService.getOccupation(date, idParking);
+    }
 }
