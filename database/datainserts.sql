@@ -1,19 +1,4 @@
--- Eliminar todos los datos de las tablas existentes para evitar duplicados
-DELETE FROM `FOURPARKSDATABASE`.`RESERVATION`;
-DELETE FROM `FOURPARKSDATABASE`.`RATE`;
-DELETE FROM `FOURPARKSDATABASE`.`PARKINGSPACE`;
-DELETE FROM `FOURPARKSDATABASE`.`PARKING`;
-DELETE FROM `FOURPARKSDATABASE`.`CITY`;
-DELETE FROM `FOURPARKSDATABASE`.`ADDRESS`;
-DELETE FROM `FOURPARKSDATABASE`.`PARKINGTYPE`;
-DELETE FROM `FOURPARKSDATABASE`.`SCHEDULE`;
-DELETE FROM `FOURPARKSDATABASE`.`CUSTOMERACTION`;
-DELETE FROM `FOURPARKSDATABASE`.`CARD`;
-DELETE FROM `FOURPARKSDATABASE`.`USER_AUTHENTICATION`;
-DELETE FROM `FOURPARKSDATABASE`.`USER`;
-DELETE FROM `FOURPARKSDATABASE`.`DOCUMENTTYPE`;
-DELETE FROM `FOURPARKSDATABASE`.`VEHICLETYPE`;
-DELETE FROM `FOURPARKSDATABASE`.`RESERVATIONSTATUS`;
+
 
 -- Insertar tipos de documento primero
 INSERT INTO `FOURPARKSDATABASE`.`DOCUMENTTYPE` (`IDDOCTYPE`, `DESCDOCTYPE`)
@@ -22,13 +7,63 @@ VALUES
     ('TI', 'Tarjeta de identidad'),
     ('CI', 'Cedula de extranjeria');
 
+-- Insertar tipo de pago
+INSERT INTO `FOURPARKSDATABASE`.`PAYMENTMETHOD` (`IDPAYMENTMETHOD`, `DESCPAYMENTMETHOD`) 
+VALUES 
+	(1, "Visa"),
+	(2, "Mastercard"),
+	(3, "Discover");
+    
+    
 -- Insertar usuarios después de los tipos de documento
 INSERT INTO `FOURPARKSDATABASE`.`USER` (`IDUSER`, `FIRSTNAME`, `LASTNAME`, `FK_IDDOCTYPE`, `EMAIL`, `PHONE`)
 VALUES
     -- Clientes
+    
     ('1234567890123', 'Juan', 'Perez', 'CC', 'juan@example.com', '123456789'),
-    ('7890123456789', 'Ana', 'Lopez', 'CI', 'ana@example.com', '789012345'),
-    ('6543210987654', 'Luis', 'Rodriguez', 'TI', 'luis@example.com', '654321098'),
+    ('7890123456789', 'Ana', 'Lopez', 'CC', 'ana@example.com', '789012345'),
+    ('6543210987654', 'Luis', 'Rodriguez', 'CC', 'luis@example.com', '654321098'),
+    ('9876543210987', 'Maria', 'Fernandez', 'CC', 'maria@example.com', '1234567890'),
+('2345678901234', 'Pedro', 'Lopez', 'CC', 'pedro@example.com', '2345678901'),
+('3456789012345', 'Lucia', 'Martinez', 'CC', 'lucia@example.com', '3456789012'),
+('4567890123456', 'Carlos', 'Gonzalez', 'CC', 'carlos@example.com', '4567890123'),
+('5678901234567', 'Laura', 'Perez', 'CC', 'laura@example.com', '5678901234'),
+('6789012345678', 'Andres', 'Rodriguez', 'CC', 'andres@example.com', '6789012345'),
+('7890123456777', 'Sara', 'Hernandez', 'CC', 'sara@example.com', '7890123456'),
+('8901234567890', 'David', 'Gonzalez', 'CC', 'david@example.com', '8901234567'),
+('9012345678901', 'Luis', 'Fernandez', 'CC', 'luis@example.com', '9012345678'),
+('9123456789013', 'Ana', 'Martinez', 'CC', 'ana@example.com', '7123456789'),
+('9876543210988', 'Marcela', 'Gomez', 'CC', 'marcela@example.com', '1234567890'),
+('2345678901235', 'Juan', 'Garcia', 'CC', 'juan@example.com', '2345678901'),
+('3456789012346', 'Elena', 'Lopez', 'CC', 'elena@example.com', '3456789235'),
+('4567890123457', 'Andrea', 'Hernandez', 'CC', 'andrea@example.com', '4789012346'),
+('5678901234568', 'Mario', 'Perez', 'CC', 'mario@example.com', '5678901234'),
+('6789012345679', 'Carolina', 'Rodriguez', 'CC', 'carolina@example.com', '6789234568'),
+('7890123456790', 'Sofia', 'Martinez', 'CC', 'sofia@example.com', '7890123459'),
+('8901234567891', 'Diego', 'Gutierrez', 'CC', 'diego@example.com', '8901236780'),
+('9012345678902', 'Valeria', 'Fernandez', 'CC', 'valeria@example.com', '1234567891'),
+('9123456789014', 'Javier', 'Sanchez', 'CC', 'javier@example.com', '9125678902'),
+('8234567890123', 'Gabriela', 'Gomez', 'CC', 'gabriela@example.com', '1456789014'),
+('3345678901234', 'Fernando', 'Garcia', 'CC', 'fernando@example.com', '2367890125'),
+('4456789012345', 'Camila', 'Lopez', 'CC', 'camila@example.com', '3456701236'),
+('5567890123456', 'Daniel', 'Hernandez', 'CC', 'daniel@example.com', '4578012347'),
+('6678901234567', 'Isabela', 'Perez', 'CC', 'isabela@example.com', '5678123458'),
+('7789012345678', 'Mateo', 'Rodriguez', 'CC', 'mateo@example.com', '6789234569'),
+('8890123456790', 'Natalia', 'Martinez', 'CC', 'natalia@example.com', '7012345680'),
+('9901234567891', 'Martin', 'Gutierrez', 'CC', 'martin@example.com', '8903456791'),
+('1234567890200', 'Valentina', 'Fernandez', 'CC', 'valentina@example.com', '9012567892'),
+('1123456789013', 'Alejandro', 'Sanchez', 'CC', 'alejandro@example.com', '9123678903'),
+('2234567890123', 'Valeria', 'Gomez', 'CC', 'valeria2@example.com', '1234589015'),
+('3345678901235', 'Sebastian', 'Garcia', 'CC', 'sebastian@example.com', '2347890126'),
+('4456789012346', 'Lucas', 'Lopez', 'CC', 'lucas@example.com', '3456789037'),
+('5567890123457', 'Ana', 'Hernandez', 'CC', 'ana2@example.com', '4567812348'),
+('6678901234568', 'Santiago', 'Perez', 'CC', 'santiago@example.com', '5890123459'),
+('7789012345679', 'Valentina', 'Rodriguez', 'CC', 'valentina2@example.com', '6789012570'),
+('8890123456791', 'Joaquin', 'Martinez', 'CC', 'joaquin@example.com', '7890123451'),
+('9901234567892', 'Nicolas', 'Gutierrez', 'CC', 'nicolas@example.com', '8901236792'),
+('1234567890300', 'Isabella', 'Fernandez', 'CC', 'isabella@example.com', '9034567893'),
+('1123456789014', 'Mateo', 'Sanchez', 'CC', 'mateo2@example.com', '9123456904'),
+
     -- Administradores
     ('121232465654', 'Admin1', 'Parqueadero', 'CC', 'admin1@example.com', '123456789'),
     ('121232465655', 'Admin2', 'Parqueadero', 'CC', 'admin2@example.com', '123456789'),
@@ -96,6 +131,46 @@ VALUES
     ('1234567890123', 'CC', 'juanperez', '$2a$10$QaazF..XTCslpdfjsNS.ZO3O6VhyG4roY6JJcE9TYc93W5ZbMbfwa','CLIENT',0,0),
     ('7890123456789', 'CI', 'analopez', '$2a$10$QaazF..XTCslpdfjsNS.ZO3O6VhyG4roY6JJcE9TYc93W5ZbMbfwa','CLIENT',0,0),
     ('6543210987654', 'TI', 'luisrodriguez', '$2a$10$QaazF..XTCslpdfjsNS.ZO3O6VhyG4roY6JJcE9TYc93W5ZbMbfwa','CLIENT',0,0),
+    ('9876543210987', 'CC', 'mariafernandez', '$2a$10$QaazF..XTCslpdfjsNS.ZO3O6VhyG4roY6JJcE9TYc93W5ZbMbfwa','CLIENT',0,0),
+('2345678901234', 'CC', 'pedrolopez', '$2a$10$QaazF..XTCslpdfjsNS.ZO3O6VhyG4roY6JJcE9TYc93W5ZbMbfwa','CLIENT',0,0),
+('3456789012345', 'CC', 'luciamartinez', '$2a$10$QaazF..XTCslpdfjsNS.ZO3O6VhyG4roY6JJcE9TYc93W5ZbMbfwa','CLIENT',0,0),
+('4567890123456', 'CC', 'carlosgonzalez', '$2a$10$QaazF..XTCslpdfjsNS.ZO3O6VhyG4roY6JJcE9TYc93W5ZbMbfwa','CLIENT',0,0),
+('5678901234567', 'CC', 'lauraperez', '$2a$10$QaazF..XTCslpdfjsNS.ZO3O6VhyG4roY6JJcE9TYc93W5ZbMbfwa','CLIENT',0,0),
+('6789012345678', 'CC', 'andresrodriguez', '$2a$10$QaazF..XTCslpdfjsNS.ZO3O6VhyG4roY6JJcE9TYc93W5ZbMbfwa','CLIENT',0,0),
+('7890123456777', 'CC', 'sarahernandez', '$2a$10$QaazF..XTCslpdfjsNS.ZO3O6VhyG4roY6JJcE9TYc93W5ZbMbfwa','CLIENT',0,0),
+('8901234567890', 'CC', 'davidgonzalez', '$2a$10$QaazF..XTCslpdfjsNS.ZO3O6VhyG4roY6JJcE9TYc93W5ZbMbfwa','CLIENT',0,0),
+('9012345678901', 'CC', 'luisfernandez', '$2a$10$QaazF..XTCslpdfjsNS.ZO3O6VhyG4roY6JJcE9TYc93W5ZbMbfwa','CLIENT',0,0),
+('9123456789013', 'CC', 'anamartinez', '$2a$10$QaazF..XTCslpdfjsNS.ZO3O6VhyG4roY6JJcE9TYc93W5ZbMbfwa','CLIENT',0,0),
+('9876543210988', 'CC', 'MarcelaGomez', '$2a$10$QaazF..XTCslpdfjsNS.ZO3O6VhyG4roY6JJcE9TYc93W5ZbMbfwa','CLIENT',0,0),
+('2345678901235', 'CC', 'JuanGarcia', '$2a$10$QaazF..XTCslpdfjsNS.ZO3O6VhyG4roY6JJcE9TYc93W5ZbMbfwa','CLIENT',0,0),
+('3456789012346', 'CC', 'ElenaLopez', '$2a$10$QaazF..XTCslpdfjsNS.ZO3O6VhyG4roY6JJcE9TYc93W5ZbMbfwa','CLIENT',0,0),
+('4567890123457', 'CC', 'AndreaHernandez', '$2a$10$QaazF..XTCslpdfjsNS.ZO3O6VhyG4roY6JJcE9TYc93W5ZbMbfwa','CLIENT',0,0),
+('5678901234568', 'CC', 'MarioPerez', '$2a$10$QaazF..XTCslpdfjsNS.ZO3O6VhyG4roY6JJcE9TYc93W5ZbMbfwa','CLIENT',0,0),
+('6789012345679', 'CC', 'CarolinaRodriguez', '$2a$10$QaazF..XTCslpdfjsNS.ZO3O6VhyG4roY6JJcE9TYc93W5ZbMbfwa','CLIENT',0,0),
+('7890123456790', 'CC', 'SofiaMartinez', '$2a$10$QaazF..XTCslpdfjsNS.ZO3O6VhyG4roY6JJcE9TYc93W5ZbMbfwa','CLIENT',0,0),
+('8901234567891', 'CC', 'DiegoGutierrez', '$2a$10$QaazF..XTCslpdfjsNS.ZO3O6VhyG4roY6JJcE9TYc93W5ZbMbfwa','CLIENT',0,0),
+('9012345678902', 'CC', 'ValeriaFernandez', '$2a$10$QaazF..XTCslpdfjsNS.ZO3O6VhyG4roY6JJcE9TYc93W5ZbMbfwa','CLIENT',0,0),
+('9123456789014', 'CC', 'JavierSanchez', '$2a$10$QaazF..XTCslpdfjsNS.ZO3O6VhyG4roY6JJcE9TYc93W5ZbMbfwa','CLIENT',0,0),
+('8234567890123', 'CC', 'GabrielaGomez', '$2a$10$QaazF..XTCslpdfjsNS.ZO3O6VhyG4roY6JJcE9TYc93W5ZbMbfwa','CLIENT',0,0),
+('3345678901234', 'CC', 'FernandoGarcia', '$2a$10$QaazF..XTCslpdfjsNS.ZO3O6VhyG4roY6JJcE9TYc93W5ZbMbfwa','CLIENT',0,0),
+('4456789012345', 'CC', 'CamilaLopez', '$2a$10$QaazF..XTCslpdfjsNS.ZO3O6VhyG4roY6JJcE9TYc93W5ZbMbfwa','CLIENT',0,0),
+('5567890123456', 'CC', 'DanielHernandez', '$2a$10$QaazF..XTCslpdfjsNS.ZO3O6VhyG4roY6JJcE9TYc93W5ZbMbfwa','CLIENT',0,0),
+('6678901234567', 'CC', 'IsabelaPerez', '$2a$10$QaazF..XTCslpdfjsNS.ZO3O6VhyG4roY6JJcE9TYc93W5ZbMbfwa','CLIENT',0,0),
+('7789012345678', 'CC', 'MateoRodriguez', '$2a$10$QaazF..XTCslpdfjsNS.ZO3O6VhyG4roY6JJcE9TYc93W5ZbMbfwa','CLIENT',0,0),
+('8890123456790', 'CC', 'NataliaMartinez', '$2a$10$QaazF..XTCslpdfjsNS.ZO3O6VhyG4roY6JJcE9TYc93W5ZbMbfwa','CLIENT',0,0),
+('9901234567891', 'CC', 'MartinGutierrez', '$2a$10$QaazF..XTCslpdfjsNS.ZO3O6VhyG4roY6JJcE9TYc93W5ZbMbfwa','CLIENT',0,0),
+('1234567890200', 'CC', 'ValentinaFernandez', '$2a$10$QaazF..XTCslpdfjsNS.ZO3O6VhyG4roY6JJcE9TYc93W5ZbMbfwa','CLIENT',0,0),
+('1123456789013', 'CC', 'AlejandroSanchez', '$2a$10$QaazF..XTCslpdfjsNS.ZO3O6VhyG4roY6JJcE9TYc93W5ZbMbfwa','CLIENT',0,0),
+('2234567890123', 'CC', 'ValeriaGomez', '$2a$10$QaazF..XTCslpdfjsNS.ZO3O6VhyG4roY6JJcE9TYc93W5ZbMbfwa','CLIENT',0,0),
+('3345678901235', 'CC', 'SebastianGarcia', '$2a$10$QaazF..XTCslpdfjsNS.ZO3O6VhyG4roY6JJcE9TYc93W5ZbMbfwa','CLIENT',0,0),
+('4456789012346', 'CC', 'LucasLopez', '$2a$10$QaazF..XTCslpdfjsNS.ZO3O6VhyG4roY6JJcE9TYc93W5ZbMbfwa','CLIENT',0,0),
+('5567890123457', 'CC', 'AnaHernandez', '$2a$10$QaazF..XTCslpdfjsNS.ZO3O6VhyG4roY6JJcE9TYc93W5ZbMbfwa','CLIENT',0,0),
+('6678901234568', 'CC', 'SantiagoPerez', '$2a$10$QaazF..XTCslpdfjsNS.ZO3O6VhyG4roY6JJcE9TYc93W5ZbMbfwa','CLIENT',0,0),
+('7789012345679', 'CC', 'ValentinaRodriguez', '$2a$10$QaazF..XTCslpdfjsNS.ZO3O6VhyG4roY6JJcE9TYc93W5ZbMbfwa','CLIENT',0,0),
+('8890123456791', 'CC', 'JoaquinMartinez', '$2a$10$QaazF..XTCslpdfjsNS.ZO3O6VhyG4roY6JJcE9TYc93W5ZbMbfwa','CLIENT',0,0),
+('9901234567892', 'CC', 'NicolasGutierrez', '$2a$10$QaazF..XTCslpdfjsNS.ZO3O6VhyG4roY6JJcE9TYc93W5ZbMbfwa','CLIENT',0,0),
+('1234567890300', 'CC', 'IsabellaFernandez', '$2a$10$QaazF..XTCslpdfjsNS.ZO3O6VhyG4roY6JJcE9TYc93W5ZbMbfwa','CLIENT',0,0),
+('1123456789014', 'CC', 'MateoSanchez', '$2a$10$QaazF..XTCslpdfjsNS.ZO3O6VhyG4roY6JJcE9TYc93W5ZbMbfwa','CLIENT',0,0),
     
     -- Administradores
     (121232465654, 'CC', 'admin1', '$2a$10$QaazF..XTCslpdfjsNS.ZO3O6VhyG4roY6JJcE9TYc93W5ZbMbfwa', 'ADMIN', 0, 0),
@@ -155,7 +230,55 @@ VALUES
     (111232465706, 'CC', 'manager8', '$2a$10$QaazF..XTCslpdfjsNS.ZO3O6VhyG4roY6JJcE9TYc93W5ZbMbfwa', 'MANAGER', 0, 0),
     (111232465707, 'CC', 'manager9', '$2a$10$QaazF..XTCslpdfjsNS.ZO3O6VhyG4roY6JJcE9TYc93W5ZbMbfwa', 'MANAGER', 0, 0),
     (111232465708, 'CC', 'manager10', '$2a$10$QaazF..XTCslpdfjsNS.ZO3O6VhyG4roY6JJcE9TYc93W5ZbMbfwa', 'MANAGER', 0, 0);
-   
+
+
+-- Tarjetas de usuarios
+
+INSERT INTO `FOURPARKSDATABASE`.`CARD` (`SERIALCARD`, `EXPIRYDATECARD`, `CVVCARD`, `FK_CLIENT_IDUSER`, `FK_CLIENT_IDDOCTYPE`) 
+VALUES 
+('4242424242424242', '2026-05-01', '123', '1234567890123', 'CC'),
+('4242424242424242', '2026-05-01', '123', '7890123456789', 'CC'),
+('4242424242424242', '2026-05-01', '123', '9876543210987', 'CC'),
+('4242424242424242', '2026-05-02', '234', '2345678901234', 'CC'),
+('4242424242424242', '2026-05-03', '345', '3456789012345', 'CC'),
+('5555555555554444', '2026-05-04', '456', '4567890123456', 'CC'),
+('5555555555554444', '2026-05-05', '567', '5678901234567', 'CC'),
+('5555555555554444', '2026-05-06', '678', '6789012345678', 'CC'),
+('6011111111111117', '2026-05-07', '789', '7890123456777', 'CC'), -- error
+('6011111111111117', '2026-05-08', '890', '8901234567890', 'CC'),
+('6011111111111117', '2026-05-09', '901', '9012345678901', 'CC'),
+('4242424242424242', '2026-05-10', '012', '9123456789013', 'CC'),
+('4242424242424242', '2026-05-01', '123', '9876543210988', 'CC'),
+('4242424242424242', '2026-05-01', '123', '2345678901235', 'CC'),
+('4242424242424242', '2026-05-01', '123', '3456789012346', 'CC'),
+('4242424242424242', '2026-05-01', '123', '4567890123457', 'CC'),
+('5555555555554444', '2026-05-01', '123', '5678901234568', 'CC'),
+('5555555555554444', '2026-05-01', '123', '6789012345679', 'CC'),
+('5555555555554444', '2026-05-01', '123', '7890123456790', 'CC'),
+('6011111111111117', '2026-05-01', '123', '8901234567891', 'CC'),
+('6011111111111117', '2026-05-01', '123', '9012345678902', 'CC'),
+('6011111111111117', '2026-05-01', '123', '9123456789014', 'CC'),
+('4242424242424242', '2026-05-01', '123', '8234567890123', 'CC'),
+('4242424242424242', '2026-05-01', '123', '3345678901234', 'CC'),
+('4242424242424242', '2026-05-01', '123', '4456789012345', 'CC'),
+('4242424242424242', '2026-05-01', '123', '5567890123456', 'CC'),
+('5555555555554444', '2026-05-01', '123', '6678901234567', 'CC'),
+('5555555555554444', '2026-05-01', '123', '7789012345678', 'CC'),
+('5555555555554444', '2026-05-01', '123', '8890123456790', 'CC'),
+('6011111111111117', '2026-05-01', '123', '9901234567891', 'CC'),
+('6011111111111117', '2026-05-01', '123', '1234567890200', 'CC'),
+('6011111111111117', '2026-05-01', '123', '1123456789013', 'CC'),
+('4242424242424242', '2026-05-01', '123', '2234567890123', 'CC'),
+('4242424242424242', '2026-05-01', '123', '3345678901235', 'CC'),
+('4242424242424242', '2026-05-01', '123', '4456789012346', 'CC'),
+('4242424242424242', '2026-05-01', '123', '5567890123457', 'CC'),
+('5555555555554444', '2026-05-01', '123', '6678901234568', 'CC'),
+('5555555555554444', '2026-05-01', '123', '7789012345679', 'CC'),
+('5555555555554444', '2026-05-01', '123', '8890123456791', 'CC'),
+('6011111111111117', '2026-05-01', '123', '9901234567892', 'CC'),
+('6011111111111117', '2026-05-01', '123', '1234567890300', 'CC'),
+('6011111111111117', '2026-05-01', '123', '1123456789014', 'CC');
+
 -- Insertar acciones 
 INSERT INTO `FOURPARKSDATABASE`.`CUSTOMERACTION` (`DESCACTION`, `DATEACTION`, `IPUSER`, `FK_IDUSER`, `FK_IDDOCTYPE`) VALUES
 ('Registro', '2024-05-21', '192.134.27.1', '121232465654', 'CC'),
@@ -269,12 +392,12 @@ VALUES
     ('Parqueadero 7', 0, 1, '1234567890', 'parqueadero_c@example.com', 7.1254, -73.1180, 'BCM', 1, 121232465660, 'CC', 'COV', '08:00:00', '18:00:00'),
     ('Parqueadero 8', 0, 1, '1234567890', 'parqueadero_d@example.com', 1.2138, -77.2820, 'PAS', 2, 121232465661, 'CC', 'UNC', '08:00:00', '18:00:00'),
     ('Parqueadero 9', 0, 1, '1234567890', 'parqueadero_e@example.com', 4.5804, -74.2183, 'SOA', 3, 121232465662, 'CC', 'SEC', '08:00:00', '18:00:00'),
-    ('Parqueadero 10', 0, 1, '1234567890', 'parqueadero10@example.com', 4.6514, -74.0676, 'BGT', 3, 121232465663, 'CC', 'COV', '08:00:00', '18:00:00'),
-    ('Parqueadero 11', 0, 1, '1234567890', 'parqueadero11@example.com', 4.6478, -74.0622, 'BGT', 2, 121232465664, 'CC', 'UNC', '08:00:00', '18:00:00'),
-    ('Parqueadero 12', 0, 1, '1234567890', 'parqueadero12@example.com', 4.6606, -74.0732, 'BGT', 2, 121232465665, 'CC', 'SEC', '08:00:00', '18:00:00'),
-    ('Parqueadero 13', 0, 1, '1234567890', 'parqueadero13@example.com', 4.6645, -74.0914, 'BGT', 1, 121232465666, 'CC', 'COV', '08:00:00', '18:00:00'),
-    ('Parqueadero 14', 0, 1, '1234567890', 'parqueadero14@example.com', 4.6780, -74.1179, 'BGT', 1, 121232465667, 'CC', 'UNC', '08:00:00', '18:00:00'),
-    ('Parqueadero 15', 0, 1, '1234567890', 'parqueadero15@example.com', 4.6301, -74.1551, 'BGT', 1, 121232465668, 'CC', 'SEC', '08:00:00', '18:00:00'),
+    ('Parqueadero 10', 0, 1, '1234567890', 'parqueadero10@example.com', 4.6514, -74.0676, 'BGT', 3, 121232465663, 'CC', 'COV', '08:00:00', '20:00:00'),
+    ('Parqueadero 11', 0, 1, '1234567890', 'parqueadero11@example.com', 4.6478, -74.0622, 'BGT', 2, 121232465664, 'CC', 'UNC', '08:00:00', '20:00:00'),
+    ('Parqueadero 12', 0, 1, '1234567890', 'parqueadero12@example.com', 4.6606, -74.0732, 'BGT', 2, 121232465665, 'CC', 'SEC', '08:00:00', '20:00:00'),
+    ('Parqueadero 13', 0, 1, '1234567890', 'parqueadero13@example.com', 4.6645, -74.0914, 'BGT', 1, 121232465666, 'CC', 'COV', '08:00:00', '20:00:00'),
+    ('Parqueadero 14', 0, 1, '1234567890', 'parqueadero14@example.com', 4.6780, -74.1179, 'BGT', 1, 121232465667, 'CC', 'UNC', '08:00:00', '20:00:00'),
+    ('Parqueadero 15', 0, 1, '1234567890', 'parqueadero15@example.com', 4.6301, -74.1551, 'BGT', 1, 121232465668, 'CC', 'SEC', '08:00:00', '20:00:00'),
     ('Parqueadero 16', 0, 1, '1234567890', 'parqueadero16@example.com', 4.5756, -74.1112, 'BGT', 2, 121232465669, 'CC', 'COV', '08:00:00', '18:00:00'),
     ('Parqueadero 17', 0, 1, '1234567890', 'parqueadero17@example.com', 4.5369, -74.0866, 'BGT', 2, 121232465670, 'CC', 'UNC', '08:00:00', '18:00:00'),
     ('Parqueadero 18', 0, 1, '1234567890', 'parqueadero18@example.com', 4.5031, -74.1068, 'BGT', 2, 121232465671, 'CC', 'SEC', '08:00:00', '18:00:00'),
@@ -809,3 +932,84 @@ VALUES
     ('CUR', 'En curso'),
     ('COM', 'Completada'),
     ('NPR', 'No presentado');
+
+-- Insercion de reservas
+INSERT INTO `FOURPARKSDATABASE`.`RESERVATION` 
+(`STARTDATERES`, `STARTTIMERES`, `ENDDATERES`, `ENDTIMERES`, `CREATIONDATERES`, `TOTALRES`, `LICENSEPLATE`, `FK_IDPARKINGSPACE`, `FK_IDPARKING`, `FK_IDCITY`, `FK_CLIENT_IDUSER`, `FK_CLIENT_IDDOCTYPE`, `FK_IDRESSTATUS`) 
+VALUES 
+-- parqueadero 10 
+
+('2024-05-26', '10:00:00', '2024-05-26', '11:00:00', '2024-05-24', 9760, 'ABC123', 1, 10, 'BGT', '9876543210987', 'CC', 'PEN'),
+('2024-05-26', '10:00:00', '2024-05-26', '11:00:00', '2024-05-24', 9760, 'ABC222', 2, 10, 'BGT', '2345678901234', 'CC', 'PEN'),
+('2024-05-26', '15:00:00', '2024-05-26', '16:00:00', '2024-05-24', 9760, 'ABC333', 3, 10, 'BGT', '3456789012345', 'CC', 'PEN'),
+('2024-05-26', '11:00:00', '2024-05-26', '12:00:00', '2024-05-24', 9760, 'ABC444', 4, 10, 'BGT', '4567890123456', 'CC', 'PEN'),
+('2024-05-26', '17:00:00', '2024-05-26', '18:00:00', '2024-05-24', 9760, 'ABC555', 5, 10, 'BGT', '5678901234567', 'CC', 'PEN'),
+('2024-05-26', '17:00:00', '2024-05-26', '18:00:00', '2024-05-24', 9760, 'ABC666', 6, 10, 'BGT', '6789012345678', 'CC', 'PEN'),
+('2024-05-26', '17:00:00', '2024-05-26', '18:00:00', '2024-05-24', 9760, 'ABC777', 7, 10, 'BGT', '7890123456789', 'CC', 'PEN'),
+('2024-05-26', '12:00:00', '2024-05-26', '14:00:00', '2024-05-24', 9760, 'ABC888', 1, 10, 'BGT', '8901234567890', 'CC', 'PEN'),
+('2024-05-26', '13:00:00', '2024-05-26', '17:00:00', '2024-05-24', 39120, 'ABC999', 2, 10, 'BGT', '9012345678901', 'CC', 'PEN'),
+
+-- parqueadero 11
+
+('2024-05-25', '10:00:00', '2024-05-25', '13:00:00', '2024-05-24', 29280, 'ABY123', 1, 11, 'BGT', '9876543210988', 'CC', 'CON'),
+('2024-05-25', '10:00:00', '2024-05-25', '13:00:00', '2024-05-24', 29280, 'ABY222', 2, 11, 'BGT', '2345678901235', 'CC', 'CON'),
+('2024-05-25', '15:00:00', '2024-05-25', '17:00:00', '2024-05-24', 19560, 'ABY333', 3, 11, 'BGT', '3456789012346', 'CC', 'CON'),
+('2024-05-25', '11:00:00', '2024-05-25', '13:00:00', '2024-05-24', 19560, 'ABY444', 4, 11, 'BGT', '4567890123457', 'CC', 'CON'),
+('2024-05-25', '17:00:00', '2024-05-25', '19:00:00', '2024-05-24', 19560, 'ABY555', 5, 11, 'BGT', '5678901234568', 'CC', 'CON'),
+('2024-05-25', '17:00:00', '2024-05-25', '19:00:00', '2024-05-24', 19560, 'ABY666', 6, 11, 'BGT', '6789012345679', 'CC', 'CON'),
+('2024-05-25', '17:00:00', '2024-05-25', '19:00:00', '2024-05-24', 19560, 'ABY777', 7, 11, 'BGT', '7890123456790', 'CC', 'CON'),
+('2024-05-25', '12:00:00', '2024-05-25', '14:00:00', '2024-05-24', 19560, 'ABY888', 1, 11, 'BGT', '8901234567891', 'CC', 'CON'),
+('2024-05-25', '13:00:00', '2024-05-25', '17:00:00', '2024-05-24', 39120, 'ABY999', 2, 11, 'BGT', '9012345678902', 'CC', 'CON'),
+
+--  parqueadero 12 
+
+('2024-05-26', '10:00:00', '2024-05-26', '13:00:00', '2024-05-24', 29280, 'ABZ123', 1, 12, 'BGT', '8234567890123', 'CC', 'PEN'),
+('2024-05-26', '10:00:00', '2024-05-26', '13:00:00', '2024-05-24', 29280, 'ABZ222', 2, 12, 'BGT', '3345678901234', 'CC', 'PEN'),
+('2024-05-26', '15:00:00', '2024-05-26', '17:00:00', '2024-05-24', 19560, 'ABZ333', 3, 12, 'BGT', '4456789012345', 'CC', 'PEN'),
+('2024-05-26', '11:00:00', '2024-05-26', '13:00:00', '2024-05-24', 19560, 'ABZ444', 4, 12, 'BGT', '5567890123456', 'CC', 'PEN'),
+('2024-05-26', '17:00:00', '2024-05-26', '19:00:00', '2024-05-24', 19560, 'ABZ555', 5, 12, 'BGT', '6678901234567', 'CC', 'PEN'),
+('2024-05-26', '17:00:00', '2024-05-26', '19:00:00', '2024-05-24', 19560, 'ABZ666', 6, 12, 'BGT', '7789012345678', 'CC', 'PEN'),
+('2024-05-26', '17:00:00', '2024-05-26', '19:00:00', '2024-05-24', 19560, 'ABZ777', 7, 12, 'BGT', '8890123456790', 'CC', 'PEN'),
+('2024-05-26', '12:00:00', '2024-05-26', '14:00:00', '2024-05-24', 19560, 'ABZ888', 1, 12, 'BGT', '9901234567891', 'CC', 'PEN'),
+('2024-05-26', '13:00:00', '2024-05-26', '17:00:00', '2024-05-24', 39120, 'ABZ999', 2, 12, 'BGT', '1234567890200', 'CC', 'PEN'),
+
+-- parqueadero 13
+
+('2024-05-24', '10:00:00', '2024-05-24', '13:00:00', '2024-05-24', 29280, 'ABT123', 1, 13, 'BGT', '2234567890123', 'CC', 'CON'),
+('2024-05-24', '10:00:00', '2024-05-24', '13:00:00', '2024-05-24', 29280, 'ABT222', 2, 13, 'BGT', '3345678901235', 'CC', 'CON'),
+('2024-05-24', '15:00:00', '2024-05-24', '17:00:00', '2024-05-24', 19560, 'ABT333', 3, 13, 'BGT', '4456789012346', 'CC', 'CON'),
+('2024-05-24', '11:00:00', '2024-05-24', '13:00:00', '2024-05-24', 19560, 'ABT444', 4, 13, 'BGT', '5567890123457', 'CC', 'CON'),
+('2024-05-24', '17:00:00', '2024-05-24', '19:00:00', '2024-05-24', 19560, 'ABT555', 5, 13, 'BGT', '6678901234568', 'CC', 'CON'),
+('2024-05-24', '17:00:00', '2024-05-24', '19:00:00', '2024-05-24', 19560, 'ABT666', 6, 13, 'BGT', '7789012345679', 'CC', 'CON'),
+('2024-05-24', '17:00:00', '2024-05-24', '19:00:00', '2024-05-24', 19560, 'ABT777', 7, 13, 'BGT', '8890123456791', 'CC', 'CON'),
+('2024-05-24', '12:00:00', '2024-05-24', '14:00:00', '2024-05-24', 19560, 'ABT888', 8, 13, 'BGT', '9901234567892', 'CC', 'CON'),
+('2024-05-24', '13:00:00', '2024-05-24', '17:00:00', '2024-05-24', 39120, 'ABT999', 9, 13, 'BGT', '1234567890300', 'CC', 'CON'),
+
+-- parqueadero 14
+
+('2024-05-27', '10:00:00', '2024-05-27', '13:00:00', '2024-05-27', 29280, 'ABR123', 1, 14, 'BGT', '9876543210987', 'CC', 'PEN'),
+('2024-05-27', '10:00:00', '2024-05-27', '13:00:00', '2024-05-27', 29280, 'ABR222', 2, 14, 'BGT', '2345678901234', 'CC', 'PEN'),
+('2024-05-27', '15:00:00', '2024-05-27', '17:00:00', '2024-05-27', 19560, 'ABR333', 3, 14, 'BGT', '3456789012345', 'CC', 'PEN'),
+('2024-05-27', '11:00:00', '2024-05-27', '13:00:00', '2024-05-27', 19560, 'ABR444', 4, 14, 'BGT', '4567890123456', 'CC', 'PEN'),
+('2024-05-27', '17:00:00', '2024-05-27', '19:00:00', '2024-05-27', 19560, 'ABR555', 5, 14, 'BGT', '5678901234567', 'CC', 'PEN'),
+('2024-05-27', '17:00:00', '2024-05-27', '19:00:00', '2024-05-27', 19560, 'ABR666', 6, 14, 'BGT', '6789012345678', 'CC', 'PEN'),
+('2024-05-27', '17:00:00', '2024-05-27', '19:00:00', '2024-05-27', 19560, 'ABR777', 7, 14, 'BGT', '7890123456789', 'CC', 'PEN'),
+('2024-05-27', '12:00:00', '2024-05-27', '14:00:00', '2024-05-27', 19560, 'ABR888', 8, 14, 'BGT', '8901234567890', 'CC', 'PEN'),
+('2024-05-27', '13:00:00', '2024-05-27', '17:00:00', '2024-05-27', 39120, 'ABR999', 1, 14, 'BGT', '9012345678901', 'CC', 'PEN'),
+
+-- uno por cada parqueadero masomenos no joda 
+
+('2024-05-28', '10:00:00', '2024-05-28', '11:00:00', '2024-05-24', 9760, 'APC123', 1, 1, 'CAL', '9876543210987', 'CC', 'PEN'),
+('2024-05-25', '9:00:00', '2024-05-25', '11:00:00', '2024-05-24', 19560, 'ABP222', 2, 2, 'BAQ', '2345678901234', 'CC', 'CON'),
+('2024-05-25', '9:00:00', '2024-05-25', '13:00:00', '2024-05-24', 39120, 'APC333', 3, 3, 'MED', '3456789012345', 'CC', 'CON'),
+('2024-05-26', '16:00:00', '2024-05-26', '18:00:00', '2024-05-24', 19560, 'APC444', 4, 4, 'CTG', '4567890123456', 'CC', 'PEN'),
+('2024-05-27', '17:00:00', '2024-05-27', '18:00:00', '2024-05-26', 9760, 'APC555', 5, 6, 'VIL', '5678901234567', 'CC', 'PEN'),
+('2024-05-27', '17:00:00', '2024-05-27', '18:00:00', '2024-05-25', 9760, 'ABC666', 6, 7, 'BCM', '6789012345678', 'CC', 'PEN'),
+('2024-05-26', '17:00:00', '2024-05-26', '18:00:00', '2024-05-24', 9760, 'APC777', 7, 8, 'PAS', '7890123456789', 'CC', 'CAN'),
+('2024-05-26', '12:00:00', '2024-05-26', '14:00:00', '2024-05-24', 9760, 'APC888', 1, 9, 'SOA', '8901234567890', 'CC', 'CAN'),
+('2024-05-27', '13:00:00', '2024-05-27', '17:00:00', '2024-05-27', 39120, 'APC999', 2, 20, 'MTR', '9012345678901', 'CC', 'CAN'),
+
+('2024-05-25', '10:00:00', '2024-05-25', '13:00:00', '2024-05-24', 29280, 'ABY123', 1, 24, 'MZS', '9876543210988', 'CC', 'CAN'),
+('2024-05-27', '10:00:00', '2024-05-27', '13:00:00', '2024-05-25', 29280, 'ABY222', 2, 29, 'PER', '2345678901235', 'CC', 'CAN');
+
+

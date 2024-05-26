@@ -15,8 +15,8 @@ import com.project.layer.Persistence.Entity.*;
 import com.project.layer.Persistence.Error.CustomException;
 import com.project.layer.Persistence.Error.UserBlockedException;
 import com.project.layer.Persistence.Repository.ICardRepository;
-import com.project.layer.Persistence.Repository.IUserActionRepository;
 
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -48,12 +48,16 @@ public class AuthService {
     private final IUserRepository userRepository;
     private final IUserAuthRepository userAuthRepository;
     private final ICardRepository cardRepository;
-    private final IUserActionRepository userActionRepository;
     private final PasswordEncoder passwordEncoder;
     private final JwtService jwtService;
     private final MailService mailservice;
 
     private final AuthenticationManager authenticationManager;
+
+    @Transactional
+    public User getUser(UserId userId){
+        return userRepository.findById(userId).get();
+    }
 
     @Transactional
     public AuthResponse login(LoginRequest request) {
@@ -184,12 +188,16 @@ public class AuthService {
         }
     }
 
+    @Modifying
+    @Transactional
     public AuthResponse register(RegisterRequest request) throws MessagingException {
-
+        
         UserId userId = UserId.builder()
-                .idUser(request.getIdUser())
-                .idDocType(request.getIdDocTypeFk())
-                .build();
+        .idUser(request.getIdUser())
+        .idDocType(request.getIdDocTypeFk())
+        .build();
+
+        if (userRepository.existsById(userId)) return new AuthResponse(null, null, "¡El usuario ya existe!");
 
         // Crear una instancia de User
         User newUser = User.builder()
@@ -219,22 +227,27 @@ public class AuthService {
         // Guardar el usuario en la base de datos
         userAuthRepository.save(userAuthentication);
 
-        User cardOwner = userRepository.getReferenceById(userId);
+        if(userAuthentication.getRole().equals(Role.CLIENT)){
 
-        // Cambiar el formato de fecha para pasárselo a la tabla
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yy");
-        LocalDate expiryDate = LocalDate.parse(request.getExpiryDate(), formatter);
+            User cardOwner = userRepository.getReferenceById(userId);
+    
+            // Cambiar el formato de fecha para pasárselo a la tabla
+            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yy");
+            LocalDate expiryDate = LocalDate.parse(request.getExpiryDate(), formatter);
+    
+            // Crear una instancia de Card
+            Card newCard = Card.builder()
+                    .cardOwner(cardOwner)
+                    .serialCard(request.getSerialCard())
+                    .ExpDateCard(expiryDate)
+                    .cvvCard(request.getCvv())
+                    .build();
+    
+            // Guardar la tarjeta del usuario en la base de datos
+            cardRepository.save(newCard);
 
-        // Crear una instancia de Card
-        Card newCard = Card.builder()
-                .cardOwner(cardOwner)
-                .serialCard(request.getSerialCard())
-                .ExpDateCard(expiryDate)
-                .cvvCard(request.getCvv())
-                .build();
+        }
 
-        // Guardar la tarjeta del usuario en la base de datos
-        cardRepository.save(newCard);
 
         return AuthResponse.builder()
                 .token(jwtService.getToken(null, userAuthentication))
@@ -285,7 +298,9 @@ public class AuthService {
          * }
          */
     }
-
+    
+    @Modifying
+    @Transactional
     public UserResponse update(@Validated UserRequest request) {
 
         UserAuthentication userAuth = userAuthRepository.findByUsername(request.getUsername()).get();

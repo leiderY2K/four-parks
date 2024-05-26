@@ -10,19 +10,19 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 @Entity
-@Table(name = "CLIENTSCORE")
+@Table(name = "USERDEBT")
 @Data
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class ClientScore {
-    
+public class UserDebt {
+
     @EmbeddedId
-    private ClientScoreId scoreSystemId;
+    private UserDebtId debt;
 
-    @Column(name = "SCOREPOINTS", nullable = true)
-    private Integer scorePoints;
+    @Column(name = "DEBTAMOUNT", nullable = true)
+    private Integer debtAmount;
 
-    @Column(name = "residue", nullable = true)
-    private Float residue;
+    @Column(name = "OWES", nullable = true)
+    private Float owes;
 }

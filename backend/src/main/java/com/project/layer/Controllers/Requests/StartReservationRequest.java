@@ -3,8 +3,6 @@ package com.project.layer.Controllers.Requests;
 import java.time.LocalDate;
 import java.time.LocalTime;
 
-import com.project.layer.Persistence.Entity.UserId;
-
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -25,8 +23,6 @@ public class StartReservationRequest {
     private LocalTime endTimeRes;
 
     private String licensePlate;
-
-    private UserId clientId;
 
     private String cityId;
 

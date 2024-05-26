@@ -29,10 +29,4 @@ public class User {
 
     @Column(name = "PHONE", length = 10, nullable = false)
     private String phone;
-/*
-    @OneToMany(fetch = FetchType.LAZY, mappedBy = "cardOwner", cascade = CascadeType.ALL)
-    List<Card> cards;
-
-}
- */
 }

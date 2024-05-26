@@ -8,10 +8,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.stereotype.Service;
 
-import com.project.layer.Persistence.Entity.User;
 import com.project.layer.Persistence.Entity.UserAction;
 import com.project.layer.Persistence.Repository.IUserActionRepository;
-import com.project.layer.Persistence.Repository.IUserRepository;
 
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
@@ -22,7 +20,6 @@ public class AuditService {
 
     @Autowired
     private IUserActionRepository userActionRepository;
-    private IUserRepository userRepository;
 
     public List<UserAction> getActionsByUser(String idUser) {
         List<UserAction> userActions = userActionRepository.getActionsByUser(idUser);

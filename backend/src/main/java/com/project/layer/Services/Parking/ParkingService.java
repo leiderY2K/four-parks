@@ -21,6 +21,7 @@ import com.project.layer.Persistence.Entity.ParkingSpace;
 import com.project.layer.Persistence.Entity.ParkingSpaceId;
 import com.project.layer.Persistence.Entity.UserId;
 import com.project.layer.Persistence.Entity.VehicleType;
+import com.project.layer.Persistence.Repository.ICityRepository;
 import com.project.layer.Persistence.Repository.IParkingRepository;
 import com.project.layer.Persistence.Repository.IParkingSpaceRepository;
 import com.project.layer.Persistence.Repository.IRateRepository;
@@ -39,6 +40,7 @@ public class ParkingService {
     private final IRateRepository rateRepository;
     private final IReservationRepository reservationRepository;
     private final IVehicleTypeRepository vehicleTypeRepository;
+    private final ICityRepository cityRepository;
 
     @Transactional
     @Modifying
@@ -302,5 +304,25 @@ public class ParkingService {
 
 
         return ParkingResponse.builder().parking(parking).capacity(tipoVehiculo).build(); 
+    }
+
+    public float getRateByParkingSpace(ParkingSpace parkingSpace) {
+        return rateRepository.getHourCostByParkingSpace(
+            parkingSpace.getParkingSpaceId().getParking().getParkingId().getIdParking(),
+            parkingSpace.getParkingSpaceId().getParking().getParkingId().getCity().getIdCity(),
+            parkingSpace.getVehicleType().getIdVehicleType(),
+            parkingSpace.isUncovered()
+        );
+    }
+
+    public ParkingId getParkingId(int idParking, String idCity) {
+        return ParkingId.builder()
+                    .city(cityRepository.findById(idCity).get())
+                    .idParking(idParking)
+                    .build();
+    }
+
+    public Parking getParkingById(ParkingId parkingId) {
+        return parkingRepository.findById(parkingId).get();
     }
 }

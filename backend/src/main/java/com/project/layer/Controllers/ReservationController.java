@@ -20,15 +20,21 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.context.request.RequestContextHolder;
+import org.springframework.web.context.request.ServletRequestAttributes;
 
 import com.project.layer.Controllers.Requests.StartReservationRequest;
 import com.project.layer.Controllers.Responses.ReservationResponse;
 import com.project.layer.Persistence.Entity.ResStatus;
 import com.project.layer.Persistence.Entity.Reservation;
+import com.project.layer.Persistence.Entity.User;
 import com.project.layer.Persistence.Entity.UserId;
+import com.project.layer.Services.Authentication.AuthService;
+import com.project.layer.Services.JWT.JwtService;
 import com.project.layer.Services.Audit.AuditService;
 import com.project.layer.Services.IpRequest.RequestService;
 import com.project.layer.Services.Mail.MailService;
+import com.project.layer.Services.Parking.ParkingService;
 import com.project.layer.Services.Reservation.ReservationService;
 import com.project.layer.Services.ScoreSystem.ScoreSystemService;
 
@@ -51,12 +57,18 @@ public class ReservationController {
     @Autowired
     private final ScoreSystemService scoreSystemService;
     @Autowired
+    private final JwtService jwtService;
+    @Autowired
+    private final AuthService authService;
+    @Autowired
+    private final ParkingService parkingService;
+    @Autowired
     private final AuditService auditService;
+    @Autowired
     private final RequestService requestService;
-
     @Autowired
     private final PaymentService paymentService;
-    private String token;
+    String token;
 
     @GetMapping("/client/{idDocType}/{idUser}")
     public List<Reservation> getReservationsByClient(
@@ -71,19 +83,25 @@ public class ReservationController {
     public ResponseEntity<ReservationResponse> start(@RequestBody StartReservationRequest reservationRequest,
             HttpServletRequest ipUser) throws MessagingException {
 
-        ReservationResponse reservationResponse = reservationService.startReservation(reservationRequest);
+        String token = jwtService.getTokenFromRequest(((ServletRequestAttributes)RequestContextHolder.currentRequestAttributes()).getRequest());
+        
+        User client = authService.getUser(jwtService.getUserIdFromToken(token));
+        
+        ReservationResponse reservationResponse = reservationService.startReservation(client, reservationRequest);
 
-        if (reservationResponse.getReservation() == null)
-            return new ResponseEntity<>(reservationResponse, HttpStatus.BAD_REQUEST);
+        Reservation reservation = reservationResponse.getReservation();
+
+        if(reservation == null) return new ResponseEntity<>(reservationResponse, HttpStatus.BAD_REQUEST);
 
         // se envia el correo electronico de confirmacion con los detalles de la resreva
         mailService.sendMail(
-                reservationResponse.getReservation().getClient().getEmail(),
-                "[Four-parks] Información de su reserva",
-                getReservationMailParameters(reservationResponse.getReservation(), "Reserve"));
+            client.getEmail(),
+            "[Four-parks] Información de su reserva",
+            getReservationMailParameters(reservationResponse.getReservation(),"Reserve")
+        );
 
-        if (reservationService.isReservationNearStarting(reservationResponse.getReservation())) {
-            makePayment(reservationResponse.getReservation());
+        if (reservationService.isReservationNearStarting(reservation)){
+            makePayment(reservation);
         }
 
         // Es almacenada la accion realizada por el usuario en este caso realizo la
@@ -98,7 +116,7 @@ public class ReservationController {
     }
 
     // se ejecuta a la media hora antes de que empiece la reserva
-    @Scheduled(cron = "0 50 * * * *")
+    @Scheduled(cron = "0 19 * * * *")
     public void confirm() {
         List<Reservation> reservations = reservationService.getNearStartingReservations();
 
@@ -108,24 +126,30 @@ public class ReservationController {
 
     }
 
-    public void makePayment(Reservation reservation) {
-//        revisar con cristian para ver como seria la logica
-//
-//
-//         Validar si se ajusta el costo de la reserva o que pex
-//        reservationService.setTotalRes(reservation, scoreSystemService.applyDiscount(
-//                reservation.getClient(),
-//                reservation.getParkingSpace(),
-//                reservation.getTotalRes()));
+    public void makePayment(Reservation reservation) { //revisar con cristian para ver como seria la logica 
 
-        // Aqui va la parte del pago
+
+        if(scoreSystemService.existsParkingScore(reservation.getParkingSpace().getParkingSpaceId().getParking())){
+            if(scoreSystemService.isAfiliated(reservation.getClient(), reservation.getParkingSpace().getParkingSpaceId().getParking())){
+                reservationService.setTotalRes(reservation, scoreSystemService.applyDiscount(
+                    reservation.getClient(),
+                    reservation.getParkingSpace().getParkingSpaceId().getParking(),
+                    parkingService.getRateByParkingSpace(reservation.getParkingSpace()),
+                    reservation.getTotalRes())
+                );
+            }else{
+                System.out.println("Si necesita que se afilie:");
+                scoreSystemService.insertClient(reservation.getClient(), reservation.getParkingSpace().getParkingSpaceId().getParking());
+            }
+        }
+        
+        //Aqui va la parte del pago
         String userId = String.valueOf(reservation.getClient().getUserId().getIdUser());
         token = paymentService.createCardToken(userId);
         paymentService.charge(token, reservation.getTotalRes());
         System.out.println("usted pago: " + reservation.getTotalRes());
-
-
-        // Si el pago sale bien, el estado cambia a confirmado
+        
+        //Si el pago sale bien, el estado cambia a confirmado
         reservationService.setStatus(reservation, ResStatus.CONFIRMED.getId());
         // Es almacenada la accion realizada por el usuario
         auditService.setAction(reservationService.getUserAction(reservation.getClient().getUserId().getIdUser(),
@@ -133,10 +157,13 @@ public class ReservationController {
                 "Pago auomatico",
                 "8.8.8.8"));
 
-//        scoreSystemService.increaseScore(
-//                reservation.getClient(),
-//                reservation.getParkingSpace().getParkingSpaceId().getParking(),
-//                reservation.getTotalRes());
+        if(scoreSystemService.existsParkingScore(reservation.getParkingSpace().getParkingSpaceId().getParking())){
+            scoreSystemService.increaseScore(
+                reservation.getClient(),
+                reservation.getParkingSpace().getParkingSpaceId().getParking(),
+                reservation.getTotalRes()
+            );
+        }
 
         // Se debe enviar los correos pertinentes
         // mailService.sendMail(reservation.getClient().getEmail(), "Reserva
@@ -204,9 +231,15 @@ public class ReservationController {
         if (reservationResponse.getReservation() == null)
             return new ResponseEntity<>(reservationResponse, HttpStatus.BAD_REQUEST);
 
+        //si la persona se paso por x min, se le agregara en su tabla deuda el valor de lo que se paso
         float extraCost = reservationService.getReservationsExtraCost(reservationResponse.getReservation());
         if (extraCost != 0) {
             // Aqui se hace el pago utilizando reservationResponse.getExtraCost()
+            // en este caso el valor se agregara a deuda en la tabla userdebt
+             String userId = reservationResponse.getReservation().getClient().getUserId().getIdUser();
+             token = paymentService.createCardToken(userId);
+             paymentService.charge(token, extraCost);
+             System.out.println("usted pago: " + extraCost);
         }
 
         reservationService.setStatus(reservationResponse.getReservation(), ResStatus.COMPLETED.getId());
@@ -231,6 +264,10 @@ public class ReservationController {
             float extraCost = reservationService.getReservationsExtraCost(reservation);
             if (extraCost != 0) {
                 // Aqui se hace el pago utilizando el extra cost
+//                String userId = reservations;
+//                token = paymentService.createCardToken(userId);
+//                paymentService.charge(token, extraCost);
+//                System.out.println("usted pago: " + extraCost);
 
                 // Es almacenada la accion realizada por el usuario revisar con cristian depronto no es necesario
                 auditService.setAction(reservationService.getUserAction(

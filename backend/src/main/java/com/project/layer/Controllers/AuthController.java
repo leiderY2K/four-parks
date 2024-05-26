@@ -17,7 +17,6 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
@@ -31,15 +30,12 @@ import com.project.layer.Controllers.Responses.AuthResponse;
 import com.project.layer.Controllers.Responses.UserResponse;
 import com.project.layer.Services.Audit.AuditService;
 import com.project.layer.Services.Authentication.AuthService;
-import com.project.layer.Services.IpRequest.RequestIpService;
 import com.project.layer.Services.IpRequest.RequestService;
 import com.project.layer.Services.JWT.JwtService;
 import com.project.layer.Services.Mail.MailService;
 
 import lombok.RequiredArgsConstructor;
 import java.util.List;
-import java.sql.Date;
-import java.time.LocalDate;
 import java.util.Arrays;
 
 @RestController

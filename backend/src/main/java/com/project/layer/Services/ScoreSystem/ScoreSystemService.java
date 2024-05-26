@@ -3,14 +3,17 @@ package com.project.layer.Services.ScoreSystem;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.stereotype.Service;
 
+import com.project.layer.Controllers.Requests.ScoreRequest;
+import com.project.layer.Controllers.Responses.ClientScoreResponse;
+import com.project.layer.Controllers.Responses.ScoreResponse;
+import com.project.layer.Persistence.Entity.ClientScore;
+import com.project.layer.Persistence.Entity.ClientScoreId;
 import com.project.layer.Persistence.Entity.Parking;
-import com.project.layer.Persistence.Entity.ParkingSpace;
+import com.project.layer.Persistence.Entity.ParkingId;
 import com.project.layer.Persistence.Entity.ScoreSystem;
-import com.project.layer.Persistence.Entity.ScoreSystemId;
 import com.project.layer.Persistence.Entity.User;
-import com.project.layer.Persistence.Repository.IRateRepository;
+import com.project.layer.Persistence.Repository.IClientScoreRepository;
 import com.project.layer.Persistence.Repository.IScoreSystemRepository;
-
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 
@@ -18,48 +21,106 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class ScoreSystemService {
 
-    IScoreSystemRepository scoreSystemRepository;
-    IRateRepository rateRepository;
-
-
-//    @Transactional
-//    @Modifying
-//    public void increaseScore(User client, Parking parking, Float totalRes) {
-//        ScoreSystem scoreSystem = scoreSystemRepository.findById(new ScoreSystemId(client, parking)).get();
-//
-//        while (totalRes < scoreSystem.getTargetValue()) {
-//            totalRes -= scoreSystem.getTargetValue();
-//            scoreSystem.setScorePoints(scoreSystem.getScorePoints() + 1);
-//        }
-//
-//        scoreSystemRepository.save(scoreSystem);
-//    }
+    private final IScoreSystemRepository scoreSystemRepository;
+    private final IClientScoreRepository clientScoreRepository;
 
     @Transactional
     @Modifying
-    public float applyDiscount(User client, ParkingSpace parkingSpace, float totalRes) {
-        ScoreSystem scoreSystem = scoreSystemRepository.findById(new ScoreSystemId(client, parkingSpace.getParkingSpaceId().getParking())).get();
+    public ClientScoreResponse insertClient(User client, Parking parking){
+                
+        ClientScoreId clientScoreId = ClientScoreId.builder()
+                                        .client(client)
+                                        .parking(parking)
+                                    .build();
+
+        if (clientScoreRepository.existsById(clientScoreId))return new ClientScoreResponse(null, "El servicio de fidelización ya estaba previamente creado para este cliente");
+
+        ClientScore clientScore = ClientScore.builder()
+                                        .scoreSystemId(clientScoreId)
+                                        .scorePoints(0)
+                                        .residue(0.0f)
+                                    .build();
+
+        clientScoreRepository.save(clientScore);
         
-        if(scoreSystem.getScorePoints() < scoreSystem.getTargetPoints()) return totalRes;
+        return new ClientScoreResponse(clientScore, "¡Su sistema de fidelización fue correctamente creado!");
+    }
 
-        int points = scoreSystem.getScorePoints();
+    @Transactional
+    @Modifying
+    public ScoreResponse insertScore(ParkingId parkingId, ScoreRequest scoreRequest){
+        
+        if (scoreSystemRepository.existsById(parkingId)) return new ScoreResponse(null, "El sistema de puntaje ya existe para este parqueadero");
 
-        float rate = rateRepository.getHourCostByParkingSpace(
-            parkingSpace.getParkingSpaceId().getParking().getParkingId().getIdParking(),
-            parkingSpace.getParkingSpaceId().getParking().getParkingId().getCity().getIdCity(),
-            parkingSpace.getVehicleType().getIdVehicleType(),
-            parkingSpace.isUncovered()
-        );
+        ScoreSystem scoreSystem = ScoreSystem.builder()
+                                        .parkingId(parkingId)
+                                        .targetPoints(scoreRequest.getTargetPoints())
+                                        .targetValue(scoreRequest.getTargetValue())
+                                        .build();
 
-        while (scoreSystem.getScorePoints() < scoreSystem.getTargetPoints()){
-            scoreSystem.setResidue(scoreSystem.getResidue() - scoreSystem.getTargetPoints());
-            points ++;
-        }
 
         scoreSystemRepository.save(scoreSystem);
+        
+        return new ScoreResponse(scoreSystem, "¡Su sistema de fidelización fue correctamente creado!");
+    }
 
-        float discount = points * rate;
+    @Transactional
+    @Modifying
+    public ScoreResponse modifyParkingScoreTargets(int parkingId, String idCity, ScoreRequest scoreRequest){
+        
+        ScoreSystem scoreSystem = scoreSystemRepository.findByParkingId(parkingId, idCity);
 
-        return totalRes - discount;
+        if(scoreSystem == null) return new ScoreResponse(null, "No se encontro un registro de puntos para este parqueadero");
+
+        if (scoreRequest.getTargetPoints() != null) scoreSystem.setTargetPoints(scoreRequest.getTargetPoints());
+
+        if (scoreRequest.getTargetValue() != null) scoreSystem.setTargetValue(scoreRequest.getTargetValue());
+
+        scoreSystemRepository.save(scoreSystem);
+        
+        return new ScoreResponse(scoreSystem,"¡Se logro realizar la modificación!"); 
+    }
+
+    @Transactional
+    @Modifying
+    public float applyDiscount(User client, Parking parking, float rate, float totalValue) {
+        ScoreSystem scoreSystem = scoreSystemRepository.findById(parking.getParkingId()).get();
+        ClientScore clientScore = clientScoreRepository.findById(new ClientScoreId(client, parking)).get();
+
+        if(clientScore.getScorePoints() < scoreSystem.getTargetPoints()) return totalValue;
+
+        // Calcular las horas de descuento según los puntos del cliente
+        int pointHours = clientScore.getScorePoints() / scoreSystem.getTargetPoints();
+        clientScore.setScorePoints(clientScore.getScorePoints() % scoreSystem.getTargetPoints());
+
+        clientScoreRepository.save(clientScore);
+
+        float discount = pointHours * rate;
+
+        return totalValue - discount;
+    }
+    
+    @Transactional
+    @Modifying
+    public void increaseScore(User client, Parking parking, Float totalValue) {
+        ScoreSystem scoreSystem = scoreSystemRepository.findById(parking.getParkingId()).get();
+        ClientScore clientScore = clientScoreRepository.findById(new ClientScoreId(client, parking)).get();
+
+        totalValue += clientScore.getResidue();
+
+        int newPoints = (int) (totalValue / scoreSystem.getTargetValue());
+        clientScore.setScorePoints(clientScore.getScorePoints() + newPoints);
+
+        clientScore.setResidue(totalValue % scoreSystem.getTargetValue());
+
+        clientScoreRepository.save(clientScore);
+    }
+
+    public boolean existsParkingScore(Parking parking) {
+        return scoreSystemRepository.existsById(parking.getParkingId());
+    }
+
+    public boolean isAfiliated(User client, Parking parking) {
+        return clientScoreRepository.existsById(new ClientScoreId(client, parking));
     }
 }
