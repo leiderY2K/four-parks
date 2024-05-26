@@ -21,7 +21,7 @@ const HomeAdminPage = ({url, initialCoords}) => {
   useEffect(() => {
     const token = sessionStorage.getItem('token').replace(/"/g, '');
 
-    axios.get(`${url}/admin/cityList`, {headers: {Authorization: `Bearer ${token}`}})
+    axios.get(`${url}/city/list`, {headers: {Authorization: `Bearer ${token}`}})
     .then(res=>{
       const cityArray = res.data.map(city => (city))
       setCities(cityArray);
