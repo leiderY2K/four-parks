@@ -3,12 +3,10 @@ import axios from "axios";
 import Header from "../../components/admin/Header"
 import Map from '../../components/admin/Map.jsx'
 import ParamsInfo from '../../components/admin/ParamsInfo.jsx'
-import QuotaManager from "../../components/admin/QuotaManager.jsx";
 
 const HomeManagerPage = ({url}) => {
   const [actualCity, setActualCity] = useState();
   const [actualParking, setActualParking] = useState();
-  const [canEditSpaces, setCanEditSpaces] = useState(false);
 
   useEffect(() => {
     const token = sessionStorage.getItem('token').replace(/"/g, '');
@@ -41,10 +39,7 @@ const HomeManagerPage = ({url}) => {
           </section>
 
           <section className='w-2/5 ml-48 z-0'>
-            {
-              !canEditSpaces ? (<ParamsInfo url={url} actualCity={actualCity} actualParking={actualParking} setCanEditSpaces={setCanEditSpaces} />) : 
-              (<QuotaManager url={url} actualParking={actualParking} setCanEditSpaces={setCanEditSpaces} />)
-            }
+            <ParamsInfo url={url} actualCity={actualCity} actualParking={actualParking} />
           </section>
         </section>
     </>
