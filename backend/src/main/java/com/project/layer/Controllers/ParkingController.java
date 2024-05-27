@@ -20,9 +20,11 @@ import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
 
 import com.project.layer.Controllers.Requests.ParkingSpaceRequest;
+import com.project.layer.Controllers.Requests.ParkingsRequest;
 import com.project.layer.Controllers.Requests.ScoreRequest;
 import com.project.layer.Controllers.Responses.ClientScoreResponse;
 import com.project.layer.Controllers.Responses.ParkingResponse;
+import com.project.layer.Controllers.Responses.ParkingsResponse;
 import com.project.layer.Controllers.Responses.ScoreResponse;
 import com.project.layer.Persistence.Entity.City;
 import com.project.layer.Persistence.Entity.Parking;
@@ -74,14 +76,39 @@ public class ParkingController {
         @RequestParam(required = false) String vehicleType
 
     ) {
-        return parkingService.getParkingsByCoordinates(coordinateX, coordinateY, startDate, startTime, endDate, endTime, vehicleType);
+        String token = jwtService.getTokenFromRequest(((ServletRequestAttributes)RequestContextHolder.currentRequestAttributes()).getRequest());
+        
+        User client = authService.getUser(jwtService.getUserIdFromToken(token));
+        
+        ParkingResponse parkingResponse = parkingService.getParkingsByCoordinates(coordinateX, coordinateY, startDate, startTime, endDate, endTime, vehicleType);
+    
+        parkingResponse.setScoreResponse(scoreSystemService.getScoreSystem(parkingResponse.getParking()));
+
+        parkingResponse.setClientScore(scoreSystemService.getClientScore(parkingResponse.getParking(), client));
+
+        return parkingResponse;
     }
+
     @GetMapping("/admin/{idDoctype}/{idUser}")
     public ParkingResponse getParkingByAdmin(
         @PathVariable("idDoctype") String idDoctype,
         @PathVariable("idUser") String idUser
     ){
-        return parkingService.getParkingByAdmin(UserId.builder().idDocType(idDoctype).idUser(idUser).build());
+        ParkingResponse parkingResponse = parkingService.getParkingByAdmin(UserId.builder().idDocType(idDoctype).idUser(idUser).build());
+    
+        parkingResponse.setScoreResponse(scoreSystemService.getScoreSystem(parkingResponse.getParking()));
+
+        parkingResponse.setClientScore(null);
+
+        return parkingResponse;
+    }
+
+    @GetMapping("/spot")
+    public ParkingsResponse getParkingsBySpot(
+        @RequestBody ParkingsRequest spots,
+        @RequestParam("distance") float distance
+    ){
+        return parkingService.getParkingsBySpot(spots.getCoordinates(), distance);
     }
         
     @PostMapping("{idParking}/{idCity}/parking-space/insert") 
@@ -122,15 +149,15 @@ public class ParkingController {
         );
     }
 
-    @PostMapping("{idParking}/{idCity}/score-system/create")
-    public ResponseEntity<ScoreResponse> insertScoreSystem(
+    @PostMapping("{idParking}/{idCity}/score-system/toggle")
+    public ResponseEntity<ScoreResponse> toggleScoreSystem(
         @PathVariable("idParking") int idParking,
         @PathVariable("idCity") String idCity,
         @RequestBody ScoreRequest scoreRequest
     ){
         ParkingId parkingId = parkingService.getParkingId(idParking, idCity);
         
-        ScoreResponse scoreResponse = scoreSystemService.insertScore(parkingId, scoreRequest);
+        ScoreResponse scoreResponse = scoreSystemService.toggleScore(parkingId, scoreRequest);
 
         if(scoreResponse.getScoreSystem() == null) return new ResponseEntity<>(scoreResponse,HttpStatus.BAD_REQUEST);
         

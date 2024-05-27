@@ -26,16 +26,16 @@ public class City {
     private String name;
 
     @Column(name = "B_TOP", nullable = false)
-    private String bTop;
+    private Float bTop;
 
     @Column(name = "B_BOTTOM", nullable = false)
-    private String bBottom;
+    private Float bBottom;
 
     @Column(name = "B_LEFT", nullable = false)
-    private String bLeft;
+    private Float bLeft;
 
     @Column(name = "B_RIGHT", nullable = false)
-    private String bRight;
+    private Float bRight;
     
     @Column(name = "X_CENTER", nullable = false)
     private String xCenter;

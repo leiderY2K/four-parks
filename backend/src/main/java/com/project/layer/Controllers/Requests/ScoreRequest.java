@@ -11,6 +11,8 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 public class ScoreRequest {
+
+    public Boolean putEnable;
     
     public Integer targetPoints;
 

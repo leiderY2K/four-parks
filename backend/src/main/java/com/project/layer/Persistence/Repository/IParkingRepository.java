@@ -60,4 +60,11 @@ public interface IParkingRepository extends JpaRepository<Parking, ParkingId> {
         @Query(value = "SELECT CAPACITY FROM PARKING p " +
                         "WHERE p.IDPARKING = :idParking ", nativeQuery = true)
         int getCapacity(int idParking);
+
+        @Query(
+                value = "SELECT p.* FROM PARKING p " +
+                        "WHERE FK_IDCITY = :idCity",                
+                nativeQuery = true
+        )
+        List<Parking> findByCityId(@Param("idCity") String idCity);
 }

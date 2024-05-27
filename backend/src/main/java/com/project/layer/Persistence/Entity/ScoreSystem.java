@@ -27,4 +27,7 @@ public class ScoreSystem {
     @Column(name = "TARGETVALUE", nullable = true)
     private Float targetValue;
     
+    @Column(name = "ISENABLED", nullable = false)
+    private Boolean isEnable;
+
 }
