@@ -32,13 +32,13 @@ public class StatisticsController {
 
     @GetMapping("/all-average-hour")
     public List<HourAveragemRequest> getHourAverage(@RequestParam Date initialDate, @RequestParam Date finalDate) {
-        return statisticsService.getHourAverage(initialDate, finalDate);
+        return statisticsService.getAllHourAverage(initialDate, finalDate);
     }
 
     @GetMapping("/city-average-hour")
     public List<HourAveragemRequest> getHourAverage(@RequestParam Date initialDate, @RequestParam Date finalDate,
             @RequestParam String city) {
-        return statisticsService.getHourAverage(initialDate, finalDate, city);
+        return statisticsService.getCityHourAverage(initialDate, finalDate, city);
     }
 
     @GetMapping("/sales")
