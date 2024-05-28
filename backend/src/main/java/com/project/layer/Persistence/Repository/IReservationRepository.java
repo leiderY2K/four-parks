@@ -140,8 +140,11 @@ public interface IReservationRepository extends JpaRepository<Reservation, Integ
                         "WHERE r.ENDDATERES = :date AND r.FK_IDRESSTATUS = 'COM'", nativeQuery = true)
         Float getSumTotalRes(Date date);
 
-        @Query(value = "SELECT * FROM CARD u WHERE u.FK_CLIENT_IDUSER LIKE %:userId%", nativeQuery = true)
-        List<Card> findByUserId();
+//        @Query(value = "SELECT * FROM CARD u WHERE u.FK_CLIENT_IDUSER LIKE %:userId%", nativeQuery = true)
+//        List<Card> findByUserId();
+
+        @Query("SELECT r.totalRes FROM Reservation r WHERE r.client.userId.idUser = :userId AND r.startDateRes = CURRENT_DATE AND r.status = 'PEN' ORDER BY r.startDateRes DESC")
+        float findReservationAmountByUserId(@Param("userId") String userId);
 
         @Query(value = "SELECT COUNT(*) FROM RESERVATION r WHERE " +
                         "(r.STARTDATERES != r.ENDDATERES AND r.STARTDATERES = :date AND r.STARTTIMERES <= :hour AND r.FK_IDPARKING = :idParking) OR "
