@@ -131,15 +131,15 @@ public class ReservationController {
     public void makePayment(Reservation reservation) { //revisar con cristian para ver como seria la logica
 
 
-        if (scoreSystemService.existsParkingScore(reservation.getParkingSpace().getParkingSpaceId().getParking())) {
-            if (scoreSystemService.isAfiliated(reservation.getClient(), reservation.getParkingSpace().getParkingSpaceId().getParking())) {
+        if(scoreSystemService.isEnabled(reservation.getParkingSpace().getParkingSpaceId().getParking())){
+            if(scoreSystemService.isAfiliated(reservation.getClient(), reservation.getParkingSpace().getParkingSpaceId().getParking())){
                 reservationService.setTotalRes(reservation, scoreSystemService.applyDiscount(
                         reservation.getClient(),
                         reservation.getParkingSpace().getParkingSpaceId().getParking(),
                         parkingService.getRateByParkingSpace(reservation.getParkingSpace()),
                         reservation.getTotalRes())
                 );
-            } else {
+            }else{
                 System.out.println("Si necesita que se afilie:");
                 scoreSystemService.insertClient(reservation.getClient(), reservation.getParkingSpace().getParkingSpaceId().getParking());
             }
@@ -173,7 +173,7 @@ public class ReservationController {
                 "Pago auomatico",
                 "8.8.8.8"));
 
-        if (scoreSystemService.existsParkingScore(reservation.getParkingSpace().getParkingSpaceId().getParking())) {
+        if(scoreSystemService.isEnabled(reservation.getParkingSpace().getParkingSpaceId().getParking())){
             scoreSystemService.increaseScore(
                     reservation.getClient(),
                     reservation.getParkingSpace().getParkingSpaceId().getParking(),
