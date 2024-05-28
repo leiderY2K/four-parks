@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.project.layer.Controllers.Requests.DateSumRequest;
 import com.project.layer.Controllers.Requests.HourAveragemRequest;
 import com.project.layer.Controllers.Requests.HourOccupationRequest;
+import com.project.layer.Controllers.Requests.UncoverVehicPercentageRequest;
 import com.project.layer.Controllers.Requests.VehiclePercentageRequest;
 import com.project.layer.Services.Statistics.StatisticsService;
 
@@ -23,18 +24,18 @@ public class StatisticsController {
 
     private final StatisticsService statisticsService;
 
-    @GetMapping("/average-hour/")
+    @GetMapping("/average-hour")
     public List<HourAveragemRequest> getHourAverage(@RequestParam Date initialDate, @RequestParam Date finalDate,
             @RequestParam int idParking) {
         return statisticsService.getHourAverage(initialDate, finalDate, idParking);
     }
 
-    @GetMapping("/all-average-hour/")
+    @GetMapping("/all-average-hour")
     public List<HourAveragemRequest> getHourAverage(@RequestParam Date initialDate, @RequestParam Date finalDate) {
         return statisticsService.getHourAverage(initialDate, finalDate);
     }
 
-    @GetMapping("/city-average-hour/")
+    @GetMapping("/city-average-hour")
     public List<HourAveragemRequest> getHourAverage(@RequestParam Date initialDate, @RequestParam Date finalDate,
             @RequestParam String city) {
         return statisticsService.getHourAverage(initialDate, finalDate, city);
@@ -72,13 +73,13 @@ public class StatisticsController {
         return statisticsService.getCityOccupation(date, city);
     }
 
-    /*@GetMapping("/city-vehicle-percentage")
+    @GetMapping("/city-vehicle-percentage")
     public List<VehiclePercentageRequest> getCityVehiclePercentage(@RequestParam String city){
         return statisticsService.getCityVehiclePercentage(city);
-    }*/
+    }       
 
-
-    
-
-    
+    @GetMapping("/city-isuncovered-percentage")
+    public List<UncoverVehicPercentageRequest> getCityIsUncoveredPercentage(@RequestParam String city){
+        return statisticsService.getCityIsUncoveredPercentage(city);
+    }    
 }

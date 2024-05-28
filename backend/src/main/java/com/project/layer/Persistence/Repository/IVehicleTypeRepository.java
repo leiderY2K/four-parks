@@ -10,6 +10,6 @@ import com.project.layer.Persistence.Entity.VehicleType;
 
 @Repository
 public interface IVehicleTypeRepository extends JpaRepository<VehicleType,String>{
-    @Query(value="SELECT IDVEHICLETYPE",nativeQuery=true)
-    List<String> getIdVehicles();
+    @Query(value="SELECT DESCVEHICLETYPE FROM VEHICLETYPE",nativeQuery=true)
+    List<String> getDescVehicles();
 }

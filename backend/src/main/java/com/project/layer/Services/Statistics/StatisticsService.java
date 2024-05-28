@@ -13,12 +13,15 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import com.project.layer.Controllers.Requests.HourOccupationRequest;
+import com.project.layer.Controllers.Requests.UncoverVehicPercentageRequest;
 import com.project.layer.Controllers.Requests.VehiclePercentageRequest;
 import com.project.layer.Controllers.Requests.DateHourCountRequest;
 import com.project.layer.Controllers.Requests.DateSumRequest;
 import com.project.layer.Controllers.Requests.HourAveragemRequest;
+import com.project.layer.Persistence.Entity.ParkingSpace;
 import com.project.layer.Persistence.Entity.Reservation;
 import com.project.layer.Persistence.Repository.IParkingRepository;
+import com.project.layer.Persistence.Repository.IParkingSpaceRepository;
 import com.project.layer.Persistence.Repository.IReservationRepository;
 import com.project.layer.Persistence.Repository.IVehicleTypeRepository;
 
@@ -30,6 +33,7 @@ public class StatisticsService {
     private final IParkingRepository parkingRepository;
     private final IReservationRepository reservationRepository;
     private final IVehicleTypeRepository vehicleTypeRepository;
+    private final IParkingSpaceRepository parkingSpaceRepository;
 
     public List<HourAveragemRequest> getHourAverage(@RequestParam Date initialDate, @RequestParam Date finalDate,
             @RequestParam int idParking) {
@@ -292,20 +296,78 @@ public class StatisticsService {
         return resList;
     }
 
-    //public List<VehiclePercentageRequest> getCityVehiclePercentage(String city) {
-
-        /*List<String> idVehicles = new ArrayList<>();
-        idVehicles = vehicleTypeRepository.getIdVehicles();
+    public List<VehiclePercentageRequest> getCityVehiclePercentage(String city) {
+        List<Reservation> reservations = reservationRepository.allCityRes(city);
+        List<ParkingSpace> parkingSpaces = parkingSpaceRepository.allCityParkingSpaces(city);
+        List<String> vehicleDesc = vehicleTypeRepository.getDescVehicles();
+        List<String> mapVehicleList = new ArrayList<>();
         List<VehiclePercentageRequest> resList = new ArrayList<>();
-        for (int i = 0; i < idVehicles.size(); i++) {
-            VehiclePercentageRequest auxVehicReq = new VehiclePercentageRequest();
-            auxVehicReq.setVehicle(idVehicles.get(i));
-            auxVehicReq.setPercentage(reservationRepository.countVehiclesRes(idVehicles.get(i),city)/reservationRepository.allCityRes(city));
-            resList.add(auxVehicReq);
+        for (int i = 0; i < reservations.size(); i++) {
+            for (int j = 0; j < parkingSpaces.size(); j++) {
+                if (reservations.get(i).getParkingSpace().getParkingSpaceId().getIdParkingSpace()
+                        .equals(parkingSpaces.get(j).getParkingSpaceId().getIdParkingSpace())
+                        && reservations.get(i).getParkingSpace().getParkingSpaceId().getParking()
+                                .equals(parkingSpaces.get(j).getParkingSpaceId().getParking())
+                        && reservations.get(i).getParkingSpace().getParkingSpaceId().getParking().getParkingId()
+                                .getCity().equals(parkingSpaces.get(j).getParkingSpaceId().getParking().getParkingId()
+                                        .getCity())) {
+                    mapVehicleList.add(parkingSpaces.get(j).getVehicleType().getDescVehicleType());
+                }
+            }
         }
-        return resList;*/
-    //}
+        for (int i = 0; i < vehicleDesc.size(); i++) {
+            VehiclePercentageRequest aux = new VehiclePercentageRequest();
+            aux.setVehicle(vehicleDesc.get(i));
+            aux.setPercentage(
+                    (float) mapVehicleList.stream().filter(vehicleDesc.get(i)::equals).count() / mapVehicleList.size());
+            resList.add(aux);
+        }
 
+        return resList;
+    }
 
+    public List<UncoverVehicPercentageRequest> getCityIsUncoveredPercentage(String city) {
+        List<Reservation> reservations = reservationRepository.allCityRes(city);
+        List<ParkingSpace> parkingSpaces = parkingSpaceRepository.allCityParkingSpaces(city);
+        List<String> vehicleDesc = vehicleTypeRepository.getDescVehicles();
+        List<String> vehicleUncovered = new ArrayList<>();
+        vehicleUncovered.add("uncovered");
+        vehicleUncovered.add("covered");
+        List<String> mapUncoveredVehicleList = new ArrayList<>();
+        List<UncoverVehicPercentageRequest> resList = new ArrayList<>();
+        for (int i = 0; i < reservations.size(); i++) {
+            for (int j = 0; j < parkingSpaces.size(); j++) {
+                
+                if (reservations.get(i).getParkingSpace().getParkingSpaceId().getIdParkingSpace()
+                        .equals(parkingSpaces.get(j).getParkingSpaceId().getIdParkingSpace())
+                        && reservations.get(i).getParkingSpace().getParkingSpaceId().getParking()
+                                .equals(parkingSpaces.get(j).getParkingSpaceId().getParking())
+                        && reservations.get(i).getParkingSpace().getParkingSpaceId().getParking().getParkingId()
+                                .getCity().equals(parkingSpaces.get(j).getParkingSpaceId().getParking().getParkingId()
+                                        .getCity())) {
+                    if (parkingSpaces.get(j).isUncovered()) {                        
+                        mapUncoveredVehicleList.add(parkingSpaces.get(j).getVehicleType().getDescVehicleType()+" "+"uncovered");
+                    } else {
+                        mapUncoveredVehicleList.add(parkingSpaces.get(j).getVehicleType().getDescVehicleType()+" "+"covered");
+                    }
+
+                }
+            }
+        }
+
+        for (int i = 0; i < vehicleDesc.size(); i++) {
+            for (int j = 0; j < vehicleUncovered.size(); j++) {
+                UncoverVehicPercentageRequest aux = new UncoverVehicPercentageRequest();
+                aux.setUncover(vehicleUncovered.get(j));
+                aux.setVehicle(vehicleDesc.get(i));
+                String auxString = vehicleDesc.get(i)+" "+vehicleUncovered.get(j);
+                aux.setPercentage(
+                    (float) mapUncoveredVehicleList.stream().filter(auxString::equals).count() / mapUncoveredVehicleList.size());
+                    resList.add(aux);
+            }
+        }
+
+       return resList;
+    }
 
 }
