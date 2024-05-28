@@ -72,7 +72,8 @@ public class ReservationService {
         long clientActiveReservations = busyParkingSpacesInReservations.stream()
         .filter(reservation -> 
             reservation.getClient().getUserId().getIdUser().equals(client.getUserId().getIdUser()) &&
-            reservation.getClient().getUserId().getIdDocType().equals(client.getUserId().getIdDocType())
+            reservation.getClient().getUserId().getIdDocType().equals(client.getUserId().getIdDocType()) &&
+                    (reservation.getStatus().equals(ResStatus.PENDING.name()) || reservation.getStatus().equals(ResStatus.CONFIRMED.name())|| reservation.getStatus().equals(ResStatus.IN_PROGRESS.name()))
         )
         .count();
 
@@ -142,6 +143,8 @@ public class ReservationService {
                 .parkingSpace(selectedParkingSpace.get())
                 .status(ResStatus.PENDING.getId())
                 .build();
+
+
 
         reservationRepository.save(reservation);
 

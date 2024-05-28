@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import com.project.layer.Services.Payment.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -65,6 +66,12 @@ public class ReservationController {
     private final AuditService auditService;
     @Autowired
     private final RequestService requestService;
+    @Autowired
+    private final PaymentService paymentService;
+    String token;
+
+    @Autowired
+    private final DebtHandlerChain debtHandlerChain;
 
     @GetMapping("/client/{idDocType}/{idUser}")
     public List<Reservation> getReservationsByClient(
@@ -77,26 +84,26 @@ public class ReservationController {
 
     @PostMapping("/start")
     public ResponseEntity<ReservationResponse> start(@RequestBody StartReservationRequest reservationRequest,
-            HttpServletRequest ipUser) throws MessagingException {
+                                                     HttpServletRequest ipUser) throws MessagingException {
 
-        String token = jwtService.getTokenFromRequest(((ServletRequestAttributes)RequestContextHolder.currentRequestAttributes()).getRequest());
-        
+        String token = jwtService.getTokenFromRequest(((ServletRequestAttributes) RequestContextHolder.currentRequestAttributes()).getRequest());
+
         User client = authService.getUser(jwtService.getUserIdFromToken(token));
-        
+
         ReservationResponse reservationResponse = reservationService.startReservation(client, reservationRequest);
 
         Reservation reservation = reservationResponse.getReservation();
 
-        if(reservation == null) return new ResponseEntity<>(reservationResponse, HttpStatus.BAD_REQUEST);
+        if (reservation == null) return new ResponseEntity<>(reservationResponse, HttpStatus.BAD_REQUEST);
 
         // se envia el correo electronico de confirmacion con los detalles de la resreva
         mailService.sendMail(
-            client.getEmail(),
-            "[Four-parks] Información de su reserva",
-            getReservationMailParameters(reservationResponse.getReservation(),"Reserve")
+                client.getEmail(),
+                "[Four-parks] Información de su reserva",
+                getReservationMailParameters(reservationResponse.getReservation(), "Reserve")
         );
 
-        if (reservationService.isReservationNearStarting(reservation)){
+        if (reservationService.isReservationNearStarting(reservation)) {
             makePayment(reservation);
         }
 
@@ -112,35 +119,53 @@ public class ReservationController {
     }
 
     // se ejecuta a la media hora antes de que empiece la reserva
-    @Scheduled(cron = "0 30 * * * *")
+    @Scheduled(cron = "0 01 * * * *")
     public void confirm() {
         List<Reservation> reservations = reservationService.getNearStartingReservations();
 
         for (Reservation reservation : reservations) {
             makePayment(reservation);
         }
-
     }
 
-    public void makePayment(Reservation reservation) { //revisar con cristian para ver como seria la logica 
+    public void makePayment(Reservation reservation) { //revisar con cristian para ver como seria la logica
+
 
         if(scoreSystemService.isEnabled(reservation.getParkingSpace().getParkingSpaceId().getParking())){
             if(scoreSystemService.isAfiliated(reservation.getClient(), reservation.getParkingSpace().getParkingSpaceId().getParking())){
                 reservationService.setTotalRes(reservation, scoreSystemService.applyDiscount(
-                    reservation.getClient(),
-                    reservation.getParkingSpace().getParkingSpaceId().getParking(),
-                    parkingService.getRateByParkingSpace(reservation.getParkingSpace()),
-                    reservation.getTotalRes())
+                        reservation.getClient(),
+                        reservation.getParkingSpace().getParkingSpaceId().getParking(),
+                        parkingService.getRateByParkingSpace(reservation.getParkingSpace()),
+                        reservation.getTotalRes())
                 );
             }else{
                 System.out.println("Si necesita que se afilie:");
                 scoreSystemService.insertClient(reservation.getClient(), reservation.getParkingSpace().getParkingSpaceId().getParking());
             }
         }
-        
         //Aqui va la parte del pago
-        
+        String userId = String.valueOf(reservation.getClient().getUserId().getIdUser());
+        Pay pay = new Pay(TypePay.CURRENT);
+        pay.setUser(reservation.getClient());
+
+        // Llama al manejador de la cadena de responsabilidad
+        debtHandlerChain.debt(pay);
+
+        float totalPayment = Float.parseFloat(pay.getTotalPayment());
+        System.out.println("%%%%%%%%%%%%%%%%%%El usuario debe: " + totalPayment);
+        token = paymentService.createCardToken(userId);
+        paymentService.charge(token, totalPayment);
+        System.out.println("usted pago: " + totalPayment);
+
+        System.out.println("Se ha limpiado la deuda ###################################");
+
         //Si el pago sale bien, el estado cambia a confirmado
+        Pay pa = new Pay(TypePay.PAYOFF);
+        pa.setUser(reservation.getClient());
+
+        // Llama al manejador de la cadena de responsabilidad
+        debtHandlerChain.debt(pa);
         reservationService.setStatus(reservation, ResStatus.CONFIRMED.getId());
         // Es almacenada la accion realizada por el usuario
         auditService.setAction(reservationService.getUserAction(reservation.getClient().getUserId().getIdUser(),
@@ -150,9 +175,9 @@ public class ReservationController {
 
         if(scoreSystemService.isEnabled(reservation.getParkingSpace().getParkingSpaceId().getParking())){
             scoreSystemService.increaseScore(
-                reservation.getClient(),
-                reservation.getParkingSpace().getParkingSpaceId().getParking(),
-                reservation.getTotalRes()
+                    reservation.getClient(),
+                    reservation.getParkingSpace().getParkingSpaceId().getParking(),
+                    reservation.getTotalRes()
             );
         }
 
@@ -163,7 +188,7 @@ public class ReservationController {
 
     @PutMapping("{id}/check-in")
     public ResponseEntity<ReservationResponse> checkIn(@PathVariable("id") Integer idReservation,
-    HttpServletRequest ipUser) {
+                                                       HttpServletRequest ipUser) {
 
         ReservationResponse reservationResponse = reservationService.checkInReservation(idReservation);
 
@@ -182,7 +207,7 @@ public class ReservationController {
 
     @PutMapping("{id}/cancel")
     public ResponseEntity<ReservationResponse> cancel(@PathVariable("id") Integer idReservation,
-            HttpServletRequest ipUser) throws MessagingException {
+                                                      HttpServletRequest ipUser) throws MessagingException {
         ReservationResponse reservationResponse = reservationService.cancelReservation(idReservation);
 
         if (reservationResponse.getReservation() == null)
@@ -190,6 +215,30 @@ public class ReservationController {
 
         // Se debe hacer el cobro, la variable totalRes se seteo para que costara lo de
         // la cancelación
+//        String userId = reservationResponse.getReservation().getClient().getUserId().getIdUser();
+//        token = paymentService.createCardToken(userId);
+//        paymentService.charge(token, reservationResponse.getReservation().getTotalRes());
+//        System.out.println("usted pago: " + reservationResponse.getReservation().getTotalRes());
+//
+        //Aqui va la parte del pago
+        String userId = reservationResponse.getReservation().getClient().getUserId().getIdUser();
+        Pay pay = new Pay(TypePay.CURRENT);
+        pay.setUser(reservationResponse.getReservation().getClient());
+
+        // Llama al manejador de la cadena de responsabilidad
+        debtHandlerChain.debt(pay);
+
+        float totalPayment = Float.parseFloat(pay.getTotalPayment());
+        System.out.println("%%%%%%%%%%%%%%%%%%El usuario debe: " + totalPayment);
+        token = paymentService.createCardToken(userId);
+        paymentService.charge(token, totalPayment);
+        System.out.println("usted pago: " + totalPayment);
+
+        System.out.println("Se ha limpiado la deuda ###################################");
+
+        //Si el pago sale bien, el estado cambia a confirmado
+        Pay pa = new Pay(TypePay.PAYOFF);
+        pa.setUser(reservationResponse.getReservation().getClient());
 
         reservationService.setStatus(reservationResponse.getReservation(), ResStatus.CANCELLED.getId());
 
@@ -211,16 +260,30 @@ public class ReservationController {
 
     @PutMapping("{id}/check-out")
     public ResponseEntity<ReservationResponse> checkOut(@PathVariable("id") Integer idReservation,
-            HttpServletRequest ipUser) {
+                                                        HttpServletRequest ipUser) {
 
         ReservationResponse reservationResponse = reservationService.checkOutReservation(idReservation);
 
         if (reservationResponse.getReservation() == null)
             return new ResponseEntity<>(reservationResponse, HttpStatus.BAD_REQUEST);
 
+        //si la persona se paso por x min, se le agregara en su tabla deuda el valor de lo que se paso
         float extraCost = reservationService.getReservationsExtraCost(reservationResponse.getReservation());
         if (extraCost != 0) {
             // Aqui se hace el pago utilizando reservationResponse.getExtraCost()
+            // en este caso el valor se agregara a deuda en la tabla userdebt
+            Pay pay = new Pay(TypePay.DEBT);
+            pay.setUser(reservationResponse.getReservation().getClient());
+            pay.setAmount(String.valueOf(extraCost)); // Establecer el valor de extraCost
+//             Llama al manejador de la cadena de responsabilidad
+            debtHandlerChain.debt(pay);
+
+
+//             String userId = reservationResponse.getReservation().getClient().getUserId().getIdUser();
+//             token = paymentService.createCardToken(userId);
+//             paymentService.charge(token, extraCost);
+//             System.out.println("usted pago: " + extraCost);
+
         }
 
         reservationService.setStatus(reservationResponse.getReservation(), ResStatus.COMPLETED.getId());
@@ -244,7 +307,14 @@ public class ReservationController {
         for (Reservation reservation : reservations) {
             float extraCost = reservationService.getReservationsExtraCost(reservation);
             if (extraCost != 0) {
-                // Aqui se hace el pago utilizando el extra cost
+                // Aqui se agrega extracost a deuda
+                Pay pay = new Pay(TypePay.DEBT);
+                pay.setUser((User) reservations); //no probado
+                pay.setAmount(String.valueOf(extraCost)); // Establecer el valor de extraCost
+//             Llama al manejador de la cadena de responsabilidad
+                debtHandlerChain.debt(pay);
+
+
 
                 // Es almacenada la accion realizada por el usuario revisar con cristian depronto no es necesario
                 auditService.setAction(reservationService.getUserAction(
@@ -253,9 +323,9 @@ public class ReservationController {
                         "check-out automatico",
                         "8.8.8.8"));
             }
-            reservationService.setStatus(reservation, ResStatus.COMPLETED.getId());
         }
 
+        reservationService.setStatus(null, ResStatus.COMPLETED.getId());
     }
 
     private List<String> getReservationMailParameters(Reservation reservation, String template) {
@@ -266,21 +336,21 @@ public class ReservationController {
             list = Arrays.asList(template,
                     "ID: " + Integer.toString(reservation.getIdReservation()), // Id de la reservación
                     reservation.getParkingSpace().getParkingSpaceId().getParking().getNamePark(), // Nombre del
-                                                                                                  // parqueadero
+                    // parqueadero
                     reservation.getParkingSpace().getParkingSpaceId().getParking().getAddress().getDescAddress(), // Dirección
                     reservation.getClient().getFirstName() + " " + reservation.getClient().getLastName(), // Nombre del
-                                                                                                          // cliente
+                    // cliente
                     reservation.getStartDateRes().toString(), // Fecha de la reserva
                     reservation.getStartTimeRes().toString(), // Tiempo de inicio de la reserva
                     reservation.getEndTimeRes().toString(), // Tiempo de terminación de la reserva
                     Integer.toString(reservation.getParkingSpace().getParkingSpaceId().getIdParkingSpace()), // Id del
-                                                                                                             // espacio
-                                                                                                             // de
-                                                                                                             // parqueadero
+                    // espacio
+                    // de
+                    // parqueadero
                     reservation.getParkingSpace().getParkingSpaceId().getParking().getParkingId().getCity().getName(), // Ciudad
-                                                                                                                       // de
-                                                                                                                       // la
-                                                                                                                       // reserva
+                    // de
+                    // la
+                    // reserva
                     reservation.getParkingSpace().getVehicleType().getDescVehicleType(), // Tipo de vehiculo
                     reservation.getLicensePlate()// Placa del automovil
             );
@@ -291,20 +361,20 @@ public class ReservationController {
             list = Arrays.asList(template,
                     "ID: " + Integer.toString(reservation.getIdReservation()), // Id de la reservación
                     reservation.getParkingSpace().getParkingSpaceId().getParking().getNamePark(), // Nombre del
-                                                                                                  // parqueadero
+                    // parqueadero
                     reservation.getParkingSpace().getParkingSpaceId().getParking().getAddress().getDescAddress(), // Dirección
                     reservation.getClient().getFirstName() + " " + reservation.getClient().getLastName(), // Nombre del
-                                                                                                          // cliente
+                    // cliente
                     reservation.getStartDateRes().toString(), // Fecha de la reserva
                     Integer.toString(reservation.getParkingSpace().getParkingSpaceId().getIdParkingSpace()), // Id del
-                                                                                                             // espacio
-                                                                                                             // de
-                                                                                                             // parqueadero
+                    // espacio
+                    // de
+                    // parqueadero
                     reservation.getParkingSpace().getParkingSpaceId().getParking().getParkingId().getCity().getName()// Ciuad
-                                                                                                                     // de
-                                                                                                                     // la
-                                                                                                                     // reserva
-            // falta poner la parte del monto de la tarifa por cancelacion
+                    // de
+                    // la
+                    // reserva
+                    // falta poner la parte del monto de la tarifa por cancelacion
             );
         }
 
