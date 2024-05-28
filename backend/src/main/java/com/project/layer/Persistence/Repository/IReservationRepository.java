@@ -7,6 +7,7 @@ import java.time.LocalTime;
 import java.util.List;
 
 import com.project.layer.Persistence.Entity.Card;
+import com.project.layer.Persistence.Entity.User;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -137,9 +138,14 @@ public interface IReservationRepository extends JpaRepository<Reservation, Integ
                         "WHERE r.ENDDATERES = :date AND r.FK_IDRESSTATUS = 'COM'", nativeQuery = true)
         Float getSumTotalRes(Date date);
 
-        @Query(value = "SELECT * FROM CARD u WHERE u.FK_CLIENT_IDUSER LIKE %:userId%", nativeQuery = true)
-        List<Card> findByUserId();
+//        @Query(value = "SELECT * FROM CARD u WHERE u.FK_CLIENT_IDUSER LIKE %:userId%", nativeQuery = true)
+//        List<Card> findByUserId();
 
+//        @Query("SELECT r.totalRes FROM Reservation r WHERE r.client.userId.idUser = :userId")
+//        float findReservationAmountByUserId(@Param("userId") String userId);
+
+        @Query("SELECT r.totalRes FROM Reservation r WHERE r.client.userId.idUser = :userId AND r.startDateRes = CURRENT_DATE AND r.status = 'PEN' ORDER BY r.startDateRes DESC")
+        float findReservationAmountByUserId(@Param("userId") String userId);
 
         @Query(value = "SELECT COUNT(*) " +
                         "FROM RESERVATION r " +
@@ -171,6 +177,4 @@ public interface IReservationRepository extends JpaRepository<Reservation, Integ
                         @Param("parkingSpace") int parkingSpace,
                         @Param("time") Time time,
                         @Param("idParking") int idParking);
-
-       
 }

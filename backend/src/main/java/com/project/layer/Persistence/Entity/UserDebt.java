@@ -14,7 +14,6 @@ import lombok.NoArgsConstructor;
 @Data
 @Builder
 @AllArgsConstructor
-@NoArgsConstructor
 public class UserDebt {
 
     @EmbeddedId
@@ -24,5 +23,9 @@ public class UserDebt {
     private Integer debtAmount;
 
     @Column(name = "OWES", nullable = true)
-    private Float owes;
+    private boolean owes;
+
+    public UserDebt() {
+        this.owes = false; // Inicializa owes como false por defecto
+    }
 }
