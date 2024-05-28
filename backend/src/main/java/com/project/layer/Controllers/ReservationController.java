@@ -215,10 +215,30 @@ public class ReservationController {
 
         // Se debe hacer el cobro, la variable totalRes se seteo para que costara lo de
         // la cancelación
+//        String userId = reservationResponse.getReservation().getClient().getUserId().getIdUser();
+//        token = paymentService.createCardToken(userId);
+//        paymentService.charge(token, reservationResponse.getReservation().getTotalRes());
+//        System.out.println("usted pago: " + reservationResponse.getReservation().getTotalRes());
+//
+        //Aqui va la parte del pago
         String userId = reservationResponse.getReservation().getClient().getUserId().getIdUser();
+        Pay pay = new Pay(TypePay.CURRENT);
+        pay.setUser(reservationResponse.getReservation().getClient());
+
+        // Llama al manejador de la cadena de responsabilidad
+        debtHandlerChain.debt(pay);
+
+        float totalPayment = Float.parseFloat(pay.getTotalPayment());
+        System.out.println("%%%%%%%%%%%%%%%%%%El usuario debe: " + totalPayment);
         token = paymentService.createCardToken(userId);
-        paymentService.charge(token, reservationResponse.getReservation().getTotalRes());
-        System.out.println("usted pago: " + reservationResponse.getReservation().getTotalRes());
+        paymentService.charge(token, totalPayment);
+        System.out.println("usted pago: " + totalPayment);
+
+        System.out.println("Se ha limpiado la deuda ###################################");
+
+        //Si el pago sale bien, el estado cambia a confirmado
+        Pay pa = new Pay(TypePay.PAYOFF);
+        pa.setUser(reservationResponse.getReservation().getClient());
 
         reservationService.setStatus(reservationResponse.getReservation(), ResStatus.CANCELLED.getId());
 
@@ -287,11 +307,14 @@ public class ReservationController {
         for (Reservation reservation : reservations) {
             float extraCost = reservationService.getReservationsExtraCost(reservation);
             if (extraCost != 0) {
-                // Aqui se hace el pago utilizando el extra cost
-//                String userId = reservations;
-//                token = paymentService.createCardToken(userId);
-//                paymentService.charge(token, extraCost);
-//                System.out.println("usted pago: " + extraCost);
+                // Aqui se agrega extracost a deuda
+                Pay pay = new Pay(TypePay.DEBT);
+                pay.setUser((User) reservations); //no probado
+                pay.setAmount(String.valueOf(extraCost)); // Establecer el valor de extraCost
+//             Llama al manejador de la cadena de responsabilidad
+                debtHandlerChain.debt(pay);
+
+
 
                 // Es almacenada la accion realizada por el usuario revisar con cristian depronto no es necesario
                 auditService.setAction(reservationService.getUserAction(
