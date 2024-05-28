@@ -1,7 +1,6 @@
 import { useState, useEffect } from 'react';
 import { MapContainer, TileLayer, Marker, Popup, useMap } from 'react-leaflet';
-import { Icon, divIcon, point } from 'leaflet';
-import MarkerClusterGroup from 'react-leaflet-cluster'
+import { Icon} from 'leaflet';
 import axios from "axios";
 import coveredWhiteIcon from '../../assets/Parking Icons/Covered-White.png';
 import uncoveredWhiteIcon from '../../assets/Parking Icons/Uncovered-White.png';
@@ -15,8 +14,10 @@ const Map = ({ url, city, actualCity, setActualCity, setActualParking }) => {
     useEffect(() => {
         if(city) {
             const token = sessionStorage.getItem('token').replace(/"/g, '');
-    
-            axios.get(`${url}/admin/getCity`,  {params: {city: city}, headers: {Authorization: `Bearer ${token}`}})
+
+            const urlCity = (city == "" ? "Bogota": city);
+
+            axios.get(`${url}/city/${urlCity}`, {headers: {Authorization: `Bearer ${token}`}})
             .then(res => {
                 const cityObject = {
                     id: res.data.idCity,
@@ -36,25 +37,17 @@ const Map = ({ url, city, actualCity, setActualCity, setActualParking }) => {
 
     useEffect(() => {
         const token = sessionStorage.getItem('token').replace(/"/g, '');
-        const user = JSON.parse(sessionStorage.getItem('userLogged'));
+        const urlCity = (city == "" ? "Bogota": city);
         
-        axios.post(`${url}/admin/searchParkings`, {idUser: user.idNumber, idDocType: user.idType}, {headers: { Authorization: `Bearer ${token}` }})
+        axios.get(`${url}/parking/city/${urlCity}`, {headers: { Authorization: `Bearer ${token}` }})
         .then(res => {
             console.log(res)
             const parkingArray = res.data.map(parking => ({
-                id: parking.parking.idParking,
-                name: parking.parking.namePark,
-                idCity: parking.parking.city.idCity,
-                city: parking.parking.city.name,
-                coords: [parking.parking.addressCoordinatesX, parking.parking.addressCoordinatesY],
-                email: parking.parking.email,
-                phone: parking.parking.phone,
-                idType: parking.parking.parkingType.idParkingType,
-                type: parking.parking.parkingType.descParkingType,
-                idAvailability: parking.parking.schedule.idSchedule,
-                availability: parking.parking.schedule.scheduleType,
-                startTime: parking.parking.startTime,
-                endTime: parking.parking.endTime
+                id: parking.parkingId.idParking,
+                name: parking.namePark,
+                address: parking.address.descAddress,
+                coords: [parking.address.addressCoordinatesX, parking.address.addressCoordinatesY],
+                type: parking.parkingType.descParkingType,
             }));
 
             setParkings(parkingArray);
@@ -77,22 +70,21 @@ const Map = ({ url, city, actualCity, setActualCity, setActualParking }) => {
         }
     };
 
-    const createCustomClusterIcon = (cluster) => {
-        return new divIcon({
-            html: `<div class="flex justify-center items-center w-12 h-12 rounded-full bg-blue-dark opacity-85 font-semibold text-lg -translate-x-1/4 -translate-y-1/4"> 
-            ${cluster.getChildCount()} </div>`,
-            className: 'custom-marker-cluster',
-            iconSize: point(35, 35, true)
-        })
-    }
-
     const handleChangeParking = (parking) => {
-        setActualParking(parking);
+        const token = sessionStorage.getItem('token').replace(/"/g, '');
+        
+        axios.get(`${url}/parking/coordinates/${parking.coords[0]}/${parking.coords[1]}`, {headers: {Authorization: `Bearer ${token}`}})
+        .then(res => {
+            setActualParking([res.data.parking, res.data.capacity]);
 
-        let newCenterCoords = actualCity;
-        newCenterCoords.centerCoords = [parking.coords[0], parking.coords[1]];
+            let newCenterCoords = actualCity;
+            newCenterCoords.centerCoords = [parking.coords[0], parking.coords[1]];
 
-        setActualCity(newCenterCoords);
+            setActualCity(newCenterCoords);
+        })
+        .catch(err => {
+            console.log(err);
+        })
     }
     
     const UpdateMap = ({ city, center, bounds }) => {
@@ -115,15 +107,16 @@ const Map = ({ url, city, actualCity, setActualCity, setActualParking }) => {
 
             <UpdateMap city={city} center={actualCity.centerCoords} bounds={[actualCity.northLim, actualCity.southLim]} />
 
-
-            <MarkerClusterGroup chunkedLoading iconCreateFunction={createCustomClusterIcon}>
-                {parkings.map(parking => (
-                    <Marker key={parking.id} position={parking.coords} icon={getIcon(parking.idType, parking.ocupability)} 
-                    eventHandlers={{click: () => handleChangeParking(parking)}}> 
-                        <Popup>{parking.name}</Popup>
-                    </Marker>
-                ))}
-            </MarkerClusterGroup>
+            {parkings.map(parking => (
+                <Marker key={parking.id} position={parking.coords} icon={getIcon(parking.type)} eventHandlers={{click: () => handleChangeParking(parking)}}>
+                    <Popup> 
+                        <div className='flex flex-col font-title'>
+                            <span className='font-semibold mb-1'> {parking.name} </span> 
+                            <span className='text-xs'> {parking.address} </span>
+                        </div>
+                    </Popup>
+                </Marker>
+            ))}
         </MapContainer>
     );
 }

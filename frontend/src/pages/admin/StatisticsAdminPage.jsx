@@ -71,7 +71,20 @@ const StatisticsAdminPage = ({ url }) => {
     }
   }
 
-
+  const createButtons = () => {
+    if (actualParking && infoType && graphicType && startDate && endDate) {
+      return (
+        <section className="mt-8 pb-4 mr-36 flex justify-end">
+            <button onClick={GenPDF} className='shadow-xl px-16 py-3 mr-12 bg-blue-dark hover:bg-blue-darkest rounded-xl text-white font-title font-semibold'> 
+            Generar PDF </button>
+            <button onClick={GenExcel} className='shadow-xl px-16 py-3 bg-blue-dark hover:bg-blue-darkest rounded-xl text-white font-title font-semibold'> 
+            Generar Excel </button>
+          </section>
+      );
+    } else {
+      return null;
+    }
+  }
 
   const applyBorders = (cell) => {
     cell.border = {
@@ -241,12 +254,7 @@ const StatisticsAdminPage = ({ url }) => {
         </section>
 
         {createHoursGraph()}
-        <section className="mt-6 flex justify-end">
-          <div className="">
-            <button onClick={GenPDF} className='shadow-xl px-16 py-3 mr-6 bg-blue-dark hover:bg-blue-darkest rounded-xl text-white font-title font-semibold'> Generar PDF </button>
-            <button onClick={GenExcel} className='shadow-xl px-16 py-3 bg-blue-dark hover:bg-blue-darkest rounded-xl text-white font-title font-semibold'> Generar Excel </button>
-          </div>
-        </section>
+        {createButtons()}
       </section>
     </>
   )

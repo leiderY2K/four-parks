@@ -1,5 +1,7 @@
 package com.project.layer.Services.ScoreSystem;
 
+import java.util.Optional;
+
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.stereotype.Service;
 
@@ -23,6 +25,26 @@ public class ScoreSystemService {
 
     private final IScoreSystemRepository scoreSystemRepository;
     private final IClientScoreRepository clientScoreRepository;
+
+    public ClientScore getClientScore(Parking parking, User user){
+        Optional<ClientScore> optionalClientScore = clientScoreRepository.findById(new ClientScoreId(user,parking)); 
+        
+        if (optionalClientScore.isPresent()){
+            return optionalClientScore.get();
+        }
+
+        return null;
+    }
+
+    public ScoreSystem getScoreSystem(Parking parking){
+        Optional<ScoreSystem> optionalScoreSystem = scoreSystemRepository.findById(parking.getParkingId());
+
+        if(optionalScoreSystem.isPresent()){
+            return optionalScoreSystem.get();
+        }
+
+        return null;
+    }
 
     @Transactional
     @Modifying
@@ -48,20 +70,39 @@ public class ScoreSystemService {
 
     @Transactional
     @Modifying
-    public ScoreResponse insertScore(ParkingId parkingId, ScoreRequest scoreRequest){
+    public ScoreResponse toggleScore(ParkingId parkingId, ScoreRequest scoreRequest){
+
+        ScoreSystem scoreSystem = scoreSystemRepository.findByParkingId(parkingId.getIdParking(), parkingId.getCity().getIdCity());
+
+        String value = "";
+
+        if(scoreSystem == null){
+            if (!scoreRequest.getPutEnable()) return new ScoreResponse(null, "No puede desactivar pues no existe un sistema de puntos para este parqueadero");
+            
+            if (scoreRequest.getTargetPoints() == null || scoreRequest.getTargetValue() == null) return new ScoreResponse(null, "¡Los datos de puntos objetivo y valor objetivo no pueden quedar en blanco!");
+            
+            scoreSystem = ScoreSystem.builder()
+                .parkingId(parkingId)
+                .isEnable(true)
+                .targetPoints(scoreRequest.getTargetPoints())
+                .targetValue(scoreRequest.getTargetValue())
+                .build(); 
+
+            value = "Activado";
+        }
+
+        if(scoreRequest.getPutEnable()){
+            scoreSystem.setIsEnable(true);
+            value = "Activado";
+        }else{
+            scoreSystem.setIsEnable(false);
+            value = "Desactivado";
+        }
         
-        if (scoreSystemRepository.existsById(parkingId)) return new ScoreResponse(null, "El sistema de puntaje ya existe para este parqueadero");
-
-        ScoreSystem scoreSystem = ScoreSystem.builder()
-                                        .parkingId(parkingId)
-                                        .targetPoints(scoreRequest.getTargetPoints())
-                                        .targetValue(scoreRequest.getTargetValue())
-                                        .build();
-
 
         scoreSystemRepository.save(scoreSystem);
         
-        return new ScoreResponse(scoreSystem, "¡Su sistema de fidelización fue correctamente creado!");
+        return new ScoreResponse(scoreSystem, "¡Su sistema de fidelización fue correctamente "+value+"!");
     }
 
     @Transactional
@@ -116,8 +157,9 @@ public class ScoreSystemService {
         clientScoreRepository.save(clientScore);
     }
 
-    public boolean existsParkingScore(Parking parking) {
-        return scoreSystemRepository.existsById(parking.getParkingId());
+    public boolean isEnabled(Parking parking) {
+        ScoreSystem scoreSystem = scoreSystemRepository.findByParkingId(parking.getParkingId().getIdParking(), parking.getParkingId().getCity().getIdCity());
+        return scoreSystem != null && scoreSystem.getIsEnable();
     }
 
     public boolean isAfiliated(User client, Parking parking) {

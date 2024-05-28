@@ -67,4 +67,11 @@ public interface IParkingRepository extends JpaRepository<Parking, ParkingId> {
 
         @Query(value = "SELECT SUM(CAPACITY) FROM PARKING", nativeQuery = true)
         float getCapacity();
+
+        @Query(
+                value = "SELECT p.* FROM PARKING p " +
+                        "WHERE FK_IDCITY = :idCity",                
+                nativeQuery = true
+        )
+        List<Parking> findByCityId(@Param("idCity") String idCity);
 }

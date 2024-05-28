@@ -124,8 +124,7 @@ public class ReservationController {
 
     public void makePayment(Reservation reservation) { //revisar con cristian para ver como seria la logica 
 
-
-        if(scoreSystemService.existsParkingScore(reservation.getParkingSpace().getParkingSpaceId().getParking())){
+        if(scoreSystemService.isEnabled(reservation.getParkingSpace().getParkingSpaceId().getParking())){
             if(scoreSystemService.isAfiliated(reservation.getClient(), reservation.getParkingSpace().getParkingSpaceId().getParking())){
                 reservationService.setTotalRes(reservation, scoreSystemService.applyDiscount(
                     reservation.getClient(),
@@ -149,7 +148,7 @@ public class ReservationController {
                 "Pago auomatico",
                 "8.8.8.8"));
 
-        if(scoreSystemService.existsParkingScore(reservation.getParkingSpace().getParkingSpaceId().getParking())){
+        if(scoreSystemService.isEnabled(reservation.getParkingSpace().getParkingSpaceId().getParking())){
             scoreSystemService.increaseScore(
                 reservation.getClient(),
                 reservation.getParkingSpace().getParkingSpaceId().getParking(),
@@ -254,9 +253,9 @@ public class ReservationController {
                         "check-out automatico",
                         "8.8.8.8"));
             }
+            reservationService.setStatus(reservation, ResStatus.COMPLETED.getId());
         }
 
-        reservationService.setStatus(null, ResStatus.COMPLETED.getId());
     }
 
     private List<String> getReservationMailParameters(Reservation reservation, String template) {
