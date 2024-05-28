@@ -10,6 +10,7 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 import com.project.layer.Persistence.Entity.*;
 import com.project.layer.Persistence.Error.CustomException;
@@ -26,6 +27,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.validation.annotation.Validated;
 
 import com.project.layer.Controllers.Requests.LoginRequest;
+import com.project.layer.Controllers.Requests.PassRecoveryRequest;
 import com.project.layer.Controllers.Requests.PassRequest;
 import com.project.layer.Controllers.Requests.RegisterRequest;
 import com.project.layer.Controllers.Requests.UnlockRequest;
@@ -55,7 +57,7 @@ public class AuthService {
     private final AuthenticationManager authenticationManager;
 
     @Transactional
-    public User getUser(UserId userId){
+    public User getUser(UserId userId) {
         return userRepository.findById(userId).get();
     }
 
@@ -94,11 +96,11 @@ public class AuthService {
 
         // obtenemos la informacion del usuario
 
-        //Revisamos los datos del login
+        // Revisamos los datos del login
         UserAuthentication userAuthentication = userAuthRepository.findByUsername(username)
                 .orElseThrow(() -> new UsernameNotFoundException("Usuario no encontrado"));
 
-        //una vez confirmado traemos al usuario
+        // una vez confirmado traemos al usuario
         User user = userRepository
                 .findByUserId(userAuthentication.getUserId().getIdUser(), userAuthentication.getUserId().getIdDocType())
                 .orElseThrow(() -> new UsernameNotFoundException("Usuario no encontrado"));
@@ -191,13 +193,14 @@ public class AuthService {
     @Modifying
     @Transactional
     public AuthResponse register(RegisterRequest request) throws MessagingException {
-        
-        UserId userId = UserId.builder()
-        .idUser(request.getIdUser())
-        .idDocType(request.getIdDocTypeFk())
-        .build();
 
-        if (userRepository.existsById(userId)) return new AuthResponse(null, null, "¡El usuario ya existe!");
+        UserId userId = UserId.builder()
+                .idUser(request.getIdUser())
+                .idDocType(request.getIdDocTypeFk())
+                .build();
+
+        if (userRepository.existsById(userId))
+            return new AuthResponse(null, null, "¡El usuario ya existe!");
 
         // Crear una instancia de User
         User newUser = User.builder()
@@ -227,14 +230,14 @@ public class AuthService {
         // Guardar el usuario en la base de datos
         userAuthRepository.save(userAuthentication);
 
-        if(userAuthentication.getRole().equals(Role.CLIENT)){
+        if (userAuthentication.getRole().equals(Role.CLIENT)) {
 
             User cardOwner = userRepository.getReferenceById(userId);
-    
+
             // Cambiar el formato de fecha para pasárselo a la tabla
             DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yy");
             LocalDate expiryDate = LocalDate.parse(request.getExpiryDate(), formatter);
-    
+
             // Crear una instancia de Card
             Card newCard = Card.builder()
                     .cardOwner(cardOwner)
@@ -242,12 +245,11 @@ public class AuthService {
                     .ExpDateCard(expiryDate)
                     .cvvCard(request.getCvv())
                     .build();
-    
+
             // Guardar la tarjeta del usuario en la base de datos
             cardRepository.save(newCard);
 
         }
-
 
         return AuthResponse.builder()
                 .token(jwtService.getToken(null, userAuthentication))
@@ -298,7 +300,7 @@ public class AuthService {
          * }
          */
     }
-    
+
     @Modifying
     @Transactional
     public UserResponse update(@Validated UserRequest request) {
@@ -340,6 +342,27 @@ public class AuthService {
         } else {
             return new UserResponse(null, null, "No se encontró ningún estacionamiento con el ID proporcionado");
         }
+    }
+    @Transactional
+    public AuthResponse passRecovery(PassRecoveryRequest request) throws MessagingException {
+        Optional<User> optUser = userRepository.findByEmail(request.getEmail());
+        if (optUser.isPresent()) {
+            User user = optUser.orElse(null);
+            UserAuthentication userAuth = userAuthRepository.findById(user.getUserId().getIdUser())
+                    .orElseThrow(() -> new UsernameNotFoundException("Usuario no encontrado"));
+            resetFailedAttempts(userAuth.getUsername());
+            unBlockPassword(userAuth.getUsername());
+            String randomPassword = generateRandomPassword();
+            updatePass(userAuth.getUsername(), passwordEncoder.encode(randomPassword));
+            List<String> messages = Arrays.asList("Register", randomPassword);
+            mailservice.sendMail(user.getEmail(), "Bienvenido a four-parks Colombia", messages);
+            return AuthResponse.builder()
+                    .token("La nueva contraseña se ha enviado exitosamente a su correo.")
+                    .build();
+        }
+        return AuthResponse.builder()
+                .token("El correo no coincide con el de ningún usuario registrado")
+                .build();
     }
 
 }

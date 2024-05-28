@@ -19,6 +19,9 @@ public interface IUserAuthRepository extends JpaRepository<UserAuthentication, U
     @Query(value = "SELECT * FROM USER_AUTHENTICATION u WHERE u.USERNAME = :username", nativeQuery = true)
     Optional<UserAuthentication> findByUsername(@Param("username") String username);
 
+    @Query(value = "SELECT * FROM USER_AUTHENTICATION u WHERE u.IDUSER = :idUser", nativeQuery = true)
+    Optional<UserAuthentication> findById(@Param("idUser") String idUser);
+
     @Transactional
     @Modifying
     @Query(value = "UPDATE USER_AUTHENTICATION u SET u.ISBLOCKED = 1 WHERE u.USERNAME = :username", nativeQuery = true)

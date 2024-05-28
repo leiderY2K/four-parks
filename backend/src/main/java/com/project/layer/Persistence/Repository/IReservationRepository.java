@@ -7,7 +7,6 @@ import java.time.LocalTime;
 import java.util.List;
 
 import com.project.layer.Persistence.Entity.Card;
-import com.project.layer.Persistence.Entity.User;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -95,12 +94,15 @@ public interface IReservationRepository extends JpaRepository<Reservation, Integ
                         @Param("endDateRes") Date endDateRes,
                         @Param("endTimeRes") Time endTimeRes);
 
-        @Query(value = "SELECT COUNT(*) " +
-                        "FROM RESERVATION r " +
-                        "WHERE r.STARTDATERES = :startDateRes AND " +
-                        "r.STARTTIMERES <= :startTimeRes AND r.ENDTIMERES > :startTimeRes AND " +
-                        "r.FK_IDPARKING = :idParking", nativeQuery = true)
-        Integer getDateHourCount(
+        @Query(value = "SELECT COUNT(*) FROM RESERVATION r WHERE " +
+                        "(r.STARTDATERES != r.ENDDATERES AND r.STARTDATERES = :startDateRes AND r.STARTTIMERES <= :startTimeRes AND r.FK_IDPARKING = :idParking) OR "
+                        +
+                        "(r.STARTDATERES < :startDateRes AND r.ENDDATERES > :startDateRes AND r.FK_IDPARKING = :idParking) OR "
+                        +
+                        "(r.STARTDATERES = :startDateRes AND r.ENDDATERES = :startDateRes AND (r.STARTTIMERES <= :startTimeRes AND r.ENDTIMERES > :startTimeRes) AND r.FK_IDPARKING = :idParking) OR "
+                        +
+                        "(r.STARTDATERES != r.ENDDATERES AND r.ENDDATERES = :startDateRes AND r.ENDTIMERES > :startTimeRes AND r.FK_IDPARKING = :idParking) AND r.FK_IDRESSTATUS != 'CAN'", nativeQuery = true)
+        int getDateHourCount(
                         @Param("startDateRes") Date startDateRes,
                         @Param("startTimeRes") Time startTimeRes,
                         @Param("idParking") int idParking);
@@ -138,43 +140,44 @@ public interface IReservationRepository extends JpaRepository<Reservation, Integ
                         "WHERE r.ENDDATERES = :date AND r.FK_IDRESSTATUS = 'COM'", nativeQuery = true)
         Float getSumTotalRes(Date date);
 
-//        @Query(value = "SELECT * FROM CARD u WHERE u.FK_CLIENT_IDUSER LIKE %:userId%", nativeQuery = true)
-//        List<Card> findByUserId();
+        @Query(value = "SELECT * FROM CARD u WHERE u.FK_CLIENT_IDUSER LIKE %:userId%", nativeQuery = true)
+        List<Card> findByUserId();
 
-//        @Query("SELECT r.totalRes FROM Reservation r WHERE r.client.userId.idUser = :userId")
-//        float findReservationAmountByUserId(@Param("userId") String userId);
+        @Query(value = "SELECT COUNT(*) FROM RESERVATION r WHERE " +
+                        "(r.STARTDATERES != r.ENDDATERES AND r.STARTDATERES = :date AND r.STARTTIMERES <= :hour AND r.FK_IDPARKING = :idParking) OR "
+                        +
+                        "(r.STARTDATERES < :date AND r.ENDDATERES > :date AND r.FK_IDPARKING = :idParking) OR " +
+                        "(r.STARTDATERES = :date AND r.ENDDATERES = :date AND (r.STARTTIMERES <= :hour AND r.ENDTIMERES > :hour) AND r.FK_IDPARKING = :idParking) OR "
+                        +
+                        "(r.STARTDATERES != r.ENDDATERES AND r.ENDDATERES = :date AND r.ENDTIMERES > :hour AND r.FK_IDPARKING = :idParking) AND r.FK_IDRESSTATUS != 'CAN'", nativeQuery = true)
+        int occupationHour(@Param("date") Date date, @Param("hour") Time hour, @Param("idParking") int idParking);
 
-        @Query("SELECT r.totalRes FROM Reservation r WHERE r.client.userId.idUser = :userId AND r.startDateRes = CURRENT_DATE AND r.status = 'PEN' ORDER BY r.startDateRes DESC")
-        float findReservationAmountByUserId(@Param("userId") String userId);
+        @Query(value = "SELECT COUNT(*) FROM RESERVATION r WHERE " +
+                        "(r.STARTDATERES != r.ENDDATERES AND r.STARTDATERES = :date AND r.STARTTIMERES <= :hour AND r.FK_IDCITY = :city) OR "
+                        +
+                        "(r.STARTDATERES < :date AND r.ENDDATERES > :date AND r.FK_IDCITY = :city) OR " +
+                        "(r.STARTDATERES = :date AND r.ENDDATERES = :date AND (r.STARTTIMERES <= :hour AND r.ENDTIMERES > :hour) AND r.FK_IDCITY = :city) OR "
+                        +
+                        "(r.STARTDATERES != r.ENDDATERES AND r.ENDDATERES = :date AND r.ENDTIMERES > :hour AND r.FK_IDCITY = :city)", nativeQuery = true)
+        int cityOccupationHour(@Param("date") Date date, @Param("hour") Time hour, @Param("city") String city);
 
-        @Query(value = "SELECT COUNT(*) " +
-                        "FROM RESERVATION r " +
-                        "WHERE r.FK_IDPARKINGSPACE = :parkingSpace AND r.FK_IDPARKING = :idParking AND " +
-                        "r.STARTDATERES = :startDateRes AND " +
-                        "r.STARTTIMERES <= :time", nativeQuery = true)
-        int testBefore(
-                        @Param("startDateRes") Date startDateRes,
-                        @Param("parkingSpace") int parkingSpace,
-                        @Param("time") Time time,
-                        @Param("idParking") int idParking);
+        @Query(value = "SELECT COUNT(*) FROM RESERVATION r WHERE " +
+                        "(r.STARTDATERES != r.ENDDATERES AND r.STARTDATERES = :date AND r.STARTTIMERES <= :hour) OR "
+                        +
+                        "(r.STARTDATERES < :date AND r.ENDDATERES > :date) OR " +
+                        "(r.STARTDATERES = :date AND r.ENDDATERES = :date AND (r.STARTTIMERES <= :hour AND r.ENDTIMERES > :hour)) OR "
+                        +
+                        "(r.STARTDATERES != r.ENDDATERES AND r.ENDDATERES = :date AND r.ENDTIMERES > :hour)", nativeQuery = true)
+        int allOccupationHour(@Param("date") Date date, @Param("hour") Time hour);
 
-        @Query(value = "SELECT COUNT(*) " +
-                        "FROM RESERVATION r " +
-                        "WHERE r.FK_IDPARKINGSPACE = :parkingSpace AND r.FK_IDPARKING = :idParking AND " +
-                        "r.STARTDATERES < :startDateRes AND r.ENDDATERES > :startDateRes", nativeQuery = true)
-        int testBetween(
-                        @Param("startDateRes") Date startDateRes,
-                        @Param("parkingSpace") int parkingSpace,
-                        @Param("idParking") int idParking);
+        /*@Query(value = "SELECT COUNT(*) FROM RESERVATION r " +
+                        "INNER JOIN PARKINGSPACE ps ON r.FK_IDPARKINGSPACE = ps.IDPARKINGSPACE " +
+                        "WHERE r.FK_IDCITY = :city " +
+                        "AND ps.FK_IDCITY = :city " +
+                        "AND ps.FK_IDVEHICLETYPE = :vehicleType")
+        int countVehiclesRes(@Param("vehicleType") String vehicleType, @Param("city") String city);*/
 
-        @Query(value = "SELECT COUNT(*) " +
-                        "FROM RESERVATION r " +
-                        "WHERE r.FK_IDPARKINGSPACE = :parkingSpace AND r.FK_IDPARKING = :idParking AND " +
-                        "r.ENDDATERES = :startDateRes AND " +
-                        "r.ENDTIMERES > :time", nativeQuery = true)
-        int testAfter(
-                        @Param("startDateRes") Date startDateRes,
-                        @Param("parkingSpace") int parkingSpace,
-                        @Param("time") Time time,
-                        @Param("idParking") int idParking);
+        @Query(value="SELECT * FROM RESERVATION r WHERE r.FK_IDCITY = :city AND FK_IDRESSTATUS != 'CAN'",nativeQuery=true)
+        List<Reservation> allCityRes(@Param("city") String city);
+
 }

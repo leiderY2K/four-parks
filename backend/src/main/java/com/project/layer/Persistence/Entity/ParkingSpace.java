@@ -24,7 +24,7 @@ public class ParkingSpace {
  
     @Column(name = "ISUNCOVERED", nullable = false)
     private boolean isUncovered;
-
+    
     @OneToOne
     @JoinColumn(name = "FK_IDVEHICLETYPE", referencedColumnName = "IDVEHICLETYPE", nullable = false)
     private VehicleType vehicleType;
