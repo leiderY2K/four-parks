@@ -5,6 +5,7 @@ import java.sql.Date;
 import java.sql.Time;
 import java.time.LocalDate;
 import java.time.LocalTime;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -15,6 +16,9 @@ import org.springframework.stereotype.Service;
 
 import com.project.layer.Controllers.Requests.ParkingSpaceRequest;
 import com.project.layer.Controllers.Responses.ParkingResponse;
+import com.project.layer.Controllers.Responses.ParkingsResponse;
+import com.project.layer.Persistence.Entity.City;
+import com.project.layer.Persistence.Entity.CoordinateID;
 import com.project.layer.Persistence.Entity.Parking;
 import com.project.layer.Persistence.Entity.ParkingId;
 import com.project.layer.Persistence.Entity.ParkingSpace;
@@ -324,5 +328,47 @@ public class ParkingService {
 
     public Parking getParkingById(ParkingId parkingId) {
         return parkingRepository.findById(parkingId).get();
+    }
+
+    public ParkingsResponse getParkingsBySpot(Map<Integer,CoordinateID> spotCoordinates, float distance) {
+        List<City> cities = cityRepository.findAll();
+        
+        Map<Integer, List<Parking>> parkingsLists = new HashMap<>();
+        System.out.println("Las ciudades son:" + cities);
+        
+        for (Map.Entry<Integer, CoordinateID> entry : spotCoordinates.entrySet()) {
+            List<Parking> parkings = new ArrayList<>();
+            System.out.println("La clave: " +entry.getKey() + "El valor: " + entry.getValue().toString());
+            float coordinateX = entry.getValue().getCoordinatesX();
+            float coordinateY = entry.getValue().getCoordinatesY();
+
+            for (City city : cities) {
+                if (isCoordinateInCity(coordinateX, coordinateY, city)) {
+                    List<Parking> cityParkings = parkingRepository.findByCityId(city.getIdCity());
+                    for (Parking parking : cityParkings) {
+                        if (isWithinDistance(coordinateX, coordinateY, parking.getAddress().getCoordinatesX(), parking.getAddress().getCoordinatesY(), distance)) {
+                            parkings.add(parking);
+                        }
+                    }
+                }
+            }
+            System.out.println("los parqueaderos son: " + parkings.toString());
+            parkingsLists.put(entry.getKey(), parkings);  // Añadimos la lista de parqueaderos al mapa con su clave correspondiente
+        }
+
+
+        return ParkingsResponse.builder()
+                            .parkingsLists(parkingsLists)
+                            .message("¡Se envian correctamente los parqueaderos cercanos!")
+                            .build();
+    }
+
+    private boolean isCoordinateInCity(float x, float y, City city) {
+        return y >= city.getBLeft() && y <= city.getBRight() && x >= city.getBBottom() && x <= city.getBTop();
+    }
+
+    private boolean isWithinDistance(float x1, float y1, float x2, float y2, double maxDistance) {
+        double distance = Math.sqrt(Math.pow(x2 - x1, 2) + Math.pow(y2 - y1, 2));
+        return distance <= maxDistance;
     }
 }
