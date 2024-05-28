@@ -74,4 +74,7 @@ public interface IParkingSpaceRepository extends JpaRepository<ParkingSpace, Par
         @Param("amount") Integer amount
     );
 
+    @Query(value="SELECT * FROM PARKINGSPACE ps WHERE ps.FK_IDCITY = :cityId",nativeQuery = true)
+    List<ParkingSpace> allCityParkingSpaces(@Param("cityId") String cityId);
+
 }

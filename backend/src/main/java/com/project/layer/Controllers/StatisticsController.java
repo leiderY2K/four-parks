@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.project.layer.Controllers.Requests.DateSumRequest;
 import com.project.layer.Controllers.Requests.HourAveragemRequest;
 import com.project.layer.Controllers.Requests.HourOccupationRequest;
+import com.project.layer.Controllers.Requests.VehiclePercentageRequest;
 import com.project.layer.Services.Statistics.StatisticsService;
 
 import lombok.RequiredArgsConstructor;
@@ -60,4 +61,24 @@ public class StatisticsController {
     public List<HourOccupationRequest> getOccupation(@RequestParam Date date, @RequestParam int idParking) {
         return statisticsService.getOccupation(date, idParking);
     }
+
+    @GetMapping("/all-occupation")
+    public List<HourOccupationRequest> getAllOccupation(@RequestParam Date date) {
+        return statisticsService.getAllOccupation(date);
+    }
+
+    @GetMapping("/city-occupation")
+    public List<HourOccupationRequest> getCityOccupation(@RequestParam Date date, @RequestParam String city) {
+        return statisticsService.getCityOccupation(date, city);
+    }
+
+    /*@GetMapping("/city-vehicle-percentage")
+    public List<VehiclePercentageRequest> getCityVehiclePercentage(@RequestParam String city){
+        return statisticsService.getCityVehiclePercentage(city);
+    }*/
+
+
+    
+
+    
 }

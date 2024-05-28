@@ -13,11 +13,14 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import com.project.layer.Controllers.Requests.HourOccupationRequest;
+import com.project.layer.Controllers.Requests.VehiclePercentageRequest;
 import com.project.layer.Controllers.Requests.DateHourCountRequest;
 import com.project.layer.Controllers.Requests.DateSumRequest;
 import com.project.layer.Controllers.Requests.HourAveragemRequest;
+import com.project.layer.Persistence.Entity.Reservation;
 import com.project.layer.Persistence.Repository.IParkingRepository;
 import com.project.layer.Persistence.Repository.IReservationRepository;
+import com.project.layer.Persistence.Repository.IVehicleTypeRepository;
 
 import lombok.RequiredArgsConstructor;
 
@@ -26,6 +29,7 @@ import lombok.RequiredArgsConstructor;
 public class StatisticsService {
     private final IParkingRepository parkingRepository;
     private final IReservationRepository reservationRepository;
+    private final IVehicleTypeRepository vehicleTypeRepository;
 
     public List<HourAveragemRequest> getHourAverage(@RequestParam Date initialDate, @RequestParam Date finalDate,
             @RequestParam int idParking) {
@@ -41,7 +45,8 @@ public class StatisticsService {
             for (int j = 0; j <= 23; j++) {
                 DateHourCountRequest auxDHC = new DateHourCountRequest(); // Crear una nueva instancia en cada iteración
                 auxDHC.setCount(
-                        reservationRepository.getDateHourCount(Date.valueOf(iniDate), Time.valueOf(hour), 2));
+                        reservationRepository.getDateHourCount(Date.valueOf(iniDate), Time.valueOf(hour), idParking));
+                System.out.println("FECHAAAAAAAAAAAAAAAAAA: " + iniDate);
                 auxDHC.setDate(Date.valueOf(iniDate));
                 auxDHC.setHour(Time.valueOf(hour));
                 prevList.add(auxDHC); // Agregar la instancia a la lista
@@ -50,7 +55,6 @@ public class StatisticsService {
             hour = LocalTime.of(0, 0);
             iniDate = iniDate.plusDays(1);
         }
-
         List<HourAveragemRequest> returnList = new ArrayList<>();
         hour = LocalTime.of(0, 0); // Reiniciar hour
         for (int i = 0; i <= 23; i++) {
@@ -234,34 +238,74 @@ public class StatisticsService {
     }
 
     public List<HourOccupationRequest> getOccupation(Date dateFind, int idParking) {
-        LocalDate date = dateFind.toLocalDate();
         LocalTime hour = LocalTime.of(0, 0);
-        List<HourOccupationRequest> prevList = new ArrayList<>();
-        int capacity = parkingRepository.getCapacity(idParking);
-        float count = 0.0f;
-        for (int j = 0; j <= 23; j++) {
-            HourOccupationRequest auxDHC = new HourOccupationRequest(); // Crear una nueva instancia en cada iteración
-            count = 0.0f;
-            String parkings = "";
-            for (int i = 1; i <= capacity; i++) {
-                if (reservationRepository.testBefore(Date.valueOf(date), i, Time.valueOf(hour), idParking) == 1
-                        || reservationRepository.testBetween(Date.valueOf(date), i, idParking) == 1
-                        || reservationRepository.testAfter(Date.valueOf(date), i, Time.valueOf(hour), idParking) == 1) {
-                    count +=1;
-                    parkings += "Parking number: "+i+" / ";
-                }
-            }
-            auxDHC.setParkings(parkings);
-            auxDHC.setOccupation(count / parkingRepository.getCapacity(idParking));
-            auxDHC.setHour(Time.valueOf(hour));
-            prevList.add(auxDHC); // Agregar la instancia a la lista
+        List<HourOccupationRequest> resList = new ArrayList<>();
+        for (int i = 0; i <= 23; i++) {
+            final Time aHour = Time.valueOf(hour);
+            HourOccupationRequest auxHourOccupation = new HourOccupationRequest(); // Crear una nueva instancia en cada
+                                                                                   // iteración
+            auxHourOccupation.setOccupation(reservationRepository.occupationHour(dateFind, aHour, idParking)
+                    / parkingRepository.getCapacity(idParking));
+            System.out.println("Occupation hour: " + reservationRepository.occupationHour(dateFind, aHour, idParking)
+                    + "\nCapacity: " + parkingRepository.getCapacity(idParking));
+            auxHourOccupation.setHour(aHour);
+            resList.add(auxHourOccupation);
             hour = hour.plusHours(1);
         }
-
-        System.out.println(prevList);
-        System.out.println(dateFind.toLocalDate());
-
-        return prevList;
+        return resList;
     }
+
+    public List<HourOccupationRequest> getAllOccupation(Date date) {
+        LocalTime hour = LocalTime.of(0, 0);
+        List<HourOccupationRequest> resList = new ArrayList<>();
+        for (int i = 0; i <= 23; i++) {
+            final Time aHour = Time.valueOf(hour);
+            HourOccupationRequest auxHourOccupation = new HourOccupationRequest(); // Crear una nueva instancia en cada
+                                                                                   // iteración
+            auxHourOccupation.setOccupation(
+                    reservationRepository.allOccupationHour(date, aHour) / parkingRepository.getCapacity());
+            System.out.println("Hour: " + aHour + "\nOccupation percent: "
+                    + (reservationRepository.allOccupationHour(date, aHour) / parkingRepository.getCapacity()));
+            auxHourOccupation.setHour(aHour);
+            resList.add(auxHourOccupation);
+            hour = hour.plusHours(1);
+        }
+        System.out.println("Resultado: " + 3.0f / 436);
+        return resList;
+    }
+
+    public List<HourOccupationRequest> getCityOccupation(Date date, String city) {
+        LocalTime hour = LocalTime.of(0, 0);
+        List<HourOccupationRequest> resList = new ArrayList<>();
+        for (int i = 0; i <= 23; i++) {
+            final Time aHour = Time.valueOf(hour);
+            HourOccupationRequest auxHourOccupation = new HourOccupationRequest(); // Crear una nueva instancia en cada
+                                                                                   // iteración
+            auxHourOccupation.setOccupation(
+                    reservationRepository.cityOccupationHour(date, aHour, city) / parkingRepository.getCapacity(city));
+            System.out.println("Occupation hour: " + reservationRepository.cityOccupationHour(date, aHour, city)
+                    + "\nCapacity: " + parkingRepository.getCapacity(city));
+            auxHourOccupation.setHour(aHour);
+            resList.add(auxHourOccupation);
+            hour = hour.plusHours(1);
+        }
+        return resList;
+    }
+
+    //public List<VehiclePercentageRequest> getCityVehiclePercentage(String city) {
+
+        /*List<String> idVehicles = new ArrayList<>();
+        idVehicles = vehicleTypeRepository.getIdVehicles();
+        List<VehiclePercentageRequest> resList = new ArrayList<>();
+        for (int i = 0; i < idVehicles.size(); i++) {
+            VehiclePercentageRequest auxVehicReq = new VehiclePercentageRequest();
+            auxVehicReq.setVehicle(idVehicles.get(i));
+            auxVehicReq.setPercentage(reservationRepository.countVehiclesRes(idVehicles.get(i),city)/reservationRepository.allCityRes(city));
+            resList.add(auxVehicReq);
+        }
+        return resList;*/
+    //}
+
+
 
 }

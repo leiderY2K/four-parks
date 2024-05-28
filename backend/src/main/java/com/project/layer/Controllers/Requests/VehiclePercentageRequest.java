@@ -1,10 +1,5 @@
 package com.project.layer.Controllers.Requests;
 
-
-import java.sql.Time;
-import java.sql.Date;
-
-
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -19,10 +14,10 @@ import lombok.Setter;
 @NoArgsConstructor
 @Getter
 @Setter
-public class HourOccupationRequest {
+public class VehiclePercentageRequest {
 
-    public Time hour;
+    public String vehicle;
 
-    public float occupation;
+    public float percentage;
    
 }

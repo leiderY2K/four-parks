@@ -22,6 +22,7 @@ import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
 
 import com.project.layer.Controllers.Requests.LoginRequest;
+import com.project.layer.Controllers.Requests.PassRecoveryRequest;
 import com.project.layer.Controllers.Requests.PassRequest;
 import com.project.layer.Controllers.Requests.RegisterRequest;
 import com.project.layer.Controllers.Requests.UserRequest;
@@ -81,6 +82,16 @@ public class AuthController {
     public ResponseEntity<AuthResponse> unlock(@RequestBody UnlockRequest request) {
         try {
             return ResponseEntity.ok(authService.unlock(request));
+        } catch (MessagingException e) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
+                    .body(new AuthResponse(null, null, "No se pudo enviar correo"));
+        }
+    }
+
+    @PostMapping(value = "pass-recovery")
+    public ResponseEntity<AuthResponse> passRecovery(@RequestBody PassRecoveryRequest request) {
+        try {
+            return ResponseEntity.ok(authService.passRecovery(request));
         } catch (MessagingException e) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
                     .body(new AuthResponse(null, null, "No se pudo enviar correo"));
