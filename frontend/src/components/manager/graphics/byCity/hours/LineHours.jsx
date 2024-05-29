@@ -5,26 +5,41 @@ import axios from "axios";
 
 ChartJS.register(CategoryScale, LinearScale, PointElement, LineElement, Title, Tooltip, Legend);
 
-const LineHours = ({url, actualParking, startDate, endDate}) => {
+const LineHours = ({url, actualCity, startDate, endDate}) => {
+    const [idCity, setIdCity] = useState('');
     const [hoursAverage, setHoursAverage] = useState([]);
 
     useEffect(() => {
         const token = sessionStorage.getItem('token').replace(/"/g, '');
-        setHoursAverage([]);
-      
-        axios.get(`${url}/statistics/average-hour/`, {params: {
-            initialDate: startDate,
-            finalDate: endDate,
-            idParking: actualParking.id
-        }, headers: {Authorization: `Bearer ${token}`}})
+
+        axios.get(`${url}/city/${actualCity}`, {headers: {Authorization: `Bearer ${token}`}})
         .then((res) => {
-            const hoursData = res.data.map(item => ({ hour: item.hour, average: item.average }));
-            setHoursAverage(element => [...element, ...hoursData]);
+            setIdCity(res.data.idCity);
         })
         .catch((err) => {
-            console.log(err);
-        });
-    }, [actualParking, startDate, endDate]);      
+            console.log(err)
+        })
+    }, [actualCity]);  
+
+    useEffect(() => {
+        if(idCity) {
+            const token = sessionStorage.getItem('token').replace(/"/g, '');
+            setHoursAverage([]);
+    
+            axios.get(`${url}/statistics/city-average-hour`, {params: {
+                initialDate: startDate,
+                finalDate: endDate,
+                city: idCity
+            }, headers: {Authorization: `Bearer ${token}`}})
+            .then((res) => {
+                const hoursData = res.data.map(item => ({ hour: item.hour, average: item.average }));
+                setHoursAverage(element => [...element, ...hoursData]);
+            })
+            .catch((err) => {
+                console.log(err);
+            });
+        }
+    }, [idCity, startDate, endDate]);
 
     const labels = hoursAverage.map((item) => item.hour);
     const average = hoursAverage.map((item) => item.average);
@@ -48,7 +63,7 @@ const LineHours = ({url, actualParking, startDate, endDate}) => {
         plugins: {
             title: {
                 display: true,
-                text: 'PROMEDIO DE RESERVAS POR HORA',
+                text: `PROMEDIO DE RESERVAS POR HORA EN ${actualCity.toUpperCase()}`,
             },
         },
         scales: {

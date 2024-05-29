@@ -25,7 +25,7 @@ function ParamsInfo({url, actualCity, actualParking}) {
             setAddress(actualParking[0].address.descAddress);
             setEmail(actualParking[0].email);
             setPhone(actualParking[0].phone);
-            setParkType(actualParking[0].parkingType.idParkingType);
+            setParkType(actualParking[0].parkingType.descParkingType);
             setParkAvailability(actualParking[0].schedule.scheduleType);
             setParkStart(actualParking[0].startTime);
             setParkEnd(actualParking[0].endTime);
@@ -84,8 +84,7 @@ function ParamsInfo({url, actualCity, actualParking}) {
 
                     <div className='flex flex-col mt-5'>
                         <label className='text-lg font-semibold mb-2'>Coordenadas X</label>
-                        <input className='w-full shadow-xl p-2.5 rounded-md bg-white opacity-70 font-paragraph' value={coordX} disabled={true}  
-                        onChange={(e) => setCoordX(e.target.value)}></input>
+                        <input className='w-full shadow-xl p-2.5 rounded-md bg-white opacity-70 font-paragraph' value={coordX} disabled={true}></input>
                     </div>
 
                     <div className='flex flex-col mt-5'>
@@ -144,8 +143,7 @@ function ParamsInfo({url, actualCity, actualParking}) {
 
                     <div className='flex flex-col mt-5'>
                         <label className='text-lg font-semibold mb-2'>Coordenadas Y</label>
-                        <input className='w-full shadow-xl p-2.5 rounded-md bg-white opacity-70 font-paragraph' value={coordY} disabled={true} 
-                        onChange={(e) => setCoordY(e.target.value)}></input>
+                        <input className='w-full shadow-xl p-2.5 rounded-md bg-white opacity-70 font-paragraph' value={coordY} disabled={true}></input>
                     </div>
 
                     <div className='flex flex-col mt-5'>
@@ -156,13 +154,7 @@ function ParamsInfo({url, actualCity, actualParking}) {
 
                     <div className='flex flex-col mt-5'>
                         <label className='text-lg font-semibold mb-2'>Tipo de parqueadero</label>
-                        <select className={`w-full shadow-xl p-3 rounded-md bg-white font-paragraph ${canEdit ? 'opacity-100' : 'opacity-70'}`} value={parkType} 
-                        disabled={!canEdit} 
-                        onChange={(e) => setParkType(e.target.value)}>
-                            <option value="COV"> Cubierto </option>
-                            <option value="SEC"> Semi-cubierto </option>
-                            <option value="UNC"> Descubierto </option>
-                        </select>
+                        <input className='w-full shadow-xl p-2.5 rounded-md bg-white opacity-70 font-paragraph' value={parkType} disabled={true}></input>
                     </div>
 
                     <div className='flex flex-col mt-5'>

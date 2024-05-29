@@ -5,7 +5,7 @@ import Map from '../../components/manager/Map.jsx'
 import ParamsInfo from '../../components/manager/ParamsInfo.jsx'
 import QuotaManager from "../../components/manager/QuotaManager.jsx";
 
-const HomeAdminPage = ({url, initialCoords}) => {
+const HomeManagerPage = ({url, initialCoords}) => {
   const [cities, setCities] = useState([]);
   const [city, setCity] = useState("");
   const [actualCity, setActualCity] = useState({
@@ -75,4 +75,4 @@ const HomeAdminPage = ({url, initialCoords}) => {
   )
 }
 
-export default HomeAdminPage
+export default HomeManagerPage

@@ -41,12 +41,11 @@ const Map = ({ url, city, actualCity, setActualCity, setActualParking }) => {
         
         axios.get(`${url}/parking/city/${urlCity}`, {headers: { Authorization: `Bearer ${token}` }})
         .then(res => {
-            console.log(res)
             const parkingArray = res.data.map(parking => ({
                 id: parking.parkingId.idParking,
                 name: parking.namePark,
                 address: parking.address.descAddress,
-                coords: [parking.address.addressCoordinatesX, parking.address.addressCoordinatesY],
+                coords: [parking.address.coordinatesX, parking.address.coordinatesY],
                 type: parking.parkingType.descParkingType,
             }));
 
@@ -107,16 +106,18 @@ const Map = ({ url, city, actualCity, setActualCity, setActualParking }) => {
 
             <UpdateMap city={city} center={actualCity.centerCoords} bounds={[actualCity.northLim, actualCity.southLim]} />
 
-            {parkings.map(parking => (
-                <Marker key={parking.id} position={parking.coords} icon={getIcon(parking.type)} eventHandlers={{click: () => handleChangeParking(parking)}}>
-                    <Popup> 
-                        <div className='flex flex-col font-title'>
-                            <span className='font-semibold mb-1'> {parking.name} </span> 
-                            <span className='text-xs'> {parking.address} </span>
-                        </div>
-                    </Popup>
-                </Marker>
-            ))}
+            {parkings.length > 0 ? (
+                parkings.map(parking => (
+                    <Marker key={parking.id} position={parking.coords} icon={getIcon(parking.type)} eventHandlers={{click: () => handleChangeParking(parking)}}>
+                        <Popup> 
+                            <div className='flex flex-col font-title'>
+                                <span className='font-semibold mb-1'> {parking.name} </span> 
+                                <span className='text-xs'> {parking.address} </span>
+                            </div>
+                        </Popup>
+                    </Marker>
+                ))
+            ) : null }
         </MapContainer>
     );
 }

@@ -4,7 +4,7 @@ import Header from "../../components/admin/Header"
 import Map from '../../components/admin/Map.jsx'
 import ParamsInfo from '../../components/admin/ParamsInfo.jsx'
 
-const HomeManagerPage = ({url}) => {
+const HomeAdminPage = ({url}) => {
   const [actualCity, setActualCity] = useState();
   const [actualParking, setActualParking] = useState();
 
@@ -38,7 +38,7 @@ const HomeManagerPage = ({url}) => {
             <Map url={url} actualCity={actualCity} setActualCity={setActualCity} actualParking={actualParking} setActualParking={setActualParking} />
           </section>
 
-          <section className='w-2/5 ml-48 z-0'>
+          <section className='w-2/5 ml-48 mb-48 z-0'>
             <ParamsInfo url={url} actualCity={actualCity} actualParking={actualParking} />
           </section>
         </section>
@@ -46,4 +46,4 @@ const HomeManagerPage = ({url}) => {
   )
 }
 
-export default HomeManagerPage
+export default HomeAdminPage
