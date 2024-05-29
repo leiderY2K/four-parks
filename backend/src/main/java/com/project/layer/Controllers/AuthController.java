@@ -91,7 +91,10 @@ public class AuthController {
     @PostMapping(value = "pass-recovery")
     public ResponseEntity<AuthResponse> passRecovery(@RequestBody PassRecoveryRequest request) {
         try {
-            return ResponseEntity.ok(authService.passRecovery(request));
+            AuthResponse recoveryPass = authService.passRecovery(request);
+            List<String> messages = Arrays.asList("PasswordChange", recoveryPass.getContra());
+        mailservice.sendMail(request.getEmail(), "Bienvenido a four-parks Colombia", messages);
+            return ResponseEntity.ok(recoveryPass);
         } catch (MessagingException e) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
                     .body(new AuthResponse(null, null, "No se pudo enviar correo"));

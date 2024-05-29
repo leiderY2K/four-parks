@@ -152,14 +152,14 @@ public class ReservationService {
     }
 
     public boolean isReservationNearStarting(Reservation reservation) {
-        LocalTime targetTime = (LocalTime.now().getHour() == 23) ? targetTime = LocalTime.of(0,0,0): LocalTime.of(LocalTime.now().getHour()+1, 0, 0);
-        LocalTime reservationTime = reservation.getStartTimeRes().toLocalTime();
+        LocalTime targetTime = reservation.getStartTimeRes().toLocalTime();
+        LocalTime localTime = LocalTime.now(); 
         Date targetDate = Date.valueOf(LocalDate.now());
-        
-        System.out.println("El tiempo supuesto:"+ChronoUnit.SECONDS.between(targetTime, reservationTime));
+        System.out.println(targetTime + " " + localTime);
+        System.out.println("El tiempo supuesto:"+ChronoUnit.SECONDS.between(localTime, targetTime));
         if (
             reservation.getStartDateRes().equals(targetDate)
-            && ChronoUnit.SECONDS.between(targetTime, reservationTime) < 1800
+            && ChronoUnit.SECONDS.between(localTime, targetTime) < 1800
         ) {                
             return true;
         }
