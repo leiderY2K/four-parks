@@ -46,7 +46,7 @@ const Map = ({ url, city, actualCity, setActualCity, setActualParking }) => {
                 name: parking.namePark,
                 address: parking.address.descAddress,
                 coords: [parking.address.coordinatesX, parking.address.coordinatesY],
-                type: parking.parkingType.descParkingType,
+                type: parking.parkingType.idParkingType,
             }));
 
             setParkings(parkingArray);
