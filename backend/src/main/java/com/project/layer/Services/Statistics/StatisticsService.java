@@ -39,18 +39,14 @@ public class StatisticsService {
             @RequestParam int idParking) {
         LocalDate iniDate = initialDate.toLocalDate();
         LocalDate finDate = finalDate.toLocalDate();
-        System.out.println("iniDate: " + iniDate);
-        System.out.println("finDate: " + finDate);
         LocalTime hour = LocalTime.of(0, 0);
         List<DateHourCountRequest> prevList = new ArrayList<>();
         long daysBetween = ChronoUnit.DAYS.between(iniDate, finDate) + 1;
-        System.out.println("total dias: " + daysBetween);
         for (int i = 0; i < daysBetween; i++) {
             for (int j = 0; j <= 23; j++) {
                 DateHourCountRequest auxDHC = new DateHourCountRequest(); // Crear una nueva instancia en cada iteración
                 auxDHC.setCount(
                         reservationRepository.getDateHourCount(Date.valueOf(iniDate), Time.valueOf(hour), idParking));
-                System.out.println("FECHAAAAAAAAAAAAAAAAAA: " + iniDate);
                 auxDHC.setDate(Date.valueOf(iniDate));
                 auxDHC.setHour(Time.valueOf(hour));
                 prevList.add(auxDHC); // Agregar la instancia a la lista
@@ -78,23 +74,21 @@ public class StatisticsService {
             returnList.add(auxAverage);
             hour = hour.plusHours(1);
         }
-        System.out.println(returnList);
 
         return returnList;
     }
 
-    public List<HourAveragemRequest> getHourAverage(Date initialDate, Date finalDate) {
+    public List<HourAveragemRequest> getAllHourAverage(Date initialDate, Date finalDate) {
         LocalDate iniDate = initialDate.toLocalDate();
         LocalDate finDate = finalDate.toLocalDate();
         LocalTime hour = LocalTime.of(0, 0);
         List<DateHourCountRequest> prevList = new ArrayList<>();
         long daysBetween = ChronoUnit.DAYS.between(iniDate, finDate) + 1;
-        System.out.println("total dias: " + daysBetween);
         for (int i = 0; i < daysBetween; i++) {
             for (int j = 0; j <= 23; j++) {
                 DateHourCountRequest auxDHC = new DateHourCountRequest(); // Crear una nueva instancia en cada iteración
                 auxDHC.setCount(
-                        reservationRepository.getDateHourCount(Date.valueOf(iniDate), Time.valueOf(hour)));
+                        reservationRepository.getAllDateHourCount(Date.valueOf(iniDate), Time.valueOf(hour)));
                 auxDHC.setDate(Date.valueOf(iniDate));
                 auxDHC.setHour(Time.valueOf(hour));
                 prevList.add(auxDHC); // Agregar la instancia a la lista
@@ -103,7 +97,6 @@ public class StatisticsService {
             hour = LocalTime.of(0, 0);
             iniDate = iniDate.plusDays(1);
         }
-
         List<HourAveragemRequest> returnList = new ArrayList<>();
         hour = LocalTime.of(0, 0); // Reiniciar hour
         for (int i = 0; i <= 23; i++) {
@@ -123,25 +116,21 @@ public class StatisticsService {
             returnList.add(auxAverage);
             hour = hour.plusHours(1);
         }
-        System.out.println(returnList);
 
         return returnList;
     }
 
-    public List<HourAveragemRequest> getHourAverage(Date initialDate, Date finalDate, String city) {
+    public List<HourAveragemRequest> getCityHourAverage(Date initialDate, Date finalDate, String city) {
         LocalDate iniDate = initialDate.toLocalDate();
         LocalDate finDate = finalDate.toLocalDate();
-        System.out.println("iniDate: " + iniDate);
-        System.out.println("finDate: " + finDate);
         LocalTime hour = LocalTime.of(0, 0);
         List<DateHourCountRequest> prevList = new ArrayList<>();
         long daysBetween = ChronoUnit.DAYS.between(iniDate, finDate) + 1;
-        System.out.println("total dias: " + daysBetween);
         for (int i = 0; i < daysBetween; i++) {
             for (int j = 0; j <= 23; j++) {
                 DateHourCountRequest auxDHC = new DateHourCountRequest(); // Crear una nueva instancia en cada iteración
                 auxDHC.setCount(
-                        reservationRepository.getDateHourCount(Date.valueOf(iniDate), Time.valueOf(hour), city));
+                        reservationRepository.getCityDateHourCount(Date.valueOf(iniDate), Time.valueOf(hour), city));
                 auxDHC.setDate(Date.valueOf(iniDate));
                 auxDHC.setHour(Time.valueOf(hour));
                 prevList.add(auxDHC); // Agregar la instancia a la lista
@@ -150,7 +139,6 @@ public class StatisticsService {
             hour = LocalTime.of(0, 0);
             iniDate = iniDate.plusDays(1);
         }
-
         List<HourAveragemRequest> returnList = new ArrayList<>();
         hour = LocalTime.of(0, 0); // Reiniciar hour
         for (int i = 0; i <= 23; i++) {
@@ -170,7 +158,6 @@ public class StatisticsService {
             returnList.add(auxAverage);
             hour = hour.plusHours(1);
         }
-        System.out.println(returnList);
 
         return returnList;
     }
@@ -179,11 +166,8 @@ public class StatisticsService {
         LocalDate iniDate = initialDate.toLocalDate();
         LocalDate finDate = finalDate.toLocalDate();
         LocalDate auxDate = initialDate.toLocalDate();
-        System.out.println("INITIAL DATE: " + initialDate);
-        System.out.println("FINAL DATE: " + finalDate); // Corrigido para imprimir la fecha final correcta
         List<DateSumRequest> returnList = new ArrayList<>();
         long daysBetween = ChronoUnit.DAYS.between(iniDate, finDate);
-        System.out.println("total dias: " + daysBetween);
 
         for (int i = 0; i <= daysBetween; i++) {
             DateSumRequest auxDS = new DateSumRequest(); // Crear una nueva instancia en cada iteración
@@ -191,10 +175,7 @@ public class StatisticsService {
             auxDS.setSum(sum != null ? sum : 0.0f); // Manejar el caso donde sum es null
             auxDS.setDate(Date.valueOf(auxDate));
             returnList.add(auxDS); // Agregar la instancia a la lista
-            System.out.println("INITIAL DATE: " + initialDate);
             auxDate = auxDate.plusDays(1);
-            System.out.println("AUX DATE: " + auxDate);
-            System.out.println(returnList);
         }
 
         return returnList;
@@ -212,10 +193,7 @@ public class StatisticsService {
             auxDS.setSum(sum != null ? sum : 0.0f); // Manejar el caso donde sum es null
             auxDS.setDate(Date.valueOf(iniDate));
             returnList.add(auxDS); // Agregar la instancia a la lista
-            System.out.println("INITIAL DATE: " + initialDate);
             iniDate = iniDate.plusDays(1);
-            System.out.println("AUX DATE: " + iniDate);
-            System.out.println(returnList);
         }
 
         return returnList;
@@ -232,10 +210,7 @@ public class StatisticsService {
             auxDS.setSum(sum != null ? sum : 0.0f); // Manejar el caso donde sum es null
             auxDS.setDate(Date.valueOf(iniDate));
             returnList.add(auxDS); // Agregar la instancia a la lista
-            System.out.println("INITIAL DATE: " + initialDate);
             iniDate = iniDate.plusDays(1);
-            System.out.println("AUX DATE: " + iniDate);
-            System.out.println(returnList);
         }
 
         return returnList;
@@ -250,8 +225,6 @@ public class StatisticsService {
                                                                                    // iteración
             auxHourOccupation.setOccupation(reservationRepository.occupationHour(dateFind, aHour, idParking)
                     / parkingRepository.getCapacity(idParking));
-            System.out.println("Occupation hour: " + reservationRepository.occupationHour(dateFind, aHour, idParking)
-                    + "\nCapacity: " + parkingRepository.getCapacity(idParking));
             auxHourOccupation.setHour(aHour);
             resList.add(auxHourOccupation);
             hour = hour.plusHours(1);
@@ -268,13 +241,10 @@ public class StatisticsService {
                                                                                    // iteración
             auxHourOccupation.setOccupation(
                     reservationRepository.allOccupationHour(date, aHour) / parkingRepository.getCapacity());
-            System.out.println("Hour: " + aHour + "\nOccupation percent: "
-                    + (reservationRepository.allOccupationHour(date, aHour) / parkingRepository.getCapacity()));
             auxHourOccupation.setHour(aHour);
             resList.add(auxHourOccupation);
             hour = hour.plusHours(1);
         }
-        System.out.println("Resultado: " + 3.0f / 436);
         return resList;
     }
 
@@ -287,8 +257,6 @@ public class StatisticsService {
                                                                                    // iteración
             auxHourOccupation.setOccupation(
                     reservationRepository.cityOccupationHour(date, aHour, city) / parkingRepository.getCapacity(city));
-            System.out.println("Occupation hour: " + reservationRepository.cityOccupationHour(date, aHour, city)
-                    + "\nCapacity: " + parkingRepository.getCapacity(city));
             auxHourOccupation.setHour(aHour);
             resList.add(auxHourOccupation);
             hour = hour.plusHours(1);
