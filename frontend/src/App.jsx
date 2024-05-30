@@ -8,7 +8,6 @@ import HomeAdminPage from "./pages/admin/HomeAdminPage";
 import StatisticsAdminPage from "./pages/admin/StatisticsAdminPage";
 import HomeManagerPage from "./pages/manager/HomeManagerPage";
 import StatisticsManagerPage from "./pages/manager/StatisticsManagerPage";
-//import StatisticsPage from "./pages/admin/StatisticsPage";
 import PasswordChangePage from "./pages/general/PasswordChangePage";
 import SignUpClientAdminPage from "./pages/admin/SignUpClientAdminPage";
 import SignUpAdminPage from "./pages/manager/SignUpAdminPage";

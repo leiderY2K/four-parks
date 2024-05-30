@@ -22,10 +22,13 @@
     "react-leaflet": "^4.2.1",
     "react-leaflet-cluster": "^2.1.0",
     "react-router-dom": "^6.22.3",
+    "react-scroll": "^1.9.0",
     "react-slick": "^0.30.2",
     "slick-carousel": "^1.8.1",
     "sweetalert2": "^11.6.13",
     "tailwindcss-animated": "^1.0.1",
+    "react-router-hash-link": "^2.4.3",
+    "react-tweet": "^3.2.1",
     "xlsx": "https://cdn.sheetjs.com/xlsx-0.20.2/xlsx-0.20.2.tgz",
     "xlsx-populate": "^1.21.0"
   },

@@ -109,7 +109,7 @@ const Index = ({ url }) => {
   return (
     <>
       <Header />
-      <div className="absolute inset-x-0 top-0 h-8 bg-red-light mt-36" ></div>
+      <div className="absolute inset-x-0 -top-4 h-8 bg-red-light mt-36" ></div>
       <section className="px-14 pt-40 text-center" >
         <div className="text-9xl">
           <span className="font-bold text-blue-dark">¡</span>
@@ -126,10 +126,10 @@ const Index = ({ url }) => {
           ¡Reserva tu espacio de estacionamiento con nosotros hoy mismo!
         </div>
 
-        <div className="absolute inset-x-0 bottom-0 h-8 bg-red-light"></div>
+        <div className="absolute inset-x-0 bottom-96 h-8 bg-red-light"></div>
       </section>
 
-      <section className="px-14 pt-40 pb-20 flex justify-between " id="quienes-somos" >
+      <section id="quienes-somos" className="px-14 pt-40 pb-20 flex justify-between">
         <div className="w-1/2 h-full">
           <ImageCarousel />
         </div>
@@ -167,7 +167,7 @@ const Index = ({ url }) => {
        
       </section>
 
-      <section className="px-14 flex justify-between" id="paso-a-paso" >
+      <section id="paso-a-paso" className="px-14 flex justify-between">
         <div className="bg-white h-auto w-1/2 mr-10 p-5 rounded-lg shadow-lg flex flex-col justify-center">
           <Slider {...settings} autoplay={true} autoplaySpeed={10000}> 
             <div className="text-blue-dark font-bold text-4xl flex mt-5 px-20 text-center">
@@ -226,7 +226,7 @@ const Index = ({ url }) => {
         
       </section>
 
-      <section className="px-14 mt-20" id="twitter" >
+      <section id="opiniones" className="px-14 mt-20">
         <div className="text-center text-4xl font-semibold mb-5">
           ¡Opiniones de nuestros usuarios!
         </div>
@@ -261,7 +261,7 @@ const Index = ({ url }) => {
       </section>
 
 
-      <section className="px-12 mt-20" id="preguntas-frecuentes" >
+      <section id="preguntas-frecuentes" className="px-12 mt-20">
         <div className="text-center text-4xl font-semibold mb-5">
           Preguntas frecuentes (FAQ)
         </div>
@@ -293,34 +293,35 @@ const Index = ({ url }) => {
         </div>
       </section>
 
-      <section className="">
+      <section className="text-white">
         <section className="px-12 mt-20 flex justify-between h-auto bg-red-light" >
-        
-          <div className="text-center flex-auto w-2/6 text-lg">
-            <div className="text-center flex justify-start mt-2">
+          <section className="flex w-3/5 items-center text-lg">
+            <div className="mr-8">
               Línea de atención: 12345678 - Bogotá || 56789123 - Colombia
             </div>
-            <div className="text-start flex justify-start mt-5">
+            <div className="mr-8">
               Correo electrónico: fourparksoficial@gmail.com
             </div>
-            <div className="text-center flex justify-start mt-1">
+            <div className="">
                © FourParksOficial
             </div>
-            
-          </div>
-          <div className="w-2/6 ">
-            <div className="text-center font-semibold flex justify-end">
+          </section>
+          
+          <section className="w-1/6">
+            <div className="text-center font-semibold mt-1">
               Redes sociales
             </div>
-            <div className="text-center flex justify-end">
+
+            <div className="text-center">
               _________________
             </div>
-            <div className="text-center flex justify-end mt-1">
-              <a href="/"><img src={facebook} alt="Facebook" className="w-7 h-7 mt-2" /></a>
-              <a href="/"><img src={ig} alt="Instagram" className="w-10 h-10 mt-1 ml-2" /></a>
-              <a href="https://x.com/FourParkOficial"><img src={x} alt="X" className="w-7 h-7 mt-2 ml-2" /></a>
+
+            <div className="flex justify-between">
+              <a href="/"><img src={facebook} alt="Facebook" className="w-7 h-7" /></a>
+              <a href="/"><img src={ig} alt="Instagram" className="w-10 h-10 ml-2" /></a>
+              <a href="https://x.com/FourParkOficial"><img src={x} alt="X" className="w-7 h-7 ml-2" /></a>
             </div>
-          </div>
+          </section>
         </section>
       </section>
     </>
