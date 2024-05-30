@@ -13,6 +13,10 @@ import PasswordChangePage from "./pages/general/PasswordChangePage";
 import SignUpClientAdminPage from "./pages/admin/SignUpClientAdminPage";
 import SignUpAdminPage from "./pages/manager/SignUpAdminPage";
 import ForgotPassPage from "./pages/general/ForgotPassPage";
+import Index from "./pages/general/Index";
+
+import "slick-carousel/slick/slick.css"; 
+import "slick-carousel/slick/slick-theme.css";
 
 function App() {
   const url = "http://localhost:8080";
@@ -67,11 +71,13 @@ function App() {
     useEffect(() => {
         geolocalizate();
     }, []);
-
+//   <Route path="/" element={<LoginPage url={url} />} />
   return (
     <BrowserRouter>
       <Routes>
-          <Route path="/" element={<LoginPage url={url} />} />
+      
+        <Route path="/" element={<Index url={url} />} />
+       
           <Route path="/inicio-sesion" element={<LoginPage url={url} />} />
           <Route path="/registro" element={<SignUpClientPage url={url} />} />
           <Route path="/cliente-inicio" element={<HomeClientPage url={url} initialCoords={initialCoords} />}/>
