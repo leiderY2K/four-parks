@@ -24,17 +24,19 @@ function ReservationCard({url, setOnReservationForm, actualParking, actualCity }
     const bicCompData = actualParking[1].BIC;
 
     function calculatePrice(param) {
-        let x
-        //console.log(resStart)
         let a = parseInt(resStart,10)
         let b = parseInt(resEnd,10)
         if (b < a) {
             b += 24;
         }
-        x = b - a; 
-        console.log(x)
-        let precio = x*param;
-        setPrice(precio)
+        const startDate = new Date(resStartDate);
+        const endDate = new Date(resEndDate);
+        const diffMs = endDate - startDate;
+        const diffDays = diffMs / (1000 * 60 * 60 * 24);
+        let totalHours = (b - a) + (diffDays * 24);
+        let totalPrice = totalHours * param;
+        setPrice(totalPrice)
+        
     }
     
     const navigate = useNavigate();
