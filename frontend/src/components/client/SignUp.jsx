@@ -3,7 +3,6 @@ import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import Swal from 'sweetalert2'
 import logo from '../../assets/Logo.png'
-import { useEffect } from "react";
 
 export default function SignUp({ url }) {
     const [idType, setIdType] = useState('');
