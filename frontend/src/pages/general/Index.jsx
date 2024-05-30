@@ -1,18 +1,18 @@
 import { useState, useEffect } from "react";
+import Slider from 'react-slick';
+import { HashLink as AnchorLink } from 'react-router-hash-link';
+import { Tweet } from "react-tweet";
+
 import Header from '../../components/general/Header.jsx';
 import ImageCarousel from "../../components/general/ImageCarousel.jsx";
-import "slick-carousel/slick/slick.css";
-import "slick-carousel/slick/slick-theme.css";
-import Slider from 'react-slick';
 import ImageCarousel2 from "../../components/general/ImageCarousel2.jsx";
+
 import pasoapaso from '../../assets/pasoapaso.png';
 import quienessomos from '../../assets/quienessomos.png';
 import logo from '../../assets/Logo.png';
 import facebook from '../../assets/facebook.png';
 import ig from '../../assets/instagram.png';
 import x from '../../assets/X.png';
-import { HashLink as AnchorLink } from 'react-router-hash-link';
-import { Tweet } from "react-tweet";
 import bgImage from '../../assets/BG-PC.jpeg'
 
 
