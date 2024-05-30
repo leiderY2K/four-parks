@@ -1,18 +1,24 @@
 import { useState, useEffect } from "react";
 import axios from "axios";
-import Header from "../../components/admin/Header";
-import BarHours from "../../components/admin/graphics/BarHours";
-import PieHours from "../../components/admin/graphics/PieHours";
-import LineHours from "../../components/admin/graphics/LineHours";
 import { jsPDF } from "jspdf";
 import { utils, writeFile } from "xlsx";
 import * as XLSX from 'xlsx';
 import html2canvas from "html2canvas";
 import ExcelJS from "exceljs";
+import Header from "../../components/admin/Header";
+import BarHours from "../../components/admin/graphics/hours/BarHours";
+import PieHours from "../../components/admin/graphics/hours/PieHours";
+import LineHours from "../../components/admin/graphics/hours/LineHours";
+import BarSales from "../../components/admin/graphics/sales/BarSales";
+import PieSales from "../../components/admin/graphics/sales/PieSales";
+import LineSales from "../../components/admin/graphics/sales/LineSales";
+import BarOccupation from "../../components/admin/graphics/occupation/BarOccupation";
+import PieOccupation from "../../components/admin/graphics/occupation/PieOccupation";
+import LineOccupation from "../../components/admin/graphics/occupation/LineOccupation";
 
 const StatisticsAdminPage = ({ url }) => {
-  const [infoType, setInfoType] = useState('');
-  const [graphicType, setGraphicType] = useState('');
+  const [infoType, setInfoType] = useState('hours');
+  const [graphicType, setGraphicType] = useState('bars');
   const [startDate, setStartDate] = useState('');
   const [endDate, setEndDate] = useState('');
   const [imageData, setImageData] = useState('');
@@ -43,7 +49,7 @@ const StatisticsAdminPage = ({ url }) => {
       switch (graphicType) {
         case 'bars':
           return (
-            <section className="w-10/12 mt-5 mx-auto" id="graph-section">
+            <section className="w-10/12 mt-12 mx-auto" id="graph-section">
               <div className="border bg-white p-6 rounded-md shadow-md overflow-hidden">
                 <BarHours url={url} actualParking={actualParking} startDate={startDate} endDate={endDate} />
               </div>
@@ -51,7 +57,7 @@ const StatisticsAdminPage = ({ url }) => {
           );
         case 'circle':
           return (
-            <section className="w-10/12 mt-5 mx-auto" id="graph-section">
+            <section className="w-10/12 mt-12 mx-auto" id="graph-section">
               <div className="border bg-white p-6 rounded-md shadow-md overflow-hidden">
                 <PieHours url={url} actualParking={actualParking} startDate={startDate} endDate={endDate} />
               </div>
@@ -59,9 +65,75 @@ const StatisticsAdminPage = ({ url }) => {
           );
         case 'lines':
           return (
-            <section className="w-10/12 mt-5 mx-auto" id="graph-section">
+            <section className="w-10/12 mt-12 mx-auto" id="graph-section">
               <div className="border bg-white p-6 rounded-md shadow-md overflow-hidden">
                 <LineHours url={url} actualParking={actualParking} startDate={startDate} endDate={endDate} />
+              </div>
+            </section>
+          );
+        default:
+          return null;
+      }
+    }
+  }
+
+  const createSalesGraph = () => {
+    if (actualParking && infoType && graphicType && startDate && endDate) {
+      switch (graphicType) {
+        case 'bars':
+          return (
+            <section className="w-10/12 mt-12 mx-auto" id="graph-section">
+              <div className="border bg-white p-6 rounded-md shadow-md overflow-hidden">
+                <BarSales url={url} actualParking={actualParking} startDate={startDate} endDate={endDate} />
+              </div>
+            </section>
+          );
+        case 'circle':
+          return (
+            <section className="w-10/12 mt-12 mx-auto" id="graph-section">
+              <div className="border bg-white p-6 rounded-md shadow-md overflow-hidden">
+                <PieSales url={url} actualParking={actualParking} startDate={startDate} endDate={endDate} />
+              </div>
+            </section>
+          );
+        case 'lines':
+          return (
+            <section className="w-10/12 mt-12 mx-auto" id="graph-section">
+              <div className="border bg-white p-6 rounded-md shadow-md overflow-hidden">
+                <LineSales url={url} actualParking={actualParking} startDate={startDate} endDate={endDate} />
+              </div>
+            </section>
+          );
+        default:
+          return null;
+      }
+    }
+  }
+  
+  const createOccupationGraph = () => {
+    if (actualParking && infoType && graphicType && startDate) {
+      switch (graphicType) {
+        case 'bars':
+          return (
+            <section className="w-10/12 mt-12 mx-auto" id="graph-section">
+              <div className="border bg-white p-6 rounded-md shadow-md overflow-hidden">
+                <BarOccupation url={url} actualParking={actualParking} startDate={startDate} />
+              </div>
+            </section>
+          );
+        case 'circle':
+          return (
+            <section className="w-10/12 mt-12 mx-auto" id="graph-section">
+              <div className="border bg-white p-6 rounded-md shadow-md overflow-hidden">
+                <PieOccupation url={url} actualParking={actualParking} startDate={startDate} />
+              </div>
+            </section>
+          );
+        case 'lines':
+          return (
+            <section className="w-10/12 mt-12 mx-auto" id="graph-section">
+              <div className="border bg-white p-6 rounded-md shadow-md overflow-hidden">
+                <LineOccupation url={url} actualParking={actualParking} startDate={startDate} />
               </div>
             </section>
           );
@@ -74,7 +146,7 @@ const StatisticsAdminPage = ({ url }) => {
   const createButtons = () => {
     if (actualParking && infoType && graphicType && startDate && endDate) {
       return (
-        <section className="mt-8 pb-4 mr-36 flex justify-end">
+        <section className="mt-8 mb-6 mr-36 flex justify-end">
             <button onClick={GenPDF} className='shadow-xl px-16 py-3 mr-12 bg-blue-dark hover:bg-blue-darkest rounded-xl text-white font-title font-semibold'> 
             Generar PDF </button>
             <button onClick={GenExcel} className='shadow-xl px-16 py-3 bg-blue-dark hover:bg-blue-darkest rounded-xl text-white font-title font-semibold'> 
@@ -96,7 +168,6 @@ const StatisticsAdminPage = ({ url }) => {
   };
 
   const GenPDF = () => {
-    
     const doc = new jsPDF();
     const graphSection = document.getElementById('graph-section');
 
@@ -108,6 +179,9 @@ const StatisticsAdminPage = ({ url }) => {
     } else if (infoType === "sales") {
       tipoTemporal = "Ventas";
       descripcionGrafica = `Esta gráfica ${graphicType === 'bars' ? 'de barras' : graphicType === 'circle' ? 'circular' : 'de líneas'} ilustra la distribución de ventas en el parqueadero ${actualParking.name} durante el periodo comprendido entre ${startDate} y ${endDate}. La gráfica proporciona una visión clara de las fuentes de ingresos predominantes, facilitando la comprensión de las tendencias de ventas y la toma de decisiones informadas sobre estrategias comerciales.`;
+    } else if (infoType === "occupation") {
+      tipoTemporal = "Porcentaje de ocupación";
+      descripcionGrafica = `Esta gráfica ${graphicType === 'bars' ? 'de barras' : graphicType === 'circle' ? 'circular' : 'de líneas'} ilustra qué porcentaje de cupos del parqueadero ${actualParking.name} estuvieron ocupados durante el día ${startDate}. La gráfica nos permite comprender en qué rango de horas el parqueadero tiene mayor cantidad de espacios reservados y en cuáles menos, y de esa manera poder plantaer las estrategias que sean necesarias para aumentar el número de reservas y gestionar el espacio disponible.`;
     }
 
     let tamañoYTemp = 90;
@@ -115,15 +189,18 @@ const StatisticsAdminPage = ({ url }) => {
       tamañoYTemp = 180;
     }
 
-
     html2canvas(graphSection).then(canvas => {
       const imgData = canvas.toDataURL('image/png');
 
       doc.text("Estadísticas", 95, 20, { align: "center" });
       doc.text(`Nombre del parqueadero: ${actualParking.name}`, 20, 30);
       doc.text(`Tipo de Información: ${tipoTemporal}`, 20, 40);
-      doc.text(`Fecha de Inicio: ${startDate}`, 20, 50);
-      doc.text(`Fecha de Fin: ${endDate}`, 20, 60);
+      if(infoType == 'occupation') {
+        doc.text(`Fecha: ${startDate}`, 20, 50);
+      } else {
+        doc.text(`Fecha de Inicio: ${startDate}`, 20, 50);
+        doc.text(`Fecha de Fin: ${endDate}`, 20, 60);
+      }
 
       doc.addImage(imgData, 'PNG', 10, 70, 180, tamañoYTemp);
 
@@ -132,8 +209,6 @@ const StatisticsAdminPage = ({ url }) => {
       doc.save("Estadisticas.pdf");
     });
   };
-
-
 
   const GenExcel = async () => {
     const graphSection = document.getElementById('graph-section');
@@ -151,11 +226,14 @@ const StatisticsAdminPage = ({ url }) => {
     } else if (infoType === "sales") {
       tipoTemporal = "Ventas";
       descripcionGrafica = `Esta gráfica ${graphicType === 'bars' ? 'de barras' : graphicType === 'circle' ? 'circular' : 'de líneas'} ilustra la distribución de ventas en el parqueadero ${actualParking.name} durante el periodo comprendido entre ${startDate} y ${endDate}. La gráfica proporciona una visión clara de las fuentes de ingresos predominantes, facilitando la comprensión de las tendencias de ventas y la toma de decisiones informadas sobre estrategias comerciales.`;
+    } else if (infoType === "occupation") {
+      tipoTemporal = "Porcentaje de ocupación";
+      descripcionGrafica = `Esta gráfica ${graphicType === 'bars' ? 'de barras' : graphicType === 'circle' ? 'circular' : 'de líneas'} ilustra qué porcentaje de cupos del parqueadero ${actualParking.name} estuvieron ocupados durante el día ${startDate}. La gráfica nos permite comprender en qué rango de horas el parqueadero tiene mayor cantidad de espacios reservados y en cuáles menos, y de esa manera poder plantaer las estrategias que sean necesarias para aumentar el número de reservas y gestionar el espacio disponible.`;
     }
 
-    let tamañoYTemp = 200;
+    let tamañoYTemp = 400;
     if (graphicType === "circle") {
-      tamañoYTemp = 400;
+      tamañoYTemp = 600;
     }
 
     try {
@@ -170,11 +248,10 @@ const StatisticsAdminPage = ({ url }) => {
 
         worksheet.addImage(imageId, {
           tl: { col: 3, row: 1 },
-          ext: { width: 400, height: tamañoYTemp },
+          ext: { width: 600, height: tamañoYTemp },
         });
       }
       
-
       const titulo = worksheet.getCell('B2');
       const nombrepar = worksheet.getCell('B3');
       const tipodeinformacion = worksheet.getCell('B4');
@@ -189,14 +266,15 @@ const StatisticsAdminPage = ({ url }) => {
       applyBorders(worksheet.getCell('B6'));
       applyBorders(worksheet.getCell('B7'));
 
-
-      //const descripcionGraficaParaExcel = descripcionGrafica.split('\n');
-
       titulo.value = new String("Estadisticas:");
       nombrepar.value = new String(`Nombre del parqueadero: ${actualParking.name}`);
       tipodeinformacion.value = new String(`Tipo de Información: ${tipoTemporal}`);
-      finicio.value = new String(`Fecha de Inicio: ${startDate}`);
-      ffin.value = new String(`Fecha de Inicio: ${endDate}`);
+      if(infoType == 'occupation') {
+        finicio.value = new String(`Fecha: ${startDate}`);
+      } else {
+        finicio.value = new String(`Fecha de Inicio: ${startDate}`);
+        ffin.value = new String(`Fecha de Inicio: ${endDate}`);
+      }
       desc.value = new String(descripcionGrafica);
       desc.alignment = { wrapText: true };
 
@@ -204,8 +282,6 @@ const StatisticsAdminPage = ({ url }) => {
 
       titulo.alignment = { vertical: 'middle', horizontal: 'center' };
       titulo.font = { bold: true };
-
-
 
       workbook.xlsx.writeBuffer().then(buffer => {
         const blob = new Blob([buffer], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' });
@@ -220,40 +296,55 @@ const StatisticsAdminPage = ({ url }) => {
     }
   };
 
-
   return (
     <>
       <Header />
 
-      <section className='h-screen px-12 py-36 mb-28 bg-gray-light'>
-        <section className="flex justify-between w-full">
-          <div id="statistics-parkings" className="w-1/6 h-12 mr-12 mb-6 p-3 rounded-md bg-white shadow-md font-paragraph"> {actualParking.name} </div>
+      <section className='px-12 pt-36 bg-gray-light'>
+        <section className="flex justify-start w-full">
+          <div className='flex flex-col w-1/6 mr-16'>
+            <label className='text-sm font-title font-semibold mb-4'>Nombre del parqueadero</label>
+            <div id="statistics-parkings" className="h-11 p-3 rounded-md bg-white shadow-md font-paragraph"> {actualParking.name} </div>
+          </div>
 
-          <select id="statistics-info" value={infoType} className="w-1/6 h-12 mr-12 mb-6 p-3 rounded-md bg-white shadow-md font-paragraph"
+          <div className='flex flex-col w-1/6 mr-16'>
+            <label className='text-sm font-title font-semibold mb-4'>Tipo de información</label>
+            <select id="statistics-info" value={infoType} className="p-3 rounded-md bg-white shadow-md font-paragraph" 
             onChange={(e) => setInfoType(e.target.value)}>
-            <option value="" disabled selected hidden> Tipo de información </option>
-            <option value=""></option>
-            <option value="hours"> Horas pico / valle </option>
-            <option value="sales"> Ventas </option>
-          </select>
+              <option value="hours"> Horas pico / valle </option>
+              <option value="sales"> Ventas </option>
+              <option value="occupation"> Porcentaje de ocupación </option>
+            </select>
+          </div>
 
-          <select id="statistics-graphic" value={graphicType} className="w-1/6 h-12 mr-12 mb-6 p-3 rounded-md bg-white shadow-md font-paragraph"
+          <div className='flex flex-col w-1/6 mr-16'>
+            <label className='text-sm font-title font-semibold mb-4'>Tipo de gráfica</label>
+            <select id="statistics-graphic" value={graphicType} className="p-3 rounded-md bg-white shadow-md font-paragraph" 
             onChange={(e) => setGraphicType(e.target.value)}>
-            <option value="" disabled selected hidden> Tipo de gráfica </option>
-            <option value=""></option>
-            <option value="circle"> Circular </option>
-            <option value="bars"> Barras </option>
-            <option value="lines"> Línea </option>
-          </select>
+              <option value="bars"> Barras </option>
+              <option value="lines"> Línea </option>
+              <option value="circle"> Circular </option>
+            </select>
+          </div>
 
-          <input type="date" id="statistics-startDate" value={startDate} className="w-1/6 h-12 mr-12 mb-6 p-3 rounded-md bg-white shadow-md font-paragraph"
+          <div className='flex flex-col w-1/6 mr-16'>
+            <label className='text-sm font-title font-semibold mb-4'>Fecha inicio</label>
+            <input type="date" id="statistics-startDate" value={startDate} className="h-11 p-3 rounded-md bg-white shadow-md font-paragraph" 
             onChange={(e) => setStartDate(e.target.value)}></input>
+          </div>
 
-          <input type="date" id="statistics-endDate" value={endDate} className="w-1/6 h-12 mr-12 mb-6 p-3 rounded-md bg-white shadow-md font-paragraph"
-            onChange={(e) => setEndDate(e.target.value)}></input>
+          <div className='flex flex-col w-1/6 mr-16'>
+            {infoType != 'occupation' ? (
+              <>
+                <label className='text-sm font-title font-semibold mb-4'>Fecha fin</label>
+                <input type="date" id="statistics-endDate" value={endDate} className="p-3 rounded-md bg-white shadow-md font-paragraph" 
+                onChange={(e) => setEndDate(e.target.value)}></input>
+              </>
+            ) : null}
+          </div>
         </section>
 
-        {createHoursGraph()}
+        {infoType == 'hours' ? createHoursGraph() : (infoType == 'sales' ? createSalesGraph() : createOccupationGraph())}
         {createButtons()}
       </section>
     </>

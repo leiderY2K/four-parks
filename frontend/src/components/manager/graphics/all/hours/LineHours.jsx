@@ -1,21 +1,20 @@
-import { Chart as ChartJS, CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend, ArcElement } from 'chart.js';
-import { Bar } from 'react-chartjs-2';
+import { Chart as ChartJS, CategoryScale, LinearScale, PointElement, LineElement, Title, Tooltip, Legend } from 'chart.js';
+import { Line } from 'react-chartjs-2';
 import { useEffect, useState } from "react";
 import axios from "axios";
 
-ChartJS.register(ArcElement, CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend);
+ChartJS.register(CategoryScale, LinearScale, PointElement, LineElement, Title, Tooltip, Legend);
 
-const BarHours = ({url, actualParking, startDate, endDate}) => {
+const LineHours = ({url, startDate, endDate}) => {
     const [hoursAverage, setHoursAverage] = useState([]);
 
     useEffect(() => {
         const token = sessionStorage.getItem('token').replace(/"/g, '');
         setHoursAverage([]);
       
-        axios.get(`${url}/statistics/average-hour/`, {params: {
+        axios.get(`${url}/statistics/all-average-hour`, {params: {
             initialDate: startDate,
             finalDate: endDate,
-            idParking: actualParking.id
         }, headers: {Authorization: `Bearer ${token}`}})
         .then((res) => {
             const hoursData = res.data.map(item => ({ hour: item.hour, average: item.average }));
@@ -24,7 +23,7 @@ const BarHours = ({url, actualParking, startDate, endDate}) => {
         .catch((err) => {
             console.log(err);
         });
-    }, [actualParking, startDate, endDate]);      
+    }, [startDate, endDate]);     
 
     const labels = hoursAverage.map((item) => item.hour);
     const average = hoursAverage.map((item) => item.average);
@@ -48,7 +47,7 @@ const BarHours = ({url, actualParking, startDate, endDate}) => {
         plugins: {
             title: {
                 display: true,
-                text: 'PROMEDIO DE RESERVAS POR HORA',
+                text: 'PROMEDIO DE RESERVAS POR HORA EN TODOS LOS PARQUEADEROS',
             },
         },
         scales: {
@@ -58,7 +57,7 @@ const BarHours = ({url, actualParking, startDate, endDate}) => {
         },
     };
 
-    return <Bar data={data} options={options} />;
+    return <Line data={data} options={options} />;
 };
 
-export default BarHours;
+export default LineHours;

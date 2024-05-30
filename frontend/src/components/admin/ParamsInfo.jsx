@@ -25,12 +25,12 @@ function ParamsInfo({url, actualCity, actualParking}) {
             setAddress(actualParking[0].address.descAddress);
             setEmail(actualParking[0].email);
             setPhone(actualParking[0].phone);
-            setParkType(actualParking[0].parkingType.idParkingType);
+            setParkType(actualParking[0].parkingType.descParkingType);
             setParkAvailability(actualParking[0].schedule.scheduleType);
             setParkStart(actualParking[0].startTime);
             setParkEnd(actualParking[0].endTime);
         }
-    }, [actualParking])
+    }, [actualParking]);
     
     const handleTimeChange = (setter) => (event) => {
         const time = new Date(event.target.valueAsNumber);
@@ -46,23 +46,30 @@ function ParamsInfo({url, actualCity, actualParking}) {
         const params = {};
 
         if(parkName) params.namePark = parkName;
-        if(coordX) params.coordinatesX = coordX;
-        if(coordY) params.coordinatesY = coordY;
-        if(address) params.descAddress = address;
+        if(address) params.descAddress = address; // NO SE ESTA ACTUALIZANDO
         if(email) params.email = email;
         if(phone) params.phone = phone;
-        if(parkType) params.idParkingType = parkType;
-        if(parkAvailability) params.scheduleType = parkAvailability;
+        if(parkAvailability) params.scheduleType = parkAvailability; // NO SE ESTA ACTUALIZANDO
         if(parkStart) params.startTime = parkStart;
         if(parkEnd) params.endTime = parkEnd;
-        console.log(params)
         
-        axios.put(`${url}/parking/${actualParking[0].parkingId.idParking}/${actualParking[0].parkingId.city.idCity}`, {params, headers: {Authorization: `Bearer ${token}`}
+        axios.put(`${url}/parking/${actualParking[0].parkingId.idParking}/${actualParking[0].parkingId.city.idCity}`, params, {headers: {Authorization: `Bearer ${token}`}
         })
         .then(res => {
-            console.log(res);
+            Swal.fire({
+                icon: 'success',
+                title: res.data
+            });
+
+            setCanEdit(false);
         })
         .catch(err => {
+            Swal.fire({
+                icon: 'error',
+                title: `Error al modificar`,
+                text: 'Hubo un error al intentar modificar la información del parqueadero. Por favor intente nuevamente'
+            });
+
             console.error(err);
         });
     }
@@ -77,34 +84,33 @@ function ParamsInfo({url, actualCity, actualParking}) {
                 <section className='flex flex-col w-72'>
                     <div className='flex flex-col mt-5'>
                         <label className='text-lg font-semibold mb-2'>Nombre del parqueadero</label>
-                        <input className={`w-full shadow-xl p-2.5 rounded-md bg-white font-paragraph ${canEdit ? 'opacity-100' : 'opacity-70'}`} value={parkName} 
+                        <input className={`w-full shadow-xl p-2.5 rounded-md bg-white font-paragraph ${canEdit ? null : 'opacity-70 cursor-not-allowed'}`} value={parkName} 
                         disabled={!canEdit} 
                         onChange={(e) => setParkName(e.target.value)}></input>
                     </div>
 
                     <div className='flex flex-col mt-5'>
                         <label className='text-lg font-semibold mb-2'>Coordenadas X</label>
-                        <input className='w-full shadow-xl p-2.5 rounded-md bg-white opacity-70 font-paragraph' value={coordX} disabled={true}  
-                        onChange={(e) => setCoordX(e.target.value)}></input>
+                        <input className='w-full shadow-xl p-2.5 rounded-md bg-white opacity-70 cursor-not-allowed font-paragraph' value={coordX} disabled={true}></input>
                     </div>
 
                     <div className='flex flex-col mt-5'>
                         <label className='text-lg font-semibold mb-2'>Dirección</label>
-                        <input className={`w-full shadow-xl p-2.5 rounded-md bg-white font-paragraph ${canEdit ? 'opacity-100' : 'opacity-70'}`} value={address} 
+                        <input className={`w-full shadow-xl p-2.5 rounded-md bg-white font-paragraph ${canEdit ? null : 'opacity-70 cursor-not-allowed'}`} value={address} 
                         disabled={!canEdit} 
                         onChange={(e) => setAddress(e.target.value)}></input>
                     </div> 
 
                     <div className='flex flex-col mt-5'>
                         <label className='text-lg font-semibold mb-2'>Teléfono</label>
-                        <input className={`w-full shadow-xl p-2.5 rounded-md bg-white font-paragraph ${canEdit ? 'opacity-100' : 'opacity-70'}`} value={phone} 
+                        <input className={`w-full shadow-xl p-2.5 rounded-md bg-white font-paragraph ${canEdit ? null : 'opacity-70 cursor-not-allowed'}`} value={phone} 
                         disabled={!canEdit} 
                         onChange={(e) => setPhone(e.target.value)}></input>        
                     </div>  
 
                     <div className='flex flex-col mt-5'>
                         <label className='text-lg font-semibold mb-2'>Disponibilidad</label>
-                        <select className={`w-full shadow-xl p-3 rounded-md bg-white font-paragraph ${canEdit ? 'opacity-100' : 'opacity-70'}`} value={parkAvailability} 
+                        <select className={`w-full shadow-xl p-3 rounded-md bg-white font-paragraph ${canEdit ? null : 'opacity-70 cursor-not-allowed'}`} value={parkAvailability} 
                         disabled={!canEdit}
                         onChange={(e) => setParkAvailability(e.target.value)}>
                             <option value="Dias de semana"> Días de semana </option>
@@ -115,7 +121,7 @@ function ParamsInfo({url, actualCity, actualParking}) {
 
                     <div className='flex flex-col mt-5'>
                         <label className='text-lg font-semibold mb-2'> Habilitar fidelización </label>
-                        <select className={`w-full shadow-xl p-3 rounded-md bg-white font-paragraph ${canEdit ? 'opacity-100' : 'opacity-70'}`} value={fidelization} 
+                        <select className={`w-full shadow-xl p-3 rounded-md bg-white font-paragraph ${canEdit ? null : 'opacity-70 cursor-not-allowed'}`} value={fidelization} 
                         disabled={!canEdit} 
                         onChange={(e) => setFidelization(e.target.value)}>
                             <option value="true"> Si </option>
@@ -127,7 +133,7 @@ function ParamsInfo({url, actualCity, actualParking}) {
                         fidelization ? (
                             <div className='flex flex-col mt-5'>
                                 <label className='text-lg font-semibold mb-2'> Costo para obtener 1 punto </label>
-                                <input type="number" min="0" className={`w-full shadow-xl p-2.5 rounded-md bg-white font-paragraph ${canEdit ? 'opacity-100' : 'opacity-70'}`} 
+                                <input type="number" min="0" className={`w-full shadow-xl p-2.5 rounded-md bg-white font-paragraph ${canEdit ? null : 'opacity-70 cursor-not-allowed'}`} 
                                 value={minCost} 
                                 disabled={!canEdit} onChange={(e) => setMinCost(e.target.value)}></input>
                             </div> 
@@ -138,42 +144,35 @@ function ParamsInfo({url, actualCity, actualParking}) {
                 <section className='flex flex-col w-72'>
                     <div className='flex flex-col mt-5'>
                         <label className='text-lg font-semibold mb-2'>Ciudad</label>
-                        <input className={`w-full shadow-xl p-2.5 rounded-md bg-white font-paragraph opacity-70`} value={actualCity !== undefined ? actualCity.name : null} 
+                        <input className={`w-full shadow-xl p-2.5 rounded-md bg-white font-paragraph opacity-70 cursor-not-allowed`} value={actualCity !== undefined ? actualCity.name : null} 
                         disabled={true}></input>
                     </div>
 
                     <div className='flex flex-col mt-5'>
                         <label className='text-lg font-semibold mb-2'>Coordenadas Y</label>
-                        <input className='w-full shadow-xl p-2.5 rounded-md bg-white opacity-70 font-paragraph' value={coordY} disabled={true} 
-                        onChange={(e) => setCoordY(e.target.value)}></input>
+                        <input className='w-full shadow-xl p-2.5 rounded-md bg-white opacity-70 cursor-not-allowed font-paragraph' value={coordY} disabled={true}></input>
                     </div>
 
                     <div className='flex flex-col mt-5'>
                         <label className='text-lg font-semibold mb-2'>Correo electrónico</label>
-                        <input className={`w-full shadow-xl p-2.5 rounded-md bg-white font-paragraph ${canEdit ? 'opacity-100' : 'opacity-70'}`} value={email} 
+                        <input className={`w-full shadow-xl p-2.5 rounded-md bg-white font-paragraph ${canEdit ? null : 'opacity-70 cursor-not-allowed'}`} value={email} 
                         disabled={!canEdit} onChange={(e) => setEmail(e.target.value)}></input>
                     </div>
 
                     <div className='flex flex-col mt-5'>
                         <label className='text-lg font-semibold mb-2'>Tipo de parqueadero</label>
-                        <select className={`w-full shadow-xl p-3 rounded-md bg-white font-paragraph ${canEdit ? 'opacity-100' : 'opacity-70'}`} value={parkType} 
-                        disabled={!canEdit} 
-                        onChange={(e) => setParkType(e.target.value)}>
-                            <option value="COV"> Cubierto </option>
-                            <option value="SEC"> Semi-cubierto </option>
-                            <option value="UNC"> Descubierto </option>
-                        </select>
+                        <input className='w-full shadow-xl p-2.5 rounded-md bg-white opacity-70 cursor-not-allowed font-paragraph' value={parkType} disabled={true}></input>
                     </div>
 
                     <div className='flex flex-col mt-5'>
                         <label className='text-lg font-semibold mb-2'>Horario</label>
                         <div className="flex justify-between items-center">
-                            <input type='time' className={`w-2/5 shadow-xl p-2.5 rounded-md bg-white font-paragraph text-sm ${canEdit ? 'opacity-100' : 'opacity-70'}`}
+                            <input type='time' className={`w-2/5 shadow-xl p-2.5 rounded-md bg-white font-paragraph text-sm ${canEdit ? null : 'opacity-70 cursor-not-allowed'}`}
                             value={parkStart} disabled={!canEdit} onChange={handleTimeChange(setParkStart)}></input>   
 
                             <span className="w-5 h-0.5 mx-4 rounded-full bg-black"></span>
 
-                            <input type='time' className={`w-2/5 shadow-xl p-2.5 rounded-md bg-white font-paragraph text-sm ${canEdit ? 'opacity-100' : 'opacity-70'}`} 
+                            <input type='time' className={`w-2/5 shadow-xl p-2.5 rounded-md bg-white font-paragraph text-sm ${canEdit ? null : 'opacity-70 cursor-not-allowed'}`} 
                             value={parkEnd} disabled={!canEdit}  onChange={handleTimeChange(setParkEnd)}></input>
                         </div>    
                     </div>
@@ -182,7 +181,7 @@ function ParamsInfo({url, actualCity, actualParking}) {
                         fidelization ? (
                             <div className='flex flex-col mt-5'>
                                 <label className='text-lg font-semibold mb-2'> Puntos mínimos para 1 hora gratis </label>
-                                <input type="number" min="0"  className={`w-full shadow-xl p-2.5 rounded-md bg-white font-paragraph ${canEdit ? 'opacity-100' : 'opacity-70'}`} 
+                                <input type="number" min="0"  className={`w-full shadow-xl p-2.5 rounded-md bg-white font-paragraph ${canEdit ? null : 'opacity-70 cursor-not-allowed'}`} 
                                 value={minPoints} disabled={!canEdit} onChange={(e) => setMinPoints(e.target.value)}></input>
                             </div> 
                         ) : null

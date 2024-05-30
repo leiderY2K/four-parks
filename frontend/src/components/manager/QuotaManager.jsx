@@ -1,7 +1,8 @@
-import React from 'react';
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import axios from "axios";
+import Swal from 'sweetalert2'
 
-function QuotaManager({ url, setCanEditSpaces }) {
+function QuotaManager({ url, actualParking, actualCity, setCanEditSpaces }) {
     //Cupos Cubiertos
     const [quotaCarCov, setQuotaCarCov] = useState('');
     const [quotaMotoCov, setQuotaMotoCov] = useState('');
@@ -19,132 +20,500 @@ function QuotaManager({ url, setCanEditSpaces }) {
     const [RateMotoUnc, setRateMotoUnc] = useState('');
     const [RateBicUnc, setRateBicUnc] = useState('');
 
+    useEffect(() => {
+      if(actualParking[0].parkingType.idParkingType == 'COV' || actualParking[0].parkingType.idParkingType == 'SEC') {
+        if(actualParking[1].CAR !== undefined) {
+            setQuotaCarCov(actualParking[1].CAR.covered)
+            setRateCarCov(actualParking[1].CAR['rate-covered'])
+        }
+        
+        if(actualParking[1].MOT !== undefined) {
+            setQuotaMotoCov(actualParking[1].MOT.covered)
+            setRateMotoCov(actualParking[1].MOT['rate-covered'])
+        }
+        
+        if(actualParking[1].BIC !== undefined) {
+            setQuotaBicCov(actualParking[1].BIC.covered)
+            setRateBicCov(actualParking[1].BIC['rate-covered'])
+        }
+      } else if(actualParking[0].parkingType.idParkingType == 'UNC' || actualParking[0].parkingType.idParkingType == 'SEC') {
+        if(actualParking[1].CAR !== undefined) {
+            setQuotaCarUnc(actualParking[1].CAR.uncovered)
+            setRateCarUnc(actualParking[1].CAR['rate-uncovered'])
+        }
+        
+        if(actualParking[1].MOT !== undefined) {
+            setQuotaMotoUnc(actualParking[1].MOT.uncovered)
+            setRateMotoUnc(actualParking[1].MOT['rate-uncovered'])
+        }
+        
+        if(actualParking[1].BIC !== undefined) {
+            setQuotaBicUnc(actualParking[1].BIC.uncovered)
+            setRateBicUnc(actualParking[1].BIC['rate-uncovered'])
+        }
+      }
+    }, [actualParking]);
+
+    const handleSpaces = () => {
+        updateCarSpaces();
+        updateMotoSpaces();
+        updateBicSpaces();
+
+        setCanEditSpaces(false);
+    }
+
+    const updateCarSpaces = () => {
+        const token = sessionStorage.getItem('token').replace(/"/g, '');
+
+        if(quotaCarCov) {
+            let amount = quotaCarCov - actualParking[1].CAR.covered;
+
+            if(amount > 0) {
+                axios.post(`${url}/parking/${actualParking[0].parkingId.idParking}/${actualCity.id}/parking-space/insert`, 
+                {vehicleType: 'CAR', amount: amount, isUncovered: false}, {headers: {Authorization: `Bearer ${token}`}})
+                .then((res) => {
+                    Swal.fire({
+                        icon: 'success',
+                        title: res.data
+                    });
+                })
+                .catch((err) => {
+                    Swal.fire({
+                        icon: 'error',
+                        title: `Error al insertar espacios cubiertos de automóvil`,
+                        text: 'Hubo un error al intentar insertar espacios al parqueadero'
+                    });
+
+                    console.log(err);
+                })
+            } else if(amount < 0) {
+                amount = actualParking[1].CAR.covered - quotaCarCov;
+
+                axios.delete(`${url}/parking/${actualParking[0].parkingId.idParking}/${actualCity.id}/parking-space/delete`, 
+                {headers: {Authorization: `Bearer ${token}`},
+                data: {
+                    vehicleType: 'CAR',
+                    amount: amount,
+                    isUncovered: false
+                }})
+                .then((res) => {
+                    Swal.fire({
+                        icon: 'success',
+                        title: res.data
+                    });
+                })
+                .catch((err) => {
+                    Swal.fire({
+                        icon: 'error',
+                        title: `Error al eliminar espacios cubiertos de automóvil`,
+                        text: 'Hubo un error al intentar eliminar espacios del parqueadero. Es posible que estos espacios tengan reservas en curso'
+                    });
+
+                    console.log(err)
+                })
+            }
+        }
+
+        if(quotaCarUnc) {
+            let amount = quotaCarUnc - actualParking[1].CAR.uncovered;
+
+            if(amount > 0) {
+                axios.post(`${url}/parking/${actualParking[0].parkingId.idParking}/${actualCity.id}/parking-space/insert`, 
+                {vehicleType: 'CAR', amount: amount, isUncovered: true}, {headers: {Authorization: `Bearer ${token}`}})
+                .then((res) => {
+                    Swal.fire({
+                        icon: 'success',
+                        title: res.data
+                    });
+                })
+                .catch((err) => {
+                    Swal.fire({
+                        icon: 'error',
+                        title: `Error al insertar espacios descubiertos de automóvil`,
+                        text: 'Hubo un error al intentar insertar espacios al parqueadero'
+                    });
+
+                    console.log(err);
+                })
+            } else if(amount < 0) {
+                amount = actualParking[1].CAR.uncovered - quotaCarUnc;
+
+                axios.delete(`${url}/parking/${actualParking[0].parkingId.idParking}/${actualCity.id}/parking-space/delete`, 
+                {headers: {Authorization: `Bearer ${token}`},
+                data: {
+                    vehicleType: 'CAR',
+                    amount: amount,
+                    isUncovered: true
+                }})
+                .then((res) => {
+                    Swal.fire({
+                        icon: 'success',
+                        title: res.data
+                    });
+                })
+                .catch((err) => {
+                    Swal.fire({
+                        icon: 'error',
+                        title: `Error al eliminar espacios descubiertos de automóvil`,
+                        text: 'Hubo un error al intentar eliminar espacios del parqueadero. Es posible que estos espacios tengan reservas en curso'
+                    });
+
+                    console.log(err)
+                })
+            }
+        }
+    }
+    
+    const updateMotoSpaces = () => {
+        const token = sessionStorage.getItem('token').replace(/"/g, '');
+
+        if(quotaMotoCov) {
+            let amount = quotaMotoCov - actualParking[1].MOT.covered;
+
+            if(amount > 0) {
+                axios.post(`${url}/parking/${actualParking[0].parkingId.idParking}/${actualCity.id}/parking-space/insert`, 
+                {vehicleType: 'MOT', amount: amount, isUncovered: false}, {headers: {Authorization: `Bearer ${token}`}})
+                .then((res) => {
+                    Swal.fire({
+                        icon: 'success',
+                        title: res.data
+                    });
+                })
+                .catch((err) => {
+                    Swal.fire({
+                        icon: 'error',
+                        title: `Error al insertar espacios cubiertos de motocicleta`,
+                        text: 'Hubo un error al intentar insertar espacios al parqueadero'
+                    });
+
+                    console.log(err);
+                })
+            } else if(amount < 0) {
+                amount = actualParking[1].MOT.covered - quotaMotoCov;
+
+                axios.delete(`${url}/parking/${actualParking[0].parkingId.idParking}/${actualCity.id}/parking-space/delete`, 
+                {headers: {Authorization: `Bearer ${token}`},
+                data: {
+                    vehicleType: 'MOT',
+                    amount: amount,
+                    isUncovered: false
+                }})
+                .then((res) => {
+                    Swal.fire({
+                        icon: 'success',
+                        title: res.data
+                    });
+                })
+                .catch((err) => {
+                    Swal.fire({
+                        icon: 'error',
+                        title: `Error al eliminar espacios cubiertos de motocicleta`,
+                        text: 'Hubo un error al intentar eliminar espacios del parqueadero. Es posible que estos espacios tengan reservas en curso'
+                    });
+
+                    console.log(err)
+                })
+            }
+        }
+
+        if(quotaMotoUnc) {
+            let amount = quotaMotoUnc - actualParking[1].MOT.uncovered;
+
+            if(amount > 0) {
+                axios.post(`${url}/parking/${actualParking[0].parkingId.idParking}/${actualCity.id}/parking-space/insert`, 
+                {vehicleType: 'MOT', amount: amount, isUncovered: true}, {headers: {Authorization: `Bearer ${token}`}})
+                .then((res) => {
+                    Swal.fire({
+                        icon: 'success',
+                        title: res.data
+                    });
+                })
+                .catch((err) => {
+                    Swal.fire({
+                        icon: 'error',
+                        title: `Error al insertar espacios descubiertos de motocicleta`,
+                        text: 'Hubo un error al intentar insertar espacios al parqueadero'
+                    });
+
+                    console.log(err);
+                })
+            } else if(amount < 0) {
+                amount = actualParking[1].MOT.uncovered - quotaMotoUnc;
+
+                axios.delete(`${url}/parking/${actualParking[0].parkingId.idParking}/${actualCity.id}/parking-space/delete`, 
+                {headers: {Authorization: `Bearer ${token}`},
+                data: {
+                    vehicleType: 'MOT',
+                    amount: amount,
+                    isUncovered: true
+                }})
+                .then((res) => {
+                    Swal.fire({
+                        icon: 'success',
+                        title: res.data
+                    });
+                })
+                .catch((err) => {
+                    Swal.fire({
+                        icon: 'error',
+                        title: `Error al eliminar espacios descubiertos de motocicleta`,
+                        text: 'Hubo un error al intentar eliminar espacios del parqueadero. Es posible que estos espacios tengan reservas en curso'
+                    });
+
+                    console.log(err)
+                })
+            }
+        }
+    }
+
+    const updateBicSpaces = () => {
+        const token = sessionStorage.getItem('token').replace(/"/g, '');
+
+        if(quotaBicCov) {
+            let amount = quotaBicCov - actualParking[1].BIC.covered;
+
+            if(amount > 0) {
+                axios.post(`${url}/parking/${actualParking[0].parkingId.idParking}/${actualCity.id}/parking-space/insert`, 
+                {vehicleType: 'BIC', amount: amount, isUncovered: false}, {headers: {Authorization: `Bearer ${token}`}})
+                .then((res) => {
+                    Swal.fire({
+                        icon: 'success',
+                        title: res.data
+                    });
+                })
+                .catch((err) => {
+                    Swal.fire({
+                        icon: 'error',
+                        title: `Error al insertar espacios cubiertos de bicicleta`,
+                        text: 'Hubo un error al intentar insertar espacios al parqueadero'
+                    });
+
+                    console.log(err);
+                })
+            } else if(amount < 0) {
+                amount = actualParking[1].BIC.covered - quotaBicCov;
+
+                axios.delete(`${url}/parking/${actualParking[0].parkingId.idParking}/${actualCity.id}/parking-space/delete`, 
+                {headers: {Authorization: `Bearer ${token}`},
+                data: {
+                    vehicleType: 'BIC',
+                    amount: amount,
+                    isUncovered: false
+                }})
+                .then((res) => {
+                    Swal.fire({
+                        icon: 'success',
+                        title: res.data
+                    });
+                })
+                .catch((err) => {
+                    Swal.fire({
+                        icon: 'error',
+                        title: `Error al eliminar espacios cubiertos de bicicleta`,
+                        text: 'Hubo un error al intentar eliminar espacios del parqueadero. Es posible que estos espacios tengan reservas en curso'
+                    });
+
+                    console.log(err)
+                })
+            }
+        }
+
+        if(quotaBicUnc) {
+            let amount = quotaBicUnc - actualParking[1].BIC.uncovered;
+
+            if(amount > 0) {
+                axios.post(`${url}/parking/${actualParking[0].parkingId.idParking}/${actualCity.id}/parking-space/insert`, 
+                {vehicleType: 'BIC', amount: amount, isUncovered: true}, {headers: {Authorization: `Bearer ${token}`}})
+                .then((res) => {
+                    Swal.fire({
+                        icon: 'success',
+                        title: res.data
+                    });
+                })
+                .catch((err) => {
+                    Swal.fire({
+                        icon: 'error',
+                        title: `Error al insertar espacios descubiertos de bicicleta`,
+                        text: 'Hubo un error al intentar insertar espacios al parqueadero'
+                    });
+
+                    console.log(err);
+                })
+            } else if(amount < 0) {
+                amount = actualParking[1].BIC.uncovered - quotaBicUnc;
+
+                axios.delete(`${url}/parking/${actualParking[0].parkingId.idParking}/${actualCity.id}/parking-space/delete`, 
+                {headers: {Authorization: `Bearer ${token}`},
+                data: {
+                    vehicleType: 'BIC',
+                    amount: amount,
+                    isUncovered: true
+                }})
+                .then((res) => {
+                    Swal.fire({
+                        icon: 'success',
+                        title: res.data
+                    });
+                })
+                .catch((err) => {
+                    Swal.fire({
+                        icon: 'error',
+                        title: `Error al eliminar espacios descubiertos de bicicleta`,
+                        text: 'Hubo un error al intentar eliminar espacios del parqueadero. Es posible que estos espacios tengan reservas en curso'
+                    });
+
+                    console.log(err)
+                })
+            }
+        }
+    }
+
     return (
         <article className="w-full py-4 rounded-2xl shadow-xl bg-blue-light">
-            <section className='flex justify-center'>
+            <section className='flex flex-col justify-center items-center mb-2'>
                 <div className='text-2xl font-semibold'> Administrar cupos </div>
+                <div className='text-lg'> {actualParking[0].namePark} </div>
             </section>
 
-            <section className='mt-2 px-8'>
-                <label className='text font-semibold text-xl'> Cubierto </label>
-                
-                <section className='flex flex-col'>
-                    <label className='mt-4 text font-semibold'> Automóvil </label>
+            {(actualParking[0].parkingType.idParkingType == 'COV' || actualParking[0].parkingType.idParkingType == 'SEC') ? (
+                <section className='mt-2 px-8'>
+                    <label className='text font-semibold text-xl'> Cubierto </label>
+                    
+                    {actualParking[1].CAR !== undefined ? (
+                        <section className='flex flex-col'>
+                            <label className='mt-4 text font-semibold'> Automóvil </label>
 
-                    <section className='flex justify-between mt-2'>
-                        <div className='flex justify-between items-center'>
-                            <label className='text font-semibold'> # cupos </label>
-                            <input type="number" className='mr-8 w-7/12 shadow-xl px-3 py-2 rounded-md bg-white font-paragraph placeholder:text-gray-dark' placeholder='20' 
-                            value={quotaCarCov} onChange={(e) => setQuotaCarCov(e.target.value)}/>
-                        </div>
+                            <section className='flex justify-between mt-2'>
+                                <div className='flex justify-between items-center'>
+                                    <label className='text font-semibold'> # cupos </label>
+                                    <input type="number" className='mr-8 w-7/12 shadow-xl px-3 py-2 rounded-md bg-white font-paragraph placeholder:text-gray-dark'
+                                    value={quotaCarCov} onChange={(e) => setQuotaCarCov(e.target.value)}/>
+                                </div>
 
-                        <div className='flex justify-between items-center'>
-                            <label className='ml-8 text font-semibold'> Tarifa </label>
-                            <input type="" className='w-2/3 shadow-xl px-3 py-2 rounded-md bg-white font-paragraph placeholder:text-gray-dark' placeholder='$25.000' 
-                            value={RateCarCov} onChange={(e) => setRateCarCov(e.target.value)}/>
-                        </div>
-                    </section>
+                                <div className='flex justify-between items-center'>
+                                    <label className='ml-8 text font-semibold'> Tarifa </label>
+                                    <input type="" className='w-2/3 shadow-xl px-3 py-2 rounded-md bg-white font-paragraph placeholder:text-gray-dark'
+                                    value={RateCarCov} onChange={(e) => setRateCarCov(e.target.value)}/>
+                                </div>
+                            </section>
+                        </section>
+                    ) : null}
+
+                    {actualParking[1].MOT !== undefined ? (
+                        <section className='flex flex-col'>
+                            <label className='mt-4 text font-semibold'> Motocicleta </label>
+
+                            <section className='flex justify-between mt-2'>
+                                <div className='flex justify-between items-center'>
+                                    <label className='text font-semibold'> # cupos </label>
+                                    <input type="number" className='mr-8 w-7/12 shadow-xl px-3 py-2 rounded-md bg-white font-paragraph placeholder:text-gray-dark' 
+                                    value={quotaMotoCov} onChange={(e) => setQuotaMotoCov(e.target.value)}/>
+                                </div>
+
+                                <div className='flex justify-between'>
+                                    <label className='ml-8 text font-semibold'> Tarifa </label>
+                                    <input type="" className='w-2/3 shadow-xl px-3 py-2 rounded-md bg-white font-paragraph placeholder:text-gray-dark' 
+                                    value={RateMotoCov} onChange={(e) => setRateMotoCov(e.target.value)}/>
+                                </div>
+                            </section>
+                        </section>
+                    ) : null}
+
+                    {actualParking[1].BIC !== undefined ? (
+                        <section className='flex flex-col'>
+                            <label className='mt-4 text font-semibold'> Bicicleta </label>
+
+                            <section className='flex justify-between mt-2'>
+                                <div className='flex justify-between items-center'>
+                                    <label className='text font-semibold'> # cupos </label>
+                                    <input type="number" className='mr-8 w-7/12 shadow-xl px-3 py-2 rounded-md bg-white font-paragraph placeholder:text-gray-dark'
+                                    value={quotaBicCov} onChange={(e) => setQuotaBicCov(e.target.value)}/>
+                                </div>
+
+                                <div className='flex justify-between items-center'>
+                                    <label className='ml-8 text font-semibold'> Tarifa </label>
+                                    <input type="" className='w-2/3 shadow-xl px-3 py-2 rounded-md bg-white font-paragraph placeholder:text-gray-dark' 
+                                    value={RateBicCov} onChange={(e) => setRateBicCov(e.target.value)}/>
+                                </div>
+                            </section>
+                        </section>
+                    ) : null}
                 </section>
+            ) : null}
 
-                <section className='flex flex-col'>
-                    <label className='mt-4 text font-semibold'> Motocicleta </label>
+            {(actualParking[0].parkingType.idParkingType == 'SEC') ? (<hr className="w-full h-0.5 mt-10 rounded-full bg-white"></hr>) : null}
 
-                    <section className='flex justify-between mt-2'>
-                        <div className='flex justify-between items-center'>
-                            <label className='text font-semibold'> # cupos </label>
-                            <input type="number" className='mr-8 w-7/12 shadow-xl px-3 py-2 rounded-md bg-white font-paragraph placeholder:text-gray-dark' placeholder='20' 
-                            value={quotaMotoCov} onChange={(e) => setQuotaMotoCov(e.target.value)}/>
-                        </div>
+            {(actualParking[0].parkingType.idParkingType == 'UNC' || actualParking[0].parkingType.idParkingType == 'SEC') ? (
+                <section className='mt-6 px-8'>
+                    <label className='text font-semibold text-lg'> Descubierto </label>
 
-                        <div className='flex justify-between'>
-                            <label className='ml-8 text font-semibold'> Tarifa </label>
-                            <input type="" className='w-2/3 shadow-xl px-3 py-2 rounded-md bg-white font-paragraph placeholder:text-gray-dark' placeholder='$15.000'
-                            value={RateMotoCov} onChange={(e) => setRateMotoCov(e.target.value)}/>
-                        </div>
-                    </section>
+                    {actualParking[1].CAR !== undefined ? (
+                        <section className='flex flex-col'>
+                            <label className='mt-4 text font-semibold'> Automóvil </label>
+
+                            <section className='flex justify-between mt-2'>
+                                <div className='flex justify-between items-center'>
+                                    <label className='text font-semibold'> # cupos </label>
+                                    <input type="number" className='mr-8 w-7/12 shadow-xl px-3 py-2 rounded-md bg-white font-paragraph placeholder:text-gray-dark' 
+                                    value={quotaCarUnc} onChange={(e) => setQuotaCarUnc(e.target.value)}/>
+                                </div>
+
+                                <div className='flex justify-between items-center'>
+                                    <label className='ml-8 text font-semibold'> Tarifa </label>
+                                    <input type="" className='w-2/3 shadow-xl px-3 py-2 rounded-md bg-white font-paragraph placeholder:text-gray-dark' 
+                                    value={RateCarUnc} onChange={(e) => setRateCarUnc(e.target.value)}/>
+                                </div>
+                            </section>
+                        </section>
+                    ) : null}
+
+                    {actualParking[1].MOT !== undefined ? (
+                        <section className='flex flex-col'>
+                            <label className='mt-4 text font-semibold'> Motocicleta </label>
+
+                            <section className='flex justify-between mt-2'>
+                                <div className='flex justify-between items-center'>
+                                    <label className='text font-semibold'> # cupos </label>
+                                    <input type="number" className='mr-8 w-7/12 shadow-xl px-3 py-2 rounded-md bg-white font-paragraph placeholder:text-gray-dark' 
+                                    value={quotaMotoUnc} onChange={(e) => setQuotaMotoUnc(e.target.value)}/>
+                                </div>
+
+                                <div className='flex justify-between'>
+                                    <label className='ml-8 text font-semibold'> Tarifa </label>
+                                    <input type="" className='w-2/3 shadow-xl px-3 py-2 rounded-md bg-white font-paragraph placeholder:text-gray-dark'
+                                    value={RateMotoUnc} onChange={(e) => setRateMotoUnc(e.target.value)}/>
+                                </div>
+                            </section>
+                        </section>
+                    ) : null}
+
+                    {actualParking[1].BIC !== undefined ? (
+                        <section className='flex flex-col'>
+                            <label className='mt-4 text font-semibold'> Bicicleta </label>
+
+                            <section className='flex justify-between mt-2'>
+                                <div className='flex justify-between items-center'>
+                                    <label className='text font-semibold'> # cupos </label>
+                                    <input type="number" className='mr-8 w-7/12 shadow-xl px-3 py-2 rounded-md bg-white font-paragraph placeholder:text-gray-dark'
+                                    value={quotaBicUnc} onChange={(e) => setQuotaBicUnc(e.target.value)}/>
+                                </div>
+
+                                <div className='flex justify-between items-center'>
+                                    <label className='ml-8 text font-semibold'> Tarifa </label>
+                                    <input type="" className='w-2/3 shadow-xl px-3 py-2 rounded-md bg-white font-paragraph placeholder:text-gray-dark'
+                                    value={RateBicUnc} onChange={(e) => setRateBicUnc(e.target.value)}/>
+                                </div>
+                            </section>
+                        </section>
+
+                    ) : null}
                 </section>
+            ) : null}
 
-                <section className='flex flex-col'>
-                    <label className='mt-4 text font-semibold'> Bicicleta </label>
-
-                    <section className='flex justify-between mt-2'>
-                        <div className='flex justify-between items-center'>
-                            <label className='text font-semibold'> # cupos </label>
-                            <input type="number" className='mr-8 w-7/12 shadow-xl px-3 py-2 rounded-md bg-white font-paragraph placeholder:text-gray-dark' placeholder='20' 
-                            value={quotaBicCov} onChange={(e) => setQuotaBicCov(e.target.value)}/>
-                        </div>
-
-                        <div className='flex justify-between items-center'>
-                            <label className='ml-8 text font-semibold'> Tarifa </label>
-                            <input type="" className='w-2/3 shadow-xl px-3 py-2 rounded-md bg-white font-paragraph placeholder:text-gray-dark' placeholder='$10.000' 
-                            value={RateBicCov} onChange={(e) => setRateBicCov(e.target.value)}/>
-                        </div>
-                    </section>
-                </section>
-            </section>
-
-            <hr className="w-full h-0.5 mt-10 rounded-full bg-white"></hr>
-
-            <section className='mt-6 px-8'>
-                <label className='text font-semibold text-lg'> Descubierto </label>
-
-                <section className='flex flex-col'>
-                    <label className='mt-4 text font-semibold'> Automóvil </label>
-
-                    <section className='flex justify-between mt-2'>
-                        <div className='flex justify-between items-center'>
-                            <label className='text font-semibold'> # cupos </label>
-                            <input type="number" className='mr-8 w-7/12 shadow-xl px-3 py-2 rounded-md bg-white font-paragraph placeholder:text-gray-dark' placeholder='20' 
-                            value={quotaCarUnc} onChange={(e) => setQuotaCarUnc(e.target.value)}/>
-                        </div>
-
-                        <div className='flex justify-between items-center'>
-                            <label className='ml-8 text font-semibold'> Tarifa </label>
-                            <input type="" className='w-2/3 shadow-xl px-3 py-2 rounded-md bg-white font-paragraph placeholder:text-gray-dark' placeholder='$25.000' 
-                            value={RateCarUnc} onChange={(e) => setRateCarUnc(e.target.value)}/>
-                        </div>
-                    </section>
-                </section>
-
-                <section className='flex flex-col'>
-                    <label className='mt-4 text font-semibold'> Motocicleta </label>
-
-                    <section className='flex justify-between mt-2'>
-                        <div className='flex justify-between items-center'>
-                            <label className='text font-semibold'> # cupos </label>
-                            <input type="number" className='mr-8 w-7/12 shadow-xl px-3 py-2 rounded-md bg-white font-paragraph placeholder:text-gray-dark' placeholder='20' 
-                            value={quotaMotoUnc} onChange={(e) => setQuotaMotoUnc(e.target.value)}/>
-                        </div>
-
-                        <div className='flex justify-between items-center'>
-                            <label className='ml-8 text font-semibold'> Tarifa </label>
-                            <input type="" className='w-2/3 shadow-xl px-3 py-2 rounded-md bg-white font-paragraph placeholder:text-gray-dark' placeholder='$15.000'
-                            value={RateMotoUnc} onChange={(e) => setRateMotoUnc(e.target.value)}/>
-                        </div>
-                    </section>
-                </section>
-
-                <section className='flex flex-col'>
-                    <label className='mt-4 text font-semibold'> Bicicleta </label>
-
-                    <section className='flex justify-between mt-2'>
-                        <div className='flex justify-between items-center'>
-                            <label className='text font-semibold'> # cupos </label>
-                            <input type="number" className='mr-8 w-7/12 shadow-xl px-3 py-2 rounded-md bg-white font-paragraph placeholder:text-gray-dark' placeholder='20' 
-                            value={quotaBicUnc} onChange={(e) => setQuotaBicUnc(e.target.value)}/>
-                        </div>
-
-                        <div className='flex justify-between items-center'>
-                            <label className='ml-8 text font-semibold'> Tarifa </label>
-                            <input type="" className='w-2/3 shadow-xl px-3 py-2 rounded-md bg-white font-paragraph placeholder:text-gray-dark' placeholder='$10.000' 
-                            value={RateBicUnc} onChange={(e) => setRateBicUnc(e.target.value)}/>
-                        </div>
-                    </section>
-                </section>
-            </section>
 
             <section className='flex items-center justify-between w-full mt-12 mb-2 px-14'>
-                <button className='shadow-xl px-24 py-3 bg-blue-dark hover:bg-blue-darkest rounded-xl text-white font-title font-semibold'> Confirmar </button>
+                <button className='shadow-xl px-24 py-3 bg-blue-dark hover:bg-blue-darkest rounded-xl text-white font-title font-semibold'
+                onClick={handleSpaces}> Confirmar </button>
                 <button className='shadow-xl px-24 py-3 bg-red-dark hover:bg-red-darkest rounded-xl text-white font-title font-semibold'
                 onClick={() => setCanEditSpaces(false)}> Cancelar </button>
             </section>

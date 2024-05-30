@@ -1,9 +1,7 @@
-import React from 'react';
+import { useState, useEffect } from 'react';
 import Login from "../../components/general/Login";
-import QuotaManager from "../../components/admin/QuotaManager"
 import bgImagePC from '../../assets/BG-PC.jpeg';
 import bgImageMobile from '../../assets/BG-Mobile.jpeg';
-import { useState, useEffect } from 'react';
 
 function useWindowSize() {
   const [size, setSize] = useState([window.innerWidth, window.innerHeight]);

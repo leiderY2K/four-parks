@@ -5,7 +5,7 @@ import Map from '../../components/manager/Map.jsx'
 import ParamsInfo from '../../components/manager/ParamsInfo.jsx'
 import QuotaManager from "../../components/manager/QuotaManager.jsx";
 
-const HomeAdminPage = ({url, initialCoords}) => {
+const HomeManagerPage = ({url, initialCoords}) => {
   const [cities, setCities] = useState([]);
   const [city, setCity] = useState("");
   const [actualCity, setActualCity] = useState({
@@ -45,6 +45,7 @@ const HomeAdminPage = ({url, initialCoords}) => {
 
   useEffect(() => {
     setActualParking();
+    setCanEditSpaces(false);
   }, [city])
 
   return (
@@ -66,8 +67,8 @@ const HomeAdminPage = ({url, initialCoords}) => {
 
           <section className='w-2/5 ml-48 mt-16 z-0'>
             {
-              !canEditSpaces ? (<ParamsInfo url={url} cities={cities} actualParking={actualParking} setCanEditSpaces={setCanEditSpaces} />) : 
-              (<QuotaManager setCanEditSpaces={setCanEditSpaces} />)
+              !canEditSpaces ? (<ParamsInfo url={url} actualCity={actualCity} actualParking={actualParking} setCanEditSpaces={setCanEditSpaces} />) : 
+              (<QuotaManager url={url} actualParking={actualParking} actualCity={actualCity} setCanEditSpaces={setCanEditSpaces} />)
             }
           </section>
         </section>
@@ -75,4 +76,4 @@ const HomeAdminPage = ({url, initialCoords}) => {
   )
 }
 
-export default HomeAdminPage
+export default HomeManagerPage

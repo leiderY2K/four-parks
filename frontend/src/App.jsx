@@ -80,23 +80,19 @@ function App() {
        
           <Route path="/inicio-sesion" element={<LoginPage url={url} />} />
           <Route path="/registro" element={<SignUpClientPage url={url} />} />
+          <Route path="/recuperacion-contraseña" element={<ForgotPassPage url={url}/>} />
+
           <Route path="/cliente-inicio" element={<HomeClientPage url={url} initialCoords={initialCoords} />}/>
           <Route path="/mis-reservas" element={<ReservationPage url={url} />}/>
 
-          <Route path="/admin-inicio" element={<HomeAdminPage url={url} initialCoords={initialCoords} />}/>
+          <Route path="/admin-inicio" element={<HomeAdminPage url={url} />}/>
           <Route path="/admin-ver-estadisticas" element={<StatisticsAdminPage url={url} />}/>
           <Route path="/registrar-cliente" element={<SignUpClientAdminPage url={url}/>} />
           
           <Route path="/manager-inicio" element={<HomeManagerPage url={url} initialCoords={initialCoords} />}/>
           <Route path="/manager-ver-estadisticas" element={<StatisticsManagerPage url={url} />}/>
-          <Route path="/ver-estadisticas" element={<StatisticsAdminPage url={url} />}/>
           <Route path="/cambio-contraseña" element={<PasswordChangePage url={url}/>} />
           <Route path="/agregar-administrador" element={<SignUpAdminPage url={url}/>} />
-          <Route path="/recuperacion-contraseña" element={<ForgotPassPage url={url}/>} />
-
-          
-
-
       </Routes>
     </BrowserRouter>
   )

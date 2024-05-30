@@ -5,29 +5,29 @@ import axios from "axios";
 
 ChartJS.register(CategoryScale, LinearScale, Title, Tooltip, Legend);
 
-const PieHours = ({url, actualParking, startDate, endDate}) => {
-    const [hoursAverage, setHoursAverage] = useState([]);
+const PieSales = ({url, actualParking, startDate, endDate}) => {
+    const [sales, setSales] = useState([]);
 
     useEffect(() => {
         const token = sessionStorage.getItem('token').replace(/"/g, '');
-        setHoursAverage([]);
+        setSales([]);
       
-        axios.get(`${url}/statistics/average-hour/`, {params: {
+        axios.get(`${url}/statistics/sales`, {params: {
             initialDate: startDate,
             finalDate: endDate,
             idParking: actualParking.id
         }, headers: {Authorization: `Bearer ${token}`}})
         .then((res) => {
-            const hoursData = res.data.map(item => ({ hour: item.hour, average: item.average }));
-            setHoursAverage(element => [...element, ...hoursData]);
+            const salesData = res.data.map(item => ({ date: item.date, sum: item.sum }));
+            setSales(element => [...element, ...salesData]);
         })
         .catch((err) => {
             console.log(err);
         });
     }, [actualParking, startDate, endDate]);      
 
-    const labels = hoursAverage.map((item) => item.hour);
-    const average = hoursAverage.map((item) => item.average);
+    const labels = sales.map((item) => item.date);
+    const sum = sales.map((item) => item.sum);
 
     const customPastelColors = [
         '#C3E8FA',
@@ -59,8 +59,8 @@ const PieHours = ({url, actualParking, startDate, endDate}) => {
     const data = {
         labels: labels,
         datasets: [{
-            label: 'Reservas',
-            data: average,
+            label: 'Ventas',
+            data: sum,
             backgroundColor: customPastelColors,
             borderColor: customPastelColors,
             borderWidth: 1,
@@ -71,7 +71,7 @@ const PieHours = ({url, actualParking, startDate, endDate}) => {
         plugins: {
             title: {
                 display: true,
-                text: 'PROMEDIO DE RESERVAS POR HORA',
+                text: 'CANTIDAD DE VENTAS POR DÍA',
             },
         }
     };
@@ -79,4 +79,4 @@ const PieHours = ({url, actualParking, startDate, endDate}) => {
     return <Pie data={data} options={options} />;
 };
 
-export default PieHours;
+export default PieSales;
