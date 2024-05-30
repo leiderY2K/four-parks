@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import axios from "axios";
 import Swal from 'sweetalert2'
 
-function QuotaManager({ url, actualParking, actualCity, setCanEditSpaces }) {
+function QuotaManager({ url, actualParking, setActualParking, actualCity, setCanEditSpaces }) {
     //Cupos Cubiertos
     const [quotaCarCov, setQuotaCarCov] = useState('');
     const [quotaMotoCov, setQuotaMotoCov] = useState('');
@@ -36,7 +36,9 @@ function QuotaManager({ url, actualParking, actualCity, setCanEditSpaces }) {
             setQuotaBicCov(actualParking[1].BIC.covered)
             setRateBicCov(actualParking[1].BIC['rate-covered'])
         }
-      } else if(actualParking[0].parkingType.idParkingType == 'UNC' || actualParking[0].parkingType.idParkingType == 'SEC') {
+      } 
+      
+      if(actualParking[0].parkingType.idParkingType == 'UNC' || actualParking[0].parkingType.idParkingType == 'SEC') {
         if(actualParking[1].CAR !== undefined) {
             setQuotaCarUnc(actualParking[1].CAR.uncovered)
             setRateCarUnc(actualParking[1].CAR['rate-uncovered'])
@@ -54,319 +56,191 @@ function QuotaManager({ url, actualParking, actualCity, setCanEditSpaces }) {
       }
     }, [actualParking]);
 
-    const handleSpaces = () => {
-        updateCarSpaces();
-        updateMotoSpaces();
-        updateBicSpaces();
+    const handleSpaces = async () => {
+        try {
+            await Promise.all([
+                updateCarCovSpaces(),
+                updateCarUncSpaces(),
+                updateMotoCovSpaces(),
+                updateMotoUncSpaces(),
+                updateBicCovSpaces(),
+                updateBicUncSpaces()
+            ]);
+    
+            Swal.fire({
+                icon: 'success',
+                title: `Se actualizaron correctamente los espacios al parqueadero`
+            });
 
-        setCanEditSpaces(false);
-    }
+            setActualParking();
+            setCanEditSpaces(false);
+        } catch (err) {
+            Swal.fire({
+                icon: 'error',
+                title: `Error al actualizar espacios al parqueadero`,
+                text: 'Hubo un error al intentar actualizar uno o más espacios'
+            });
+        }
+    };
 
-    const updateCarSpaces = () => {
+    const updateCarCovSpaces = async () => {
         const token = sessionStorage.getItem('token').replace(/"/g, '');
+        let amount = 0;
 
         if(quotaCarCov) {
-            let amount = quotaCarCov - actualParking[1].CAR.covered;
-
+            amount = quotaCarCov - actualParking[1].CAR.covered;
+    
             if(amount > 0) {
-                axios.post(`${url}/parking/${actualParking[0].parkingId.idParking}/${actualCity.id}/parking-space/insert`, 
-                {vehicleType: 'CAR', amount: amount, isUncovered: false}, {headers: {Authorization: `Bearer ${token}`}})
-                .then((res) => {
-                    Swal.fire({
-                        icon: 'success',
-                        title: res.data
-                    });
-                })
-                .catch((err) => {
-                    Swal.fire({
-                        icon: 'error',
-                        title: `Error al insertar espacios cubiertos de automóvil`,
-                        text: 'Hubo un error al intentar insertar espacios al parqueadero'
-                    });
-
+                try {
+                    await axios.post(`${url}/parking/${actualParking[0].parkingId.idParking}/${actualCity.id}/parking-space/insert`, 
+                    {vehicleType: 'CAR', amount: amount, isUncovered: false}, {headers: {Authorization: `Bearer ${token}`}});
+                } catch (err) {
                     console.log(err);
-                })
+                }
             } else if(amount < 0) {
                 amount = actualParking[1].CAR.covered - quotaCarCov;
-
-                axios.delete(`${url}/parking/${actualParking[0].parkingId.idParking}/${actualCity.id}/parking-space/delete`, 
-                {headers: {Authorization: `Bearer ${token}`},
-                data: {
-                    vehicleType: 'CAR',
-                    amount: amount,
-                    isUncovered: false
-                }})
-                .then((res) => {
-                    Swal.fire({
-                        icon: 'success',
-                        title: res.data
-                    });
-                })
-                .catch((err) => {
-                    Swal.fire({
-                        icon: 'error',
-                        title: `Error al eliminar espacios cubiertos de automóvil`,
-                        text: 'Hubo un error al intentar eliminar espacios del parqueadero. Es posible que estos espacios tengan reservas en curso'
-                    });
-
-                    console.log(err)
-                })
+                
+                try {
+                    await axios.delete(`${url}/parking/${actualParking[0].parkingId.idParking}/${actualCity.id}/parking-space/delete`, 
+                    {headers: {Authorization: `Bearer ${token}`}, data: {vehicleType: 'CAR', amount: amount, isUncovered: false}});
+                } catch (err) {
+                    console.log(err);
+                }
             }
         }
+    };
+
+    const updateCarUncSpaces = async () => {
+        const token = sessionStorage.getItem('token').replace(/"/g, '');
+        let amount = 0;
 
         if(quotaCarUnc) {
-            let amount = quotaCarUnc - actualParking[1].CAR.uncovered;
-
+            amount = quotaCarUnc - actualParking[1].CAR.uncovered;
+    
             if(amount > 0) {
-                axios.post(`${url}/parking/${actualParking[0].parkingId.idParking}/${actualCity.id}/parking-space/insert`, 
-                {vehicleType: 'CAR', amount: amount, isUncovered: true}, {headers: {Authorization: `Bearer ${token}`}})
-                .then((res) => {
-                    Swal.fire({
-                        icon: 'success',
-                        title: res.data
-                    });
-                })
-                .catch((err) => {
-                    Swal.fire({
-                        icon: 'error',
-                        title: `Error al insertar espacios descubiertos de automóvil`,
-                        text: 'Hubo un error al intentar insertar espacios al parqueadero'
-                    });
-
+                try {
+                    await axios.post(`${url}/parking/${actualParking[0].parkingId.idParking}/${actualCity.id}/parking-space/insert`, 
+                    {vehicleType: 'CAR', amount: amount, isUncovered: true}, {headers: {Authorization: `Bearer ${token}`}});
+                } catch (err) {
                     console.log(err);
-                })
+                }
             } else if(amount < 0) {
                 amount = actualParking[1].CAR.uncovered - quotaCarUnc;
-
-                axios.delete(`${url}/parking/${actualParking[0].parkingId.idParking}/${actualCity.id}/parking-space/delete`, 
-                {headers: {Authorization: `Bearer ${token}`},
-                data: {
-                    vehicleType: 'CAR',
-                    amount: amount,
-                    isUncovered: true
-                }})
-                .then((res) => {
-                    Swal.fire({
-                        icon: 'success',
-                        title: res.data
-                    });
-                })
-                .catch((err) => {
-                    Swal.fire({
-                        icon: 'error',
-                        title: `Error al eliminar espacios descubiertos de automóvil`,
-                        text: 'Hubo un error al intentar eliminar espacios del parqueadero. Es posible que estos espacios tengan reservas en curso'
-                    });
-
-                    console.log(err)
-                })
+                try {
+                    await axios.delete(`${url}/parking/${actualParking[0].parkingId.idParking}/${actualCity.id}/parking-space/delete`, 
+                    {headers: {Authorization: `Bearer ${token}`}, data: {vehicleType: 'CAR', amount: amount, isUncovered: true}});
+                } catch (err) {
+                    console.log(err);
+                }
             }
         }
-    }
+    };
     
-    const updateMotoSpaces = () => {
+    const updateMotoCovSpaces = async () => {
         const token = sessionStorage.getItem('token').replace(/"/g, '');
-
+        let amount = 0;
+        
         if(quotaMotoCov) {
             let amount = quotaMotoCov - actualParking[1].MOT.covered;
-
+    
             if(amount > 0) {
-                axios.post(`${url}/parking/${actualParking[0].parkingId.idParking}/${actualCity.id}/parking-space/insert`, 
-                {vehicleType: 'MOT', amount: amount, isUncovered: false}, {headers: {Authorization: `Bearer ${token}`}})
-                .then((res) => {
-                    Swal.fire({
-                        icon: 'success',
-                        title: res.data
-                    });
-                })
-                .catch((err) => {
-                    Swal.fire({
-                        icon: 'error',
-                        title: `Error al insertar espacios cubiertos de motocicleta`,
-                        text: 'Hubo un error al intentar insertar espacios al parqueadero'
-                    });
-
+                try {
+                    await axios.post(`${url}/parking/${actualParking[0].parkingId.idParking}/${actualCity.id}/parking-space/insert`, 
+                    {vehicleType: 'MOT', amount: amount, isUncovered: false}, {headers: {Authorization: `Bearer ${token}`}});
+                } catch (err) {
                     console.log(err);
-                })
+                }
             } else if(amount < 0) {
                 amount = actualParking[1].MOT.covered - quotaMotoCov;
-
-                axios.delete(`${url}/parking/${actualParking[0].parkingId.idParking}/${actualCity.id}/parking-space/delete`, 
-                {headers: {Authorization: `Bearer ${token}`},
-                data: {
-                    vehicleType: 'MOT',
-                    amount: amount,
-                    isUncovered: false
-                }})
-                .then((res) => {
-                    Swal.fire({
-                        icon: 'success',
-                        title: res.data
-                    });
-                })
-                .catch((err) => {
-                    Swal.fire({
-                        icon: 'error',
-                        title: `Error al eliminar espacios cubiertos de motocicleta`,
-                        text: 'Hubo un error al intentar eliminar espacios del parqueadero. Es posible que estos espacios tengan reservas en curso'
-                    });
-
-                    console.log(err)
-                })
+                
+                try {
+                    await axios.delete(`${url}/parking/${actualParking[0].parkingId.idParking}/${actualCity.id}/parking-space/delete`, 
+                    {headers: {Authorization: `Bearer ${token}`}, data: {vehicleType: 'MOT', amount: amount, isUncovered: false}});
+                } catch (err) {
+                    console.log(err);
+                }
             }
         }
+    };
 
+    const updateMotoUncSpaces = async () => {
+        const token = sessionStorage.getItem('token').replace(/"/g, '');
+        let amount = 0;
+        
         if(quotaMotoUnc) {
             let amount = quotaMotoUnc - actualParking[1].MOT.uncovered;
-
+    
             if(amount > 0) {
-                axios.post(`${url}/parking/${actualParking[0].parkingId.idParking}/${actualCity.id}/parking-space/insert`, 
-                {vehicleType: 'MOT', amount: amount, isUncovered: true}, {headers: {Authorization: `Bearer ${token}`}})
-                .then((res) => {
-                    Swal.fire({
-                        icon: 'success',
-                        title: res.data
-                    });
-                })
-                .catch((err) => {
-                    Swal.fire({
-                        icon: 'error',
-                        title: `Error al insertar espacios descubiertos de motocicleta`,
-                        text: 'Hubo un error al intentar insertar espacios al parqueadero'
-                    });
-
+                try {
+                    await axios.post(`${url}/parking/${actualParking[0].parkingId.idParking}/${actualCity.id}/parking-space/insert`, 
+                    {vehicleType: 'MOT', amount: amount, isUncovered: true}, {headers: {Authorization: `Bearer ${token}`}});
+                } catch (err) {
                     console.log(err);
-                })
+                }
             } else if(amount < 0) {
                 amount = actualParking[1].MOT.uncovered - quotaMotoUnc;
-
-                axios.delete(`${url}/parking/${actualParking[0].parkingId.idParking}/${actualCity.id}/parking-space/delete`, 
-                {headers: {Authorization: `Bearer ${token}`},
-                data: {
-                    vehicleType: 'MOT',
-                    amount: amount,
-                    isUncovered: true
-                }})
-                .then((res) => {
-                    Swal.fire({
-                        icon: 'success',
-                        title: res.data
-                    });
-                })
-                .catch((err) => {
-                    Swal.fire({
-                        icon: 'error',
-                        title: `Error al eliminar espacios descubiertos de motocicleta`,
-                        text: 'Hubo un error al intentar eliminar espacios del parqueadero. Es posible que estos espacios tengan reservas en curso'
-                    });
-
-                    console.log(err)
-                })
+                try {
+                    await axios.delete(`${url}/parking/${actualParking[0].parkingId.idParking}/${actualCity.id}/parking-space/delete`, 
+                    {headers: {Authorization: `Bearer ${token}`}, data: {vehicleType: 'MOT', amount: amount, isUncovered: true}});
+                } catch (err) {
+                    console.log(err);
+                }
             }
         }
-    }
-
-    const updateBicSpaces = () => {
+    };
+    
+    const updateBicCovSpaces = async () => {
         const token = sessionStorage.getItem('token').replace(/"/g, '');
-
+        let amount = 0;
+        
         if(quotaBicCov) {
             let amount = quotaBicCov - actualParking[1].BIC.covered;
-
+    
             if(amount > 0) {
-                axios.post(`${url}/parking/${actualParking[0].parkingId.idParking}/${actualCity.id}/parking-space/insert`, 
-                {vehicleType: 'BIC', amount: amount, isUncovered: false}, {headers: {Authorization: `Bearer ${token}`}})
-                .then((res) => {
-                    Swal.fire({
-                        icon: 'success',
-                        title: res.data
-                    });
-                })
-                .catch((err) => {
-                    Swal.fire({
-                        icon: 'error',
-                        title: `Error al insertar espacios cubiertos de bicicleta`,
-                        text: 'Hubo un error al intentar insertar espacios al parqueadero'
-                    });
-
+                try {
+                    await axios.post(`${url}/parking/${actualParking[0].parkingId.idParking}/${actualCity.id}/parking-space/insert`, 
+                    {vehicleType: 'BIC', amount: amount, isUncovered: false}, {headers: {Authorization: `Bearer ${token}`}});
+                } catch (err) {
                     console.log(err);
-                })
+                }
             } else if(amount < 0) {
                 amount = actualParking[1].BIC.covered - quotaBicCov;
-
-                axios.delete(`${url}/parking/${actualParking[0].parkingId.idParking}/${actualCity.id}/parking-space/delete`, 
-                {headers: {Authorization: `Bearer ${token}`},
-                data: {
-                    vehicleType: 'BIC',
-                    amount: amount,
-                    isUncovered: false
-                }})
-                .then((res) => {
-                    Swal.fire({
-                        icon: 'success',
-                        title: res.data
-                    });
-                })
-                .catch((err) => {
-                    Swal.fire({
-                        icon: 'error',
-                        title: `Error al eliminar espacios cubiertos de bicicleta`,
-                        text: 'Hubo un error al intentar eliminar espacios del parqueadero. Es posible que estos espacios tengan reservas en curso'
-                    });
-
-                    console.log(err)
-                })
+                
+                try {
+                    await axios.delete(`${url}/parking/${actualParking[0].parkingId.idParking}/${actualCity.id}/parking-space/delete`, 
+                    {headers: {Authorization: `Bearer ${token}`}, data: {vehicleType: 'BIC', amount: amount, isUncovered: false}});
+                } catch (err) {
+                    console.log(err);
+                }
             }
         }
+    };
 
+    const updateBicUncSpaces = async () => {
+        const token = sessionStorage.getItem('token').replace(/"/g, '');
+        let amount = 0;
+        
         if(quotaBicUnc) {
             let amount = quotaBicUnc - actualParking[1].BIC.uncovered;
-
+    
             if(amount > 0) {
-                axios.post(`${url}/parking/${actualParking[0].parkingId.idParking}/${actualCity.id}/parking-space/insert`, 
-                {vehicleType: 'BIC', amount: amount, isUncovered: true}, {headers: {Authorization: `Bearer ${token}`}})
-                .then((res) => {
-                    Swal.fire({
-                        icon: 'success',
-                        title: res.data
-                    });
-                })
-                .catch((err) => {
-                    Swal.fire({
-                        icon: 'error',
-                        title: `Error al insertar espacios descubiertos de bicicleta`,
-                        text: 'Hubo un error al intentar insertar espacios al parqueadero'
-                    });
-
+                try {
+                    await axios.post(`${url}/parking/${actualParking[0].parkingId.idParking}/${actualCity.id}/parking-space/insert`, 
+                    {vehicleType: 'BIC', amount: amount, isUncovered: true}, {headers: {Authorization: `Bearer ${token}`}});
+                } catch (err) {
                     console.log(err);
-                })
+                }
             } else if(amount < 0) {
                 amount = actualParking[1].BIC.uncovered - quotaBicUnc;
-
-                axios.delete(`${url}/parking/${actualParking[0].parkingId.idParking}/${actualCity.id}/parking-space/delete`, 
-                {headers: {Authorization: `Bearer ${token}`},
-                data: {
-                    vehicleType: 'BIC',
-                    amount: amount,
-                    isUncovered: true
-                }})
-                .then((res) => {
-                    Swal.fire({
-                        icon: 'success',
-                        title: res.data
-                    });
-                })
-                .catch((err) => {
-                    Swal.fire({
-                        icon: 'error',
-                        title: `Error al eliminar espacios descubiertos de bicicleta`,
-                        text: 'Hubo un error al intentar eliminar espacios del parqueadero. Es posible que estos espacios tengan reservas en curso'
-                    });
-
-                    console.log(err)
-                })
+                try {
+                    await axios.delete(`${url}/parking/${actualParking[0].parkingId.idParking}/${actualCity.id}/parking-space/delete`, 
+                    {headers: {Authorization: `Bearer ${token}`}, data: {vehicleType: 'BIC', amount: amount, isUncovered: true}});
+                } catch (err) {
+                    console.log(err);
+                }
             }
         }
-    }
+    };
 
     return (
         <article className="w-full py-4 rounded-2xl shadow-xl bg-blue-light">

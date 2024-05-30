@@ -30,6 +30,9 @@ function ParamsInfo({url, actualCity, actualParking}) {
             setParkAvailability(actualParking[0].schedule.scheduleType);
             setParkStart(actualParking[0].startTime);
             setParkEnd(actualParking[0].endTime);
+            actualParking[2] !== null ? setFidelization(actualParking[2].isEnable) : setFidelization(false);
+            actualParking[2] !== null ? setMinPoints(actualParking[2].targetPoints) : setMinPoints(0);
+            actualParking[2] !== null ? setMinCost(actualParking[2].targetValue) : setMinCost(0);
         }
     }, [actualParking]);
     
@@ -54,15 +57,14 @@ function ParamsInfo({url, actualCity, actualParking}) {
         if(parkStart) params.startTime = parkStart;
         if(parkEnd) params.endTime = parkEnd;
         
-        axios.put(`${url}/parking/${actualParking[0].parkingId.idParking}/${actualParking[0].parkingId.city.idCity}`, params, {headers: {Authorization: `Bearer ${token}`}
-        })
-        .then(res => {
+        axios.put(`${url}/parking/${actualParking[0].parkingId.idParking}/${actualParking[0].parkingId.city.idCity}`, params, {headers: {Authorization: `Bearer ${token}`}})
+        .then(() => {
             Swal.fire({
                 icon: 'success',
-                title: res.data
+                title: 'Información del parqueadero actualizada'
+            }).then(() => {
+                updateFidelization();
             });
-
-            setCanEdit(false);
         })
         .catch(err => {
             Swal.fire({
@@ -73,6 +75,143 @@ function ParamsInfo({url, actualCity, actualParking}) {
 
             console.error(err);
         });
+    }
+
+    const updateFidelization = () => {
+        const token = sessionStorage.getItem('token').replace(/"/g, '');
+
+        if(actualParking[2] == null && fidelization == true) {
+            if(minPoints && minCost) {
+                axios.post(`${url}/parking/${actualParking[0].parkingId.idParking}/${actualParking[0].parkingId.city.idCity}/score-system/toggle`, 
+                {putEnable: fidelization, targetPoints: minPoints, targetValue: minCost}, {headers: {Authorization: `Bearer ${token}`}})
+                .then((res) => {
+                    axios.put(`${url}/parking/${actualParking[0].parkingId.idParking}/${actualParking[0].parkingId.city.idCity}/score-system/modify`, 
+                    {targetPoints: minPoints, targetValue: minCost}, {headers: {Authorization: `Bearer ${token}`}})
+                    .then(() => {
+                        Swal.fire({
+                            icon: 'success',
+                            title: res.data.message
+                        });
+
+                        actualParking[2].isEnable = true;
+                        setCanEdit(false);
+                    })
+                    .catch((errU) => {
+                        console.error(errU);
+                    })
+                })
+                .catch((err) => {
+                    Swal.fire({
+                        icon: 'error',
+                        title: `Error al activar el sistema de fidelización`,
+                    });
+                    console.error(err);
+                })
+            } else {
+                Swal.fire({
+                    icon: 'info',
+                    title: `Por favor llene todos los campos de fidelización`
+                });
+            }
+        }
+
+        if((actualParking[2].isEnable == false) && fidelization == true) {
+            if(minPoints && minCost) {
+                axios.post(`${url}/parking/${actualParking[0].parkingId.idParking}/${actualParking[0].parkingId.city.idCity}/score-system/toggle`, 
+                {putEnable: fidelization, targetPoints: minPoints, targetValue: minCost}, {headers: {Authorization: `Bearer ${token}`}})
+                .then((res) => {
+                    axios.put(`${url}/parking/${actualParking[0].parkingId.idParking}/${actualParking[0].parkingId.city.idCity}/score-system/modify`, 
+                    {targetPoints: minPoints, targetValue: minCost}, {headers: {Authorization: `Bearer ${token}`}})
+                    .then(() => {
+                        Swal.fire({
+                            icon: 'success',
+                            title: res.data.message
+                        });
+
+                        actualParking[2].isEnable = true;
+                        setCanEdit(false);
+                    })
+                    .catch((errU) => {
+                        console.error(errU);
+                    })
+                })
+                .catch((err) => {
+                    Swal.fire({
+                        icon: 'error',
+                        title: `Error al activar el sistema de fidelización`,
+                    });
+                    console.error(err);
+                })
+            } else {
+                Swal.fire({
+                    icon: 'info',
+                    title: `Por favor llene todos los campos de fidelización`
+                });
+            }
+        }
+        
+        if(actualParking[2].isEnable == true && fidelization == false) {
+            axios.post(`${url}/parking/${actualParking[0].parkingId.idParking}/${actualParking[0].parkingId.city.idCity}/score-system/toggle`, {putEnable: fidelization}, 
+            {headers: {Authorization: `Bearer ${token}`}})
+            .then((res) => {
+                axios.put(`${url}/parking/${actualParking[0].parkingId.idParking}/${actualParking[0].parkingId.city.idCity}/score-system/modify`, 
+                {targetPoints: 0, targetValue: 0}, {headers: {Authorization: `Bearer ${token}`}})
+                .then(() => {
+                    Swal.fire({
+                        icon: 'success',
+                        title: res.data.message
+                    });
+
+                    actualParking[2].isEnable = false;
+                    setMinPoints(0);
+                    setMinCost(0);
+                    setCanEdit(false);
+                })
+                .catch((errU) => {
+                    console.error(errU);
+                })
+            })
+            .catch((err) => {
+                Swal.fire({
+                    icon: 'error',
+                    title: `Error al actualizar el sistema de fidelización`,
+                });
+    
+                console.error(err);
+            })
+        }
+        
+        if(actualParking[2].isEnable == true && fidelization == true) {
+            if(minPoints || minCost) {
+                const params = {};
+                if(minPoints) params.targetPoints = minPoints;
+                if(minCost) params.targetValue = minCost;
+
+                axios.put(`${url}/parking/${actualParking[0].parkingId.idParking}/${actualParking[0].parkingId.city.idCity}/score-system/modify`, params, 
+                {headers: {Authorization: `Bearer ${token}`}})
+                .then(() => {
+                    Swal.fire({
+                        icon: 'success',
+                        title: 'Sistema de fidelización actualizado'
+                    });
+
+                    setCanEdit(false);
+                })
+                .catch((err) => {
+                    Swal.fire({
+                        icon: 'error',
+                        title: `Error al actualizar el sistema de fidelización`,
+                    });
+        
+                    console.error(err);
+                })
+            } else {
+                Swal.fire({
+                    icon: 'info',
+                    title: `Por favor llene los campos de fidelización`
+                });
+            }
+        }
     }
 
     return(
@@ -123,10 +262,9 @@ function ParamsInfo({url, actualCity, actualParking}) {
                     <div className='flex flex-col mt-5'>
                         <label className='text-lg font-semibold mb-2'> Habilitar fidelización </label>
                         <select className={`w-full shadow-xl p-3 rounded-md bg-white font-paragraph ${canEdit ? null : 'opacity-70 cursor-not-allowed'}`} value={fidelization} 
-                        disabled={!canEdit} 
-                        onChange={(e) => setFidelization(e.target.value)}>
-                            <option value="true"> Si </option>
-                            <option value="false"> No </option>
+                        disabled={!canEdit} onChange={(e) => setFidelization(e.target.value === 'true')}>
+                            <option value={true}> Si </option>
+                            <option value={false}> No </option>
                         </select>
                     </div>               
                     

@@ -74,7 +74,7 @@ const Map = ({ url, city, actualCity, setActualCity, setActualParking }) => {
         
         axios.get(`${url}/parking/coordinates/${parking.coords[0]}/${parking.coords[1]}`, {headers: {Authorization: `Bearer ${token}`}})
         .then(res => {
-            setActualParking([res.data.parking, res.data.capacity]);
+            setActualParking([res.data.parking, res.data.capacity, res.data.scoreResponse]);
 
             let newCenterCoords = actualCity;
             newCenterCoords.centerCoords = [parking.coords[0], parking.coords[1]];

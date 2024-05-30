@@ -68,7 +68,7 @@ const HomeManagerPage = ({url, initialCoords}) => {
           <section className='w-2/5 ml-48 mt-16 z-0'>
             {
               !canEditSpaces ? (<ParamsInfo url={url} actualCity={actualCity} actualParking={actualParking} setCanEditSpaces={setCanEditSpaces} />) : 
-              (<QuotaManager url={url} actualParking={actualParking} actualCity={actualCity} setCanEditSpaces={setCanEditSpaces} />)
+              (<QuotaManager url={url} actualParking={actualParking} setActualParking={setActualParking} actualCity={actualCity} setCanEditSpaces={setCanEditSpaces} />)
             }
           </section>
         </section>

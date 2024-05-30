@@ -14,7 +14,7 @@ const HomeAdminPage = ({url}) => {
     
     axios.get(`${url}/parking/admin/${user.idType}/${user.idNumber}`, {headers: {Authorization: `Bearer ${token}`}})
     .then(res => {
-        setActualParking([res.data.parking, res.data.capacity]);
+        setActualParking([res.data.parking, res.data.capacity, res.data.scoreResponse]);
 
         const city = res.data.parking.parkingId.city;
         setActualCity({
