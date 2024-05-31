@@ -10,6 +10,8 @@ import org.springframework.security.config.annotation.web.configurers.AbstractHt
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.web.servlet.config.annotation.CorsRegistry;
+import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 import com.project.layer.Services.JWT.JwtAuthenticationFilter;
 
@@ -47,5 +49,15 @@ public class SecurityConfig {
             .authenticationProvider(authProvider)
             .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class)
             .build();
+    }
+
+    @Bean
+    WebMvcConfigurer corsConfigurer() {
+        return new WebMvcConfigurer() {
+            @Override
+            public void addCorsMappings(@SuppressWarnings("null") CorsRegistry registry) {
+                registry.addMapping("/**").allowedOrigins("https://fourparks.site");
+            }
+        };
     }
 }
