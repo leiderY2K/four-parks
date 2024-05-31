@@ -14,6 +14,7 @@ import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.annotation.Validated;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
@@ -41,6 +42,7 @@ import lombok.RequiredArgsConstructor;
 import java.util.List;
 import java.util.Arrays;
 
+@CrossOrigin("*")
 @RestController
 @RequestMapping("/auth")
 @RequiredArgsConstructor
