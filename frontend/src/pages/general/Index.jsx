@@ -1,6 +1,5 @@
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import Slider from 'react-slick';
-import { HashLink as AnchorLink } from 'react-router-hash-link';
 import { Tweet } from "react-tweet";
 
 import Header from '../../components/general/Header.jsx';
@@ -9,17 +8,10 @@ import ImageCarousel2 from "../../components/general/ImageCarousel2.jsx";
 
 import pasoapaso from '../../assets/pasoapaso.png';
 import quienessomos from '../../assets/quienessomos.png';
-import logo from '../../assets/Logo.png';
 import facebook from '../../assets/facebook.png';
 import ig from '../../assets/instagram.png';
 import x from '../../assets/X.png';
-import bgImage from '../../assets/BG-PC.jpeg'
 
-
-const backgroundStyle = {
-    backgroundImage: `url(${bgImage})`,
-    backgroundSize: 'cover'
-};
 
 const NextArrow = ({ onClick }) => {
   const [hovered, setHovered] = useState(false);
@@ -73,7 +65,7 @@ const PrevArrow = ({ onClick }) => {
   );
 }
 
-const Index = ({ url }) => {
+const Index = () => {
 
   const settings = {
     dots: true,

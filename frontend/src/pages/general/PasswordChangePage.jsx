@@ -18,7 +18,7 @@ function useWindowSize() {
   return size;
 }
 
-const PasswordChangePage = ({ url }) => {
+const PasswordChangePage = () => {
   const [width] = useWindowSize();
   const backgroundImage = width <= 414 ? bgImageMobile : bgImagePC;
 
@@ -26,7 +26,7 @@ const PasswordChangePage = ({ url }) => {
   return (
     <div className="h-screen" style={{backgroundImage: `url(${backgroundImage})`, backgroundSize: 'cover', backgroundPosition: 'center'}}>
         <div className="flex items-center justify-center h-screen">
-            <PasswordChange url={url} />
+            <PasswordChange />
         </div>
     </div>
   );

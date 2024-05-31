@@ -1,8 +1,6 @@
-import { useState, useEffect } from "react";
-import axios from "axios";
+import { useState, useEffect, useContext } from "react";
+import { ApiContext } from '../../context/ApiContext.jsx';
 import { jsPDF } from "jspdf";
-import { utils, writeFile } from "xlsx";
-import * as XLSX from 'xlsx';
 import html2canvas from "html2canvas";
 import ExcelJS from "exceljs";
 import Header from "../../components/manager/Header";
@@ -37,7 +35,7 @@ import BarOccupationAll from "../../components/manager/graphics/all/occupation/B
 import PieOccupationAll from "../../components/manager/graphics/all/occupation/PieOccupation";
 import LineOccupationAll from "../../components/manager/graphics/all/occupation/LineOccupation";
 
-const StatisticsManagerPage = ({ url }) => {
+const StatisticsManagerPage = () => {
   const [searchType, setSearchType] = useState('byParking');
   const [cities, setCities] = useState([]);
   const [actualCity, setActualCity] = useState("");
@@ -50,10 +48,12 @@ const StatisticsManagerPage = ({ url }) => {
   const [parkings, setParkings] = useState([]);
   const [actualParking, setActualParking] = useState('');
 
+  const api = useContext(ApiContext);
+
   useEffect(() => {
     const token = sessionStorage.getItem('token').replace(/"/g, '');
 
-    axios.get(`${url}/city/list`, {headers: {Authorization: `Bearer ${token}`}})
+    api.get(`/city/list`, {headers: {Authorization: `Bearer ${token}`}})
     .then(res=>{
       const cityArray = res.data.map(city => (city))
       setCities(cityArray);
@@ -67,7 +67,7 @@ const StatisticsManagerPage = ({ url }) => {
     const token = sessionStorage.getItem('token').replace(/"/g, '');
     const urlCity = (actualCity == "" ? "Bogota": actualCity);
     
-    axios.get(`${url}/parking/city/${urlCity}`, {headers: { Authorization: `Bearer ${token}` }})
+    api.get(`/parking/city/${urlCity}`, {headers: { Authorization: `Bearer ${token}` }})
     .then(res => {
         const parkingArray = res.data.map(parking => ({
             id: parking.parkingId.idParking,
@@ -98,7 +98,7 @@ const StatisticsManagerPage = ({ url }) => {
             return (
               <section className="w-10/12 mt-12 mx-auto" id="graph-section">
                 <div className="border bg-white p-6 rounded-md shadow-md overflow-hidden">
-                  <BarHoursParking url={url} actualParking={actualParking} startDate={startDate} endDate={endDate} />
+                  <BarHoursParking actualParking={actualParking} startDate={startDate} endDate={endDate} />
                 </div>
               </section>
             );
@@ -106,7 +106,7 @@ const StatisticsManagerPage = ({ url }) => {
             return (
               <section className="w-10/12 mt-12 mx-auto" id="graph-section">
                 <div className="border bg-white p-6 rounded-md shadow-md overflow-hidden">
-                  <PieHoursParking url={url} actualParking={actualParking} startDate={startDate} endDate={endDate} />
+                  <PieHoursParking actualParking={actualParking} startDate={startDate} endDate={endDate} />
                 </div>
               </section>
             );
@@ -114,7 +114,7 @@ const StatisticsManagerPage = ({ url }) => {
             return (
               <section className="w-10/12 mt-12 mx-auto" id="graph-section">
                 <div className="border bg-white p-6 rounded-md shadow-md overflow-hidden">
-                  <LineHoursParking url={url} actualParking={actualParking} startDate={startDate} endDate={endDate} />
+                  <LineHoursParking actualParking={actualParking} startDate={startDate} endDate={endDate} />
                 </div>
               </section>
             );
@@ -129,7 +129,7 @@ const StatisticsManagerPage = ({ url }) => {
             return (
               <section className="w-10/12 mt-12 mx-auto" id="graph-section">
                 <div className="border bg-white p-6 rounded-md shadow-md overflow-hidden">
-                  <BarHoursCity url={url} actualCity={actualCity} startDate={startDate} endDate={endDate} />
+                  <BarHoursCity actualCity={actualCity} startDate={startDate} endDate={endDate} />
                 </div>
               </section>
             );
@@ -137,7 +137,7 @@ const StatisticsManagerPage = ({ url }) => {
             return (
               <section className="w-10/12 mt-12 mx-auto" id="graph-section">
                 <div className="border bg-white p-6 rounded-md shadow-md overflow-hidden">
-                  <PieHoursCity url={url} actualCity={actualCity} startDate={startDate} endDate={endDate} />
+                  <PieHoursCity actualCity={actualCity} startDate={startDate} endDate={endDate} />
                 </div>
               </section>
             );
@@ -145,7 +145,7 @@ const StatisticsManagerPage = ({ url }) => {
             return (
               <section className="w-10/12 mt-12 mx-auto" id="graph-section">
                 <div className="border bg-white p-6 rounded-md shadow-md overflow-hidden">
-                  <LineHoursCity url={url} actualCity={actualCity} startDate={startDate} endDate={endDate} />
+                  <LineHoursCity actualCity={actualCity} startDate={startDate} endDate={endDate} />
                 </div>
               </section>
             );
@@ -160,7 +160,7 @@ const StatisticsManagerPage = ({ url }) => {
             return (
               <section className="w-10/12 mt-12 mx-auto" id="graph-section">
                 <div className="border bg-white p-6 rounded-md shadow-md overflow-hidden">
-                  <BarHoursAll url={url} startDate={startDate} endDate={endDate} />
+                  <BarHoursAll startDate={startDate} endDate={endDate} />
                 </div>
               </section>
             );
@@ -168,7 +168,7 @@ const StatisticsManagerPage = ({ url }) => {
             return (
               <section className="w-10/12 mt-12 mx-auto" id="graph-section">
                 <div className="border bg-white p-6 rounded-md shadow-md overflow-hidden">
-                  <PieHoursAll url={url} startDate={startDate} endDate={endDate} />
+                  <PieHoursAll startDate={startDate} endDate={endDate} />
                 </div>
               </section>
             );
@@ -176,7 +176,7 @@ const StatisticsManagerPage = ({ url }) => {
             return (
               <section className="w-10/12 mt-12 mx-auto" id="graph-section">
                 <div className="border bg-white p-6 rounded-md shadow-md overflow-hidden">
-                  <LineHoursAll url={url} startDate={startDate} endDate={endDate} />
+                  <LineHoursAll startDate={startDate} endDate={endDate} />
                 </div>
               </section>
             );
@@ -195,7 +195,7 @@ const StatisticsManagerPage = ({ url }) => {
             return (
               <section className="w-10/12 mt-12 mx-auto" id="graph-section">
                 <div className="border bg-white p-6 rounded-md shadow-md overflow-hidden">
-                  <BarSalesParking url={url} actualParking={actualParking} startDate={startDate} endDate={endDate} />
+                  <BarSalesParking actualParking={actualParking} startDate={startDate} endDate={endDate} />
                 </div>
               </section>
             );
@@ -203,7 +203,7 @@ const StatisticsManagerPage = ({ url }) => {
             return (
               <section className="w-10/12 mt-12 mx-auto" id="graph-section">
                 <div className="border bg-white p-6 rounded-md shadow-md overflow-hidden">
-                  <PieSalesParking url={url} actualParking={actualParking} startDate={startDate} endDate={endDate} />
+                  <PieSalesParking actualParking={actualParking} startDate={startDate} endDate={endDate} />
                 </div>
               </section>
             );
@@ -211,7 +211,7 @@ const StatisticsManagerPage = ({ url }) => {
             return (
               <section className="w-10/12 mt-12 mx-auto" id="graph-section">
                 <div className="border bg-white p-6 rounded-md shadow-md overflow-hidden">
-                  <LineSalesParking url={url} actualParking={actualParking} startDate={startDate} endDate={endDate} />
+                  <LineSalesParking actualParking={actualParking} startDate={startDate} endDate={endDate} />
                 </div>
               </section>
             );
@@ -226,7 +226,7 @@ const StatisticsManagerPage = ({ url }) => {
             return (
               <section className="w-10/12 mt-12 mx-auto" id="graph-section">
                 <div className="border bg-white p-6 rounded-md shadow-md overflow-hidden">
-                  <BarSalesCity url={url} actualCity={actualCity} startDate={startDate} endDate={endDate} />
+                  <BarSalesCity actualCity={actualCity} startDate={startDate} endDate={endDate} />
                 </div>
               </section>
             );
@@ -234,7 +234,7 @@ const StatisticsManagerPage = ({ url }) => {
             return (
               <section className="w-10/12 mt-12 mx-auto" id="graph-section">
                 <div className="border bg-white p-6 rounded-md shadow-md overflow-hidden">
-                  <PieSalesCity url={url} actualCity={actualCity} startDate={startDate} endDate={endDate} />
+                  <PieSalesCity actualCity={actualCity} startDate={startDate} endDate={endDate} />
                 </div>
               </section>
             );
@@ -242,7 +242,7 @@ const StatisticsManagerPage = ({ url }) => {
             return (
               <section className="w-10/12 mt-12 mx-auto" id="graph-section">
                 <div className="border bg-white p-6 rounded-md shadow-md overflow-hidden">
-                  <LineSalesCity url={url} actualCity={actualCity} startDate={startDate} endDate={endDate} />
+                  <LineSalesCity actualCity={actualCity} startDate={startDate} endDate={endDate} />
                 </div>
               </section>
             );
@@ -257,7 +257,7 @@ const StatisticsManagerPage = ({ url }) => {
             return (
               <section className="w-10/12 mt-12 mx-auto" id="graph-section">
                 <div className="border bg-white p-6 rounded-md shadow-md overflow-hidden">
-                  <BarSalesAll url={url} startDate={startDate} endDate={endDate} />
+                  <BarSalesAll startDate={startDate} endDate={endDate} />
                 </div>
               </section>
             );
@@ -265,7 +265,7 @@ const StatisticsManagerPage = ({ url }) => {
             return (
               <section className="w-10/12 mt-12 mx-auto" id="graph-section">
                 <div className="border bg-white p-6 rounded-md shadow-md overflow-hidden">
-                  <PieSalesAll url={url} startDate={startDate} endDate={endDate} />
+                  <PieSalesAll startDate={startDate} endDate={endDate} />
                 </div>
               </section>
             );
@@ -273,7 +273,7 @@ const StatisticsManagerPage = ({ url }) => {
             return (
               <section className="w-10/12 mt-12 mx-auto" id="graph-section">
                 <div className="border bg-white p-6 rounded-md shadow-md overflow-hidden">
-                  <LineSalesAll url={url} startDate={startDate} endDate={endDate} />
+                  <LineSalesAll startDate={startDate} endDate={endDate} />
                 </div>
               </section>
             );
@@ -292,7 +292,7 @@ const StatisticsManagerPage = ({ url }) => {
             return (
               <section className="w-10/12 mt-12 mx-auto" id="graph-section">
                 <div className="border bg-white p-6 rounded-md shadow-md overflow-hidden">
-                  <BarOccupationParking url={url} actualParking={actualParking} startDate={startDate} />
+                  <BarOccupationParking actualParking={actualParking} startDate={startDate} />
                 </div>
               </section>
             );
@@ -300,7 +300,7 @@ const StatisticsManagerPage = ({ url }) => {
             return (
               <section className="w-10/12 mt-12 mx-auto" id="graph-section">
                 <div className="border bg-white p-6 rounded-md shadow-md overflow-hidden">
-                  <PieOccupationParking url={url} actualParking={actualParking} startDate={startDate} />
+                  <PieOccupationParking actualParking={actualParking} startDate={startDate} />
                 </div>
               </section>
             );
@@ -308,7 +308,7 @@ const StatisticsManagerPage = ({ url }) => {
             return (
               <section className="w-10/12 mt-12 mx-auto" id="graph-section">
                 <div className="border bg-white p-6 rounded-md shadow-md overflow-hidden">
-                  <LineOccupationParking url={url} actualParking={actualParking} startDate={startDate} />
+                  <LineOccupationParking actualParking={actualParking} startDate={startDate} />
                 </div>
               </section>
             );
@@ -323,7 +323,7 @@ const StatisticsManagerPage = ({ url }) => {
             return (
               <section className="w-10/12 mt-12 mx-auto" id="graph-section">
                 <div className="border bg-white p-6 rounded-md shadow-md overflow-hidden">
-                  <BarOccupationCity url={url} actualCity={actualCity} startDate={startDate} />
+                  <BarOccupationCity actualCity={actualCity} startDate={startDate} />
                 </div>
               </section>
             );
@@ -331,7 +331,7 @@ const StatisticsManagerPage = ({ url }) => {
             return (
               <section className="w-10/12 mt-12 mx-auto" id="graph-section">
                 <div className="border bg-white p-6 rounded-md shadow-md overflow-hidden">
-                  <PieOccupationCity url={url} actualCity={actualCity} startDate={startDate} />
+                  <PieOccupationCity actualCity={actualCity} startDate={startDate} />
                 </div>
               </section>
             );
@@ -339,7 +339,7 @@ const StatisticsManagerPage = ({ url }) => {
             return (
               <section className="w-10/12 mt-12 mx-auto" id="graph-section">
                 <div className="border bg-white p-6 rounded-md shadow-md overflow-hidden">
-                  <LineOccupationCity url={url} actualCity={actualCity} startDate={startDate} />
+                  <LineOccupationCity actualCity={actualCity} startDate={startDate} />
                 </div>
               </section>
             );
@@ -354,7 +354,7 @@ const StatisticsManagerPage = ({ url }) => {
             return (
               <section className="w-10/12 mt-12 mx-auto" id="graph-section">
                 <div className="border bg-white p-6 rounded-md shadow-md overflow-hidden">
-                  <BarOccupationAll url={url} startDate={startDate} />
+                  <BarOccupationAll startDate={startDate} />
                 </div>
               </section>
             );
@@ -362,7 +362,7 @@ const StatisticsManagerPage = ({ url }) => {
             return (
               <section className="w-10/12 mt-12 mx-auto" id="graph-section">
                 <div className="border bg-white p-6 rounded-md shadow-md overflow-hidden">
-                  <PieOccupationAll url={url} startDate={startDate} />
+                  <PieOccupationAll startDate={startDate} />
                 </div>
               </section>
             );
@@ -370,7 +370,7 @@ const StatisticsManagerPage = ({ url }) => {
             return (
               <section className="w-10/12 mt-12 mx-auto" id="graph-section">
                 <div className="border bg-white p-6 rounded-md shadow-md overflow-hidden">
-                  <LineOccupationAll url={url} startDate={startDate} />
+                  <LineOccupationAll startDate={startDate} />
                 </div>
               </section>
             );
@@ -389,7 +389,7 @@ const StatisticsManagerPage = ({ url }) => {
             return (
               <section className="w-10/12 mt-12 mx-auto" id="graph-section">
                 <div className="border bg-white p-6 rounded-md shadow-md overflow-hidden">
-                  <BarVehiclesCity url={url} actualCity={actualCity} />
+                  <BarVehiclesCity actualCity={actualCity} />
                 </div>
               </section>
             );
@@ -397,7 +397,7 @@ const StatisticsManagerPage = ({ url }) => {
             return (
               <section className="w-10/12 mt-12 mx-auto" id="graph-section">
                 <div className="border bg-white p-6 rounded-md shadow-md overflow-hidden">
-                  <PieVehiclesCity url={url} actualCity={actualCity} />
+                  <PieVehiclesCity actualCity={actualCity} />
                 </div>
               </section>
             );
@@ -405,7 +405,7 @@ const StatisticsManagerPage = ({ url }) => {
             return (
               <section className="w-10/12 mt-12 mx-auto" id="graph-section">
                 <div className="border bg-white p-6 rounded-md shadow-md overflow-hidden">
-                  <LineVehiclesCity url={url} actualCity={actualCity} />
+                  <LineVehiclesCity actualCity={actualCity} />
                 </div>
               </section>
             );

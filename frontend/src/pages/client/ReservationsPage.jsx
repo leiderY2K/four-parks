@@ -1,19 +1,20 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useContext } from 'react';
 import Header from '../../components/client/Header.jsx'
 import ReservationInfo from '../../components/client/ReservationInfo.jsx';
-import axios from "axios";
+import { ApiContext } from '../../context/ApiContext.jsx';
 
-const ReservationPage = ({ url }) => {
+const ReservationPage = () => {
   const [resState, setResState] = useState('');
   const [reservations, setReservations] = useState([]);
 
+  const api = useContext(ApiContext);
   const user = JSON.parse(sessionStorage.getItem('userLogged'));
   const idNumber = user.idNumber;
   const idType = user.idType;
   
   useEffect(() => {
     const token = sessionStorage.getItem('token').replace(/"/g, '');
-    axios.get(`http://localhost:8080/reservation/client/${idType}/${idNumber}`, {params: {status: resState}}, {headers: { Authorization: `Bearer ${token}` } })
+    api.get(`/reservation/client/${idType}/${idNumber}`, {params: {status: resState}}, {headers: { Authorization: `Bearer ${token}` } })
       .then(res => {
         const reservationArray = []; 
         res.data.map(reservation => {reservationArray.push(reservation)})
@@ -24,8 +25,6 @@ const ReservationPage = ({ url }) => {
         console.log(err);
       })
   },[resState]);
-
-  // Pruebas de iniciar reservación - = Juan Validar Error que sale en consola / Verificar si está bien 
 
   return (
     <>
@@ -49,7 +48,7 @@ const ReservationPage = ({ url }) => {
       <div className='flex justify-between flex-wrap px-12 pt-32 pb-10 bg-gray-light'>
         {
           reservations.map(reservation => (
-            <ReservationInfo key={reservation.idReservation} url={url} reservation={reservation} />
+            <ReservationInfo key={reservation.idReservation} reservation={reservation} />
           ))
         }
       </div>

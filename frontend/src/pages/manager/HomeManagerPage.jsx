@@ -1,11 +1,11 @@
-import { useEffect, useState } from "react";
-import axios from "axios";
+import { useEffect, useState, useContext } from "react";
+import { ApiContext } from '../../context/ApiContext.jsx';
 import Header from "../../components/manager/Header.jsx"
 import Map from '../../components/manager/Map.jsx'
 import ParamsInfo from '../../components/manager/ParamsInfo.jsx'
 import QuotaManager from "../../components/manager/QuotaManager.jsx";
 
-const HomeManagerPage = ({url, initialCoords}) => {
+const HomeManagerPage = ({initialCoords}) => {
   const [cities, setCities] = useState([]);
   const [city, setCity] = useState("");
   const [actualCity, setActualCity] = useState({
@@ -18,10 +18,12 @@ const HomeManagerPage = ({url, initialCoords}) => {
   const [actualParking, setActualParking] = useState();
   const [canEditSpaces, setCanEditSpaces] = useState(false);
 
+  const api = useContext(ApiContext);
+
   useEffect(() => {
     const token = sessionStorage.getItem('token').replace(/"/g, '');
 
-    axios.get(`${url}/city/list`, {headers: {Authorization: `Bearer ${token}`}})
+    api.get(`/city/list`, {headers: {Authorization: `Bearer ${token}`}})
     .then(res=>{
       const cityArray = res.data.map(city => (city))
       setCities(cityArray);
@@ -62,13 +64,13 @@ const HomeManagerPage = ({url, initialCoords}) => {
               ))}
             </select>
 
-            <Map url={url} city={city} actualCity={actualCity} setActualCity={setActualCity} setActualParking={setActualParking} />
+            <Map city={city} actualCity={actualCity} setActualCity={setActualCity} setActualParking={setActualParking} />
           </section>
 
           <section className='w-2/5 ml-48 mt-16 z-0'>
             {
-              !canEditSpaces ? (<ParamsInfo url={url} actualCity={actualCity} actualParking={actualParking} setCanEditSpaces={setCanEditSpaces} />) : 
-              (<QuotaManager url={url} actualParking={actualParking} setActualParking={setActualParking} actualCity={actualCity} setCanEditSpaces={setCanEditSpaces} />)
+              !canEditSpaces ? (<ParamsInfo actualCity={actualCity} actualParking={actualParking} setCanEditSpaces={setCanEditSpaces} />) : 
+              (<QuotaManager actualParking={actualParking} setActualParking={setActualParking} actualCity={actualCity} setCanEditSpaces={setCanEditSpaces} />)
             }
           </section>
         </section>

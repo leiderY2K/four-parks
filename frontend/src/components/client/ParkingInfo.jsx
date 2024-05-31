@@ -2,7 +2,7 @@ import coveredIcon from '../../assets/Parking Icons/Covered-Transparent.png';
 import uncoveredIcon from '../../assets/Parking Icons/Uncovered-Transparent.png';
 import semicoveredIcon from '../../assets/Parking Icons/Semicovered-Transparent.png';
 
-const ParkingInfo = ({parkingType, vehicleType, setOnReservationForm, actualParking}) => {
+const ParkingInfo = ({setOnReservationForm, actualParking}) => {
     const getIcon = () => {
         switch (actualParking[0].parkingType.idParkingType) {
             case 'COV':

@@ -1,18 +1,19 @@
 import { Chart as ChartJS, CategoryScale, LinearScale, Title, Tooltip, Legend } from 'chart.js';
 import { Pie } from 'react-chartjs-2';
-import { useEffect, useState } from "react";
-import axios from "axios";
+import { useEffect, useState, useContext } from "react";
+import { ApiContext } from '../../../../../context/ApiContext';
 
 ChartJS.register(CategoryScale, LinearScale, Title, Tooltip, Legend);
 
-const PieVehicles = ({url, actualCity}) => {
+const PieVehicles = ({actualCity}) => {
     const [idCity, setIdCity] = useState('');
     const [vehiclePerc, setVehiclePerc] = useState([]);
+    const api = useContext(ApiContext);
 
     useEffect(() => {
         const token = sessionStorage.getItem('token').replace(/"/g, '');
 
-        axios.get(`${url}/city/${actualCity}`, {headers: {Authorization: `Bearer ${token}`}})
+        api.get(`/city/${actualCity}`, {headers: {Authorization: `Bearer ${token}`}})
         .then((res) => {
             setIdCity(res.data.idCity);
         })
@@ -26,7 +27,7 @@ const PieVehicles = ({url, actualCity}) => {
             const token = sessionStorage.getItem('token').replace(/"/g, '');
             setVehiclePerc([]);
     
-            axios.get(`${url}/statistics/city-vehicle-percentage`, {params: {
+            api.get(`/statistics/city-vehicle-percentage`, {params: {
                 city: idCity
             }, headers: {Authorization: `Bearer ${token}`}})
             .then((res) => {

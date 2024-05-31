@@ -1,8 +1,6 @@
-import { useState, useEffect } from "react";
-import axios from "axios";
+import { useState, useEffect, useContext } from "react";
+import { ApiContext } from '../../context/ApiContext.jsx';
 import { jsPDF } from "jspdf";
-import { utils, writeFile } from "xlsx";
-import * as XLSX from 'xlsx';
 import html2canvas from "html2canvas";
 import ExcelJS from "exceljs";
 import Header from "../../components/admin/Header";
@@ -16,7 +14,7 @@ import BarOccupation from "../../components/admin/graphics/occupation/BarOccupat
 import PieOccupation from "../../components/admin/graphics/occupation/PieOccupation";
 import LineOccupation from "../../components/admin/graphics/occupation/LineOccupation";
 
-const StatisticsAdminPage = ({ url }) => {
+const StatisticsAdminPage = () => {
   const [infoType, setInfoType] = useState('hours');
   const [graphicType, setGraphicType] = useState('bars');
   const [startDate, setStartDate] = useState('');
@@ -28,11 +26,13 @@ const StatisticsAdminPage = ({ url }) => {
     name: ""
   });
 
+  const api = useContext(ApiContext);
+
   useEffect(() => {
     const token = sessionStorage.getItem('token').replace(/"/g, '');
     const user = JSON.parse(sessionStorage.getItem('userLogged'));
 
-    axios.get(`${url}/parking/admin/${user.idType}/${user.idNumber}`, { headers: { Authorization: `Bearer ${token}` } })
+    api.get(`/parking/admin/${user.idType}/${user.idNumber}`, { headers: { Authorization: `Bearer ${token}` } })
       .then(res => {
         setActualParking({
           id: res.data.parking.parkingId.idParking,
@@ -51,7 +51,7 @@ const StatisticsAdminPage = ({ url }) => {
           return (
             <section className="w-10/12 mt-12 mx-auto" id="graph-section">
               <div className="border bg-white p-6 rounded-md shadow-md overflow-hidden">
-                <BarHours url={url} actualParking={actualParking} startDate={startDate} endDate={endDate} />
+                <BarHours actualParking={actualParking} startDate={startDate} endDate={endDate} />
               </div>
             </section>
           );
@@ -59,7 +59,7 @@ const StatisticsAdminPage = ({ url }) => {
           return (
             <section className="w-10/12 mt-12 mx-auto" id="graph-section">
               <div className="border bg-white p-6 rounded-md shadow-md overflow-hidden">
-                <PieHours url={url} actualParking={actualParking} startDate={startDate} endDate={endDate} />
+                <PieHours actualParking={actualParking} startDate={startDate} endDate={endDate} />
               </div>
             </section>
           );
@@ -67,7 +67,7 @@ const StatisticsAdminPage = ({ url }) => {
           return (
             <section className="w-10/12 mt-12 mx-auto" id="graph-section">
               <div className="border bg-white p-6 rounded-md shadow-md overflow-hidden">
-                <LineHours url={url} actualParking={actualParking} startDate={startDate} endDate={endDate} />
+                <LineHours actualParking={actualParking} startDate={startDate} endDate={endDate} />
               </div>
             </section>
           );
@@ -84,7 +84,7 @@ const StatisticsAdminPage = ({ url }) => {
           return (
             <section className="w-10/12 mt-12 mx-auto" id="graph-section">
               <div className="border bg-white p-6 rounded-md shadow-md overflow-hidden">
-                <BarSales url={url} actualParking={actualParking} startDate={startDate} endDate={endDate} />
+                <BarSales actualParking={actualParking} startDate={startDate} endDate={endDate} />
               </div>
             </section>
           );
@@ -92,7 +92,7 @@ const StatisticsAdminPage = ({ url }) => {
           return (
             <section className="w-10/12 mt-12 mx-auto" id="graph-section">
               <div className="border bg-white p-6 rounded-md shadow-md overflow-hidden">
-                <PieSales url={url} actualParking={actualParking} startDate={startDate} endDate={endDate} />
+                <PieSales actualParking={actualParking} startDate={startDate} endDate={endDate} />
               </div>
             </section>
           );
@@ -100,7 +100,7 @@ const StatisticsAdminPage = ({ url }) => {
           return (
             <section className="w-10/12 mt-12 mx-auto" id="graph-section">
               <div className="border bg-white p-6 rounded-md shadow-md overflow-hidden">
-                <LineSales url={url} actualParking={actualParking} startDate={startDate} endDate={endDate} />
+                <LineSales actualParking={actualParking} startDate={startDate} endDate={endDate} />
               </div>
             </section>
           );
@@ -117,7 +117,7 @@ const StatisticsAdminPage = ({ url }) => {
           return (
             <section className="w-10/12 mt-12 mx-auto" id="graph-section">
               <div className="border bg-white p-6 rounded-md shadow-md overflow-hidden">
-                <BarOccupation url={url} actualParking={actualParking} startDate={startDate} />
+                <BarOccupation actualParking={actualParking} startDate={startDate} />
               </div>
             </section>
           );
@@ -125,7 +125,7 @@ const StatisticsAdminPage = ({ url }) => {
           return (
             <section className="w-10/12 mt-12 mx-auto" id="graph-section">
               <div className="border bg-white p-6 rounded-md shadow-md overflow-hidden">
-                <PieOccupation url={url} actualParking={actualParking} startDate={startDate} />
+                <PieOccupation actualParking={actualParking} startDate={startDate} />
               </div>
             </section>
           );
@@ -133,7 +133,7 @@ const StatisticsAdminPage = ({ url }) => {
           return (
             <section className="w-10/12 mt-12 mx-auto" id="graph-section">
               <div className="border bg-white p-6 rounded-md shadow-md overflow-hidden">
-                <LineOccupation url={url} actualParking={actualParking} startDate={startDate} />
+                <LineOccupation actualParking={actualParking} startDate={startDate} />
               </div>
             </section>
           );

@@ -1,15 +1,16 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useContext } from 'react';
 import { MapContainer, TileLayer, Marker, Popup, useMap } from 'react-leaflet';
 import { Icon} from 'leaflet';
-import axios from "axios";
+import { ApiContext } from '../../context/ApiContext';
 import coveredWhiteIcon from '../../assets/Parking Icons/Covered-White.png';
 import uncoveredWhiteIcon from '../../assets/Parking Icons/Uncovered-White.png';
 import semicoveredWhiteIcon from '../../assets/Parking Icons/Semicovered-White.png';
 import "leaflet/dist/leaflet.css";
 import "../../css/map.css";
 
-const Map = ({ url, city, actualCity, setActualCity, setActualParking }) => {
+const Map = ({ city, actualCity, setActualCity, setActualParking }) => {
     const [parkings, setParkings] = useState([]);
+    const api = useContext(ApiContext);
 
     useEffect(() => {
         if(city) {
@@ -17,7 +18,7 @@ const Map = ({ url, city, actualCity, setActualCity, setActualParking }) => {
 
             const urlCity = (city == "" ? "Bogota": city);
 
-            axios.get(`${url}/city/${urlCity}`, {headers: {Authorization: `Bearer ${token}`}})
+            api.get(`/city/${urlCity}`, {headers: {Authorization: `Bearer ${token}`}})
             .then(res => {
                 const cityObject = {
                     id: res.data.idCity,
@@ -39,7 +40,7 @@ const Map = ({ url, city, actualCity, setActualCity, setActualParking }) => {
         const token = sessionStorage.getItem('token').replace(/"/g, '');
         const urlCity = (city == "" ? "Bogota": city);
         
-        axios.get(`${url}/parking/city/${urlCity}`, {headers: { Authorization: `Bearer ${token}` }})
+        api.get(`/parking/city/${urlCity}`, {headers: { Authorization: `Bearer ${token}` }})
         .then(res => {
             const parkingArray = res.data.map(parking => ({
                 id: parking.parkingId.idParking,
@@ -72,7 +73,7 @@ const Map = ({ url, city, actualCity, setActualCity, setActualParking }) => {
     const handleChangeParking = (parking) => {
         const token = sessionStorage.getItem('token').replace(/"/g, '');
         
-        axios.get(`${url}/parking/coordinates/${parking.coords[0]}/${parking.coords[1]}`, {headers: {Authorization: `Bearer ${token}`}})
+        api.get(`/parking/coordinates/${parking.coords[0]}/${parking.coords[1]}`, {headers: {Authorization: `Bearer ${token}`}})
         .then(res => {
             setActualParking([res.data.parking, res.data.capacity, res.data.scoreResponse]);
 

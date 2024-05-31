@@ -1,6 +1,7 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useContext } from 'react';
 import { MapContainer, TileLayer, Marker, Popup, useMap } from 'react-leaflet';
 import { Icon } from 'leaflet';
+import { ApiContext } from '../../context/ApiContext';
 import axios from "axios";
 import coveredWhiteIcon from '../../assets/Parking Icons/Covered-White.png';
 import coveredOrangeIcon from '../../assets/Parking Icons/Covered-Orange.png';
@@ -14,9 +15,11 @@ import semicoveredRedIcon from '../../assets/Parking Icons/Semicovered-Red.png';
 import "leaflet/dist/leaflet.css";
 import "../../css/map.css";
 
-const Map = ({ url, placeName, city, parkingType, availability, vehicleType, date, startTime, endTime, actualCity, setActualCity, setActualParking, setOnReservationForm }) => {
+const Map = ({ placeName, city, parkingType, availability, vehicleType, date, startTime, endTime, actualCity, setActualCity, setActualParking, setOnReservationForm }) => {
     const [parkings, setParkings] = useState([]);
     const [placeCoords, setPlaceCoords] = useState();
+
+    const api = useContext(ApiContext);
 
     useEffect(() => {
         if(city) {
@@ -24,7 +27,7 @@ const Map = ({ url, placeName, city, parkingType, availability, vehicleType, dat
 
             const urlCity = (city == "" ? "Bogota": city);
 
-            axios.get(`${url}/city/${urlCity}`, {headers: {Authorization: `Bearer ${token}`}})
+            api.get(`/city/${urlCity}`, {headers: {Authorization: `Bearer ${token}`}})
             .then(res => {
                 const cityObject = {
                     id: res.data.idCity,
@@ -81,7 +84,7 @@ const Map = ({ url, placeName, city, parkingType, availability, vehicleType, dat
             if (startTime) params.startTime = startTime;
             if (endTime) params.endTime = endTime;
             
-            axios.get(`${url}/parking/city/${urlCity}`, {params: params, headers: { Authorization: `Bearer ${token}` }})
+            api.get(`/parking/city/${urlCity}`, {params: params, headers: { Authorization: `Bearer ${token}` }})
             .then(res => {
                 const parkingArray = res.data.map(parking => ({
                     id: parking.parkingId.idParking,
@@ -116,7 +119,7 @@ const Map = ({ url, placeName, city, parkingType, availability, vehicleType, dat
     const handleChangeParking = (parking) => {
         const token = sessionStorage.getItem('token').replace(/"/g, '');
         
-        axios.get(`${url}/parking/coordinates/${parking.coords[0]}/${parking.coords[1]}`, {headers: {Authorization: `Bearer ${token}`}})
+        api.get(`/parking/coordinates/${parking.coords[0]}/${parking.coords[1]}`, {headers: {Authorization: `Bearer ${token}`}})
         .then(res => {
             setActualParking([res.data.parking, res.data.capacity]);
             setOnReservationForm(false);

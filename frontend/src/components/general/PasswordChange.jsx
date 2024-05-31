@@ -1,18 +1,16 @@
-import { useRef, useState } from "react"
-import { useNavigate } from "react-router-dom"
-import ReCAPTCHA from "react-google-recaptcha"
-import axios from "axios"
+import { useState, useContext } from "react"
+import { ApiContext } from '../../context/ApiContext';
 import Swal from 'sweetalert2'
-import { decodeJWT } from "../../javascript/decodeJWT"
 import logo from '../../assets/Logo.png'
 import '../../css/login.css'
 
-export default function PasswordChange({ url }) {
-
+export default function PasswordChange() {
     const [username, setUsername] = useState("");
     const [actualPass, setActualPass] = useState("");
     const [newPass, setNewPass] = useState("");
     const [newPassConfim, setNewPassConfirm] = useState("");
+    
+    const api = useContext(ApiContext);
 
     const handleChange = (e) => {
         e.preventDefault();
@@ -31,8 +29,7 @@ export default function PasswordChange({ url }) {
             return; 
         }
 
-
-        axios.post(`${url}/auth/change-pass`, { username: username, oldPass: actualPass, newPass: newPass })
+        api.post(`/auth/change-pass`, { username: username, oldPass: actualPass, newPass: newPass })
             .then(res => {
                 console.log(res);
                 Swal.fire({
@@ -48,10 +45,6 @@ export default function PasswordChange({ url }) {
                 });
             });
     }
-
-
-
-
 
     return (
         <article id="loginCard" className="pt-6 md:pt-10 2xl:pt-6 rounded-2xl shadow-xl bg-gradient-to-b from-red-light from-75% to-red-dark">

@@ -7,7 +7,7 @@ const backgroundStyle = {
     backgroundSize: 'cover'
 };
 
-const SignUpClientPage = ({url}) => {
+const SignUpClientPage = () => {
     useEffect(() => {
         sessionStorage.removeItem("userLogged");
         sessionStorage.removeItem("token");
@@ -16,7 +16,7 @@ const SignUpClientPage = ({url}) => {
     return (
         <div className="h-screen" style={backgroundStyle}>
             <div className="flex items-center justify-center h-screen">
-                <SignUp url={url} />
+                <SignUp />
             </div>
         </div>
     )

@@ -18,7 +18,7 @@ function useWindowSize() {
   return size;
 }
 
-const LoginPage = ({ url }) => {
+const LoginPage = () => {
   const [width] = useWindowSize();
   const backgroundImage = width <= 414 ? bgImageMobile : bgImagePC;
 
@@ -30,7 +30,7 @@ const LoginPage = ({ url }) => {
   return (
     <div className="h-screen" style={{backgroundImage: `url(${backgroundImage})`, backgroundSize: 'cover', backgroundPosition: 'center'}}>
         <div className="flex items-center justify-center h-screen">
-            <Login url={url} />
+            <Login />
         </div>
     </div>
   );

@@ -1,12 +1,12 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useContext } from "react";
 import { useNavigate } from "react-router-dom";
-import axios from "axios";
+import { ApiContext } from '../../context/ApiContext';
 import Swal from 'sweetalert2'
 import coveredIcon from '../../assets/Parking Icons/Covered-Transparent.png';
 import uncoveredIcon from '../../assets/Parking Icons/Uncovered-Transparent.png';
 import semicoveredIcon from '../../assets/Parking Icons/Semicovered-Transparent.png';
 
-function ReservationCard({url, setOnReservationForm, actualParking, actualCity }) {
+function ReservationCard({setOnReservationForm, actualParking, actualCity }) {
     const [resStartDate, setResStartDate]= useState('');
     const [resEndDate, setResEndDate]= useState('');
     const [resStart, setResStart] = useState('');
@@ -20,6 +20,8 @@ function ReservationCard({url, setOnReservationForm, actualParking, actualCity }
     const carCompData = actualParking[1].CAR;
     const motCompData = actualParking[1].MOT;
     const bicCompData = actualParking[1].BIC;
+
+    const api = useContext(ApiContext);
 
     function calculatePrice(param) {
         let a = parseInt(resStart,10)
@@ -106,10 +108,6 @@ function ReservationCard({url, setOnReservationForm, actualParking, actualCity }
         }
     },[vehicleType, resStart, resEnd, fieldParking]);
 
-
- 
-    
-
     const handleTimeChange = (setter) => (event) => {
         const time = new Date(event.target.valueAsNumber);
         if (time) {
@@ -133,7 +131,7 @@ function ReservationCard({url, setOnReservationForm, actualParking, actualCity }
                 title: `Por favor llene todos los campos`
             });
         } else {
-            axios.post(`${url}/reservation/start`, {
+            api.post(`/reservation/start`, {
                 startDateRes: resStartDate, 
                 endDateRes: resEndDate,
                 startTimeRes: resStart, 

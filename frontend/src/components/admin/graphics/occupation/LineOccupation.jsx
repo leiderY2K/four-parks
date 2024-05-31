@@ -1,18 +1,19 @@
 import { Chart as ChartJS, CategoryScale, LinearScale, PointElement, LineElement, Title, Tooltip, Legend } from 'chart.js';
 import { Line } from 'react-chartjs-2';
-import { useEffect, useState } from "react";
-import axios from "axios";
+import { useEffect, useState, useContext } from "react";
+import { ApiContext } from '../../../../context/ApiContext';
 
 ChartJS.register(CategoryScale, LinearScale, PointElement, LineElement, Title, Tooltip, Legend);
 
-const LineOccupation = ({url, actualParking, startDate}) => {
+const LineOccupation = ({actualParking, startDate}) => {
     const [occupation, setOccupation] = useState([]);
+    const api = useContext(ApiContext);
  
     useEffect(() => {
         const token = sessionStorage.getItem('token').replace(/"/g, '');
         setOccupation([]);
       
-        axios.get(`${url}/statistics/occupation`, {params: {
+        api.get(`/statistics/occupation`, {params: {
             date: startDate,
             idParking: actualParking.id
         }, headers: {Authorization: `Bearer ${token}`}})

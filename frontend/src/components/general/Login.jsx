@@ -1,21 +1,22 @@
-import { useRef, useState } from "react"
+import { useRef, useState, useContext } from "react"
 import { useNavigate } from "react-router-dom"
 import ReCAPTCHA from "react-google-recaptcha"
-import axios from "axios"
+import { ApiContext } from '../../context/ApiContext';
 import Swal from 'sweetalert2'
 import { decodeJWT } from "../../javascript/decodeJWT"
 import logo from '../../assets/Logo.png'
 import '../../css/login.css'
 
-export default function Login({ url }) {
+export default function Login() {
     const [user, setUser] = useState("");
     const [password, setPassword] = useState("");
     const [captchaState, setCaptchaState] = useState(false);
     
-
+    const api = useContext(ApiContext);
     const navigate = useNavigate();
     const captcha = useRef(null);
-    let intentos = 0
+    let intentos = 0;
+
     const handleLogin = (e) => {
         e.preventDefault();
 
@@ -26,7 +27,7 @@ export default function Login({ url }) {
             });
         } else {
             if (captchaState) {
-                axios.post(`${url}/auth/login`, { username: user, password: password })
+                api.post(`/auth/login`, { username: user, password: password })
                     .then(res => {
                         const tokenDecoded = decodeJWT(res.data.token);
 

@@ -1,18 +1,19 @@
 import { Chart as ChartJS, CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend, ArcElement } from 'chart.js';
 import { Bar } from 'react-chartjs-2';
-import { useEffect, useState } from "react";
-import axios from "axios";
+import { useEffect, useState, useContext } from "react";
+import { ApiContext } from '../../../../../context/ApiContext';
 
 ChartJS.register(ArcElement, CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend);
 
-const BarOccupation = ({url, startDate}) => {
+const BarOccupation = ({startDate}) => {
     const [occupation, setOccupation] = useState([]);
+    const api = useContext(ApiContext);
  
     useEffect(() => {
         const token = sessionStorage.getItem('token').replace(/"/g, '');
         setOccupation([]);
       
-        axios.get(`${url}/statistics/all-occupation`, {params: {
+        api.get(`/statistics/all-occupation`, {params: {
             date: startDate,
         }, headers: {Authorization: `Bearer ${token}`}})
         .then((res) => {

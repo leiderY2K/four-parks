@@ -1,18 +1,19 @@
 import { Chart as ChartJS, CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend, ArcElement } from 'chart.js';
 import { Bar } from 'react-chartjs-2';
-import { useEffect, useState } from "react";
-import axios from "axios";
+import { useEffect, useState, useContext } from "react";
+import { ApiContext } from '../../../../../context/ApiContext';
 
 ChartJS.register(ArcElement, CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend);
 
-const BarHours = ({url, actualCity, startDate, endDate}) => {
+const BarHours = ({ actualCity, startDate, endDate}) => {
     const [idCity, setIdCity] = useState('');
     const [hoursAverage, setHoursAverage] = useState([]);
+    const api = useContext(ApiContext);
 
     useEffect(() => {
         const token = sessionStorage.getItem('token').replace(/"/g, '');
 
-        axios.get(`${url}/city/${actualCity}`, {headers: {Authorization: `Bearer ${token}`}})
+        api.get(`/city/${actualCity}`, {headers: {Authorization: `Bearer ${token}`}})
         .then((res) => {
             setIdCity(res.data.idCity);
         })
@@ -26,7 +27,7 @@ const BarHours = ({url, actualCity, startDate, endDate}) => {
             const token = sessionStorage.getItem('token').replace(/"/g, '');
             setHoursAverage([]);
     
-            axios.get(`${url}/statistics/city-average-hour`, {params: {
+            api.get(`/statistics/city-average-hour`, {params: {
                 initialDate: startDate,
                 finalDate: endDate,
                 city: idCity

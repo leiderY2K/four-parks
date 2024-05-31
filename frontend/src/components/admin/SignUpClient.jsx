@@ -1,11 +1,10 @@
-import { useState } from "react";
+import { useState, useContext } from "react";
 import { useNavigate } from "react-router-dom";
-import axios from "axios";
+import { ApiContext } from '../../context/ApiContext';
 import Swal from 'sweetalert2'
 import logo from '../../assets/Logo.png'
-import { useEffect } from "react";
 
-export default function SignUpClient({ url }) {
+export default function SignUpClient() {
     const [idType, setIdType] = useState('');
     const [idNumber, setIdNumber] = useState('');
     const [name, setName] = useState('');
@@ -14,8 +13,7 @@ export default function SignUpClient({ url }) {
     const [username, setUsername] = useState('');
     const [email, setEmail] = useState('');
 
-
-
+    const api = useContext(ApiContext);
     const navigate = useNavigate();
 
     const handleSignUp = (e) => {
@@ -29,7 +27,7 @@ export default function SignUpClient({ url }) {
                 title: `Por favor llene todos los campos`
             });
         } else {
-            axios.post(`${url}/auth/register`, {
+            api.post(`/auth/register`, {
                 idUser: idNumber,
                 idDocTypeFk: idType,
                 username: username,

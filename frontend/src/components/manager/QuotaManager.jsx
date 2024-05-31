@@ -1,8 +1,8 @@
-import { useState, useEffect } from "react";
-import axios from "axios";
+import { useState, useEffect, useContext } from "react";
+import { ApiContext } from '../../context/ApiContext';
 import Swal from 'sweetalert2'
 
-function QuotaManager({ url, actualParking, setActualParking, actualCity, setCanEditSpaces }) {
+function QuotaManager({actualParking, setActualParking, actualCity, setCanEditSpaces }) {
     //Cupos Cubiertos
     const [quotaCarCov, setQuotaCarCov] = useState('');
     const [quotaMotoCov, setQuotaMotoCov] = useState('');
@@ -19,6 +19,8 @@ function QuotaManager({ url, actualParking, setActualParking, actualCity, setCan
     const [RateCarUnc, setRateCarUnc] = useState('');
     const [RateMotoUnc, setRateMotoUnc] = useState('');
     const [RateBicUnc, setRateBicUnc] = useState('');
+
+    const api = useContext(ApiContext);
 
     useEffect(() => {
       if(actualParking[0].parkingType.idParkingType == 'COV' || actualParking[0].parkingType.idParkingType == 'SEC') {
@@ -92,7 +94,7 @@ function QuotaManager({ url, actualParking, setActualParking, actualCity, setCan
     
             if(amount > 0) {
                 try {
-                    await axios.post(`${url}/parking/${actualParking[0].parkingId.idParking}/${actualCity.id}/parking-space/insert`, 
+                    await api.post(`/parking/${actualParking[0].parkingId.idParking}/${actualCity.id}/parking-space/insert`, 
                     {vehicleType: 'CAR', amount: amount, isUncovered: false}, {headers: {Authorization: `Bearer ${token}`}});
                 } catch (err) {
                     console.log(err);
@@ -101,7 +103,7 @@ function QuotaManager({ url, actualParking, setActualParking, actualCity, setCan
                 amount = actualParking[1].CAR.covered - quotaCarCov;
                 
                 try {
-                    await axios.delete(`${url}/parking/${actualParking[0].parkingId.idParking}/${actualCity.id}/parking-space/delete`, 
+                    await api.delete(`/parking/${actualParking[0].parkingId.idParking}/${actualCity.id}/parking-space/delete`, 
                     {headers: {Authorization: `Bearer ${token}`}, data: {vehicleType: 'CAR', amount: amount, isUncovered: false}});
                 } catch (err) {
                     console.log(err);
@@ -119,7 +121,7 @@ function QuotaManager({ url, actualParking, setActualParking, actualCity, setCan
     
             if(amount > 0) {
                 try {
-                    await axios.post(`${url}/parking/${actualParking[0].parkingId.idParking}/${actualCity.id}/parking-space/insert`, 
+                    await api.post(`/parking/${actualParking[0].parkingId.idParking}/${actualCity.id}/parking-space/insert`, 
                     {vehicleType: 'CAR', amount: amount, isUncovered: true}, {headers: {Authorization: `Bearer ${token}`}});
                 } catch (err) {
                     console.log(err);
@@ -127,7 +129,7 @@ function QuotaManager({ url, actualParking, setActualParking, actualCity, setCan
             } else if(amount < 0) {
                 amount = actualParking[1].CAR.uncovered - quotaCarUnc;
                 try {
-                    await axios.delete(`${url}/parking/${actualParking[0].parkingId.idParking}/${actualCity.id}/parking-space/delete`, 
+                    await api.delete(`/parking/${actualParking[0].parkingId.idParking}/${actualCity.id}/parking-space/delete`, 
                     {headers: {Authorization: `Bearer ${token}`}, data: {vehicleType: 'CAR', amount: amount, isUncovered: true}});
                 } catch (err) {
                     console.log(err);
@@ -145,7 +147,7 @@ function QuotaManager({ url, actualParking, setActualParking, actualCity, setCan
     
             if(amount > 0) {
                 try {
-                    await axios.post(`${url}/parking/${actualParking[0].parkingId.idParking}/${actualCity.id}/parking-space/insert`, 
+                    await api.post(`/parking/${actualParking[0].parkingId.idParking}/${actualCity.id}/parking-space/insert`, 
                     {vehicleType: 'MOT', amount: amount, isUncovered: false}, {headers: {Authorization: `Bearer ${token}`}});
                 } catch (err) {
                     console.log(err);
@@ -154,7 +156,7 @@ function QuotaManager({ url, actualParking, setActualParking, actualCity, setCan
                 amount = actualParking[1].MOT.covered - quotaMotoCov;
                 
                 try {
-                    await axios.delete(`${url}/parking/${actualParking[0].parkingId.idParking}/${actualCity.id}/parking-space/delete`, 
+                    await api.delete(`/parking/${actualParking[0].parkingId.idParking}/${actualCity.id}/parking-space/delete`, 
                     {headers: {Authorization: `Bearer ${token}`}, data: {vehicleType: 'MOT', amount: amount, isUncovered: false}});
                 } catch (err) {
                     console.log(err);
@@ -172,7 +174,7 @@ function QuotaManager({ url, actualParking, setActualParking, actualCity, setCan
     
             if(amount > 0) {
                 try {
-                    await axios.post(`${url}/parking/${actualParking[0].parkingId.idParking}/${actualCity.id}/parking-space/insert`, 
+                    await api.post(`/parking/${actualParking[0].parkingId.idParking}/${actualCity.id}/parking-space/insert`, 
                     {vehicleType: 'MOT', amount: amount, isUncovered: true}, {headers: {Authorization: `Bearer ${token}`}});
                 } catch (err) {
                     console.log(err);
@@ -180,7 +182,7 @@ function QuotaManager({ url, actualParking, setActualParking, actualCity, setCan
             } else if(amount < 0) {
                 amount = actualParking[1].MOT.uncovered - quotaMotoUnc;
                 try {
-                    await axios.delete(`${url}/parking/${actualParking[0].parkingId.idParking}/${actualCity.id}/parking-space/delete`, 
+                    await api.delete(`/parking/${actualParking[0].parkingId.idParking}/${actualCity.id}/parking-space/delete`, 
                     {headers: {Authorization: `Bearer ${token}`}, data: {vehicleType: 'MOT', amount: amount, isUncovered: true}});
                 } catch (err) {
                     console.log(err);
@@ -198,7 +200,7 @@ function QuotaManager({ url, actualParking, setActualParking, actualCity, setCan
     
             if(amount > 0) {
                 try {
-                    await axios.post(`${url}/parking/${actualParking[0].parkingId.idParking}/${actualCity.id}/parking-space/insert`, 
+                    await api.post(`/parking/${actualParking[0].parkingId.idParking}/${actualCity.id}/parking-space/insert`, 
                     {vehicleType: 'BIC', amount: amount, isUncovered: false}, {headers: {Authorization: `Bearer ${token}`}});
                 } catch (err) {
                     console.log(err);
@@ -207,7 +209,7 @@ function QuotaManager({ url, actualParking, setActualParking, actualCity, setCan
                 amount = actualParking[1].BIC.covered - quotaBicCov;
                 
                 try {
-                    await axios.delete(`${url}/parking/${actualParking[0].parkingId.idParking}/${actualCity.id}/parking-space/delete`, 
+                    await api.delete(`/parking/${actualParking[0].parkingId.idParking}/${actualCity.id}/parking-space/delete`, 
                     {headers: {Authorization: `Bearer ${token}`}, data: {vehicleType: 'BIC', amount: amount, isUncovered: false}});
                 } catch (err) {
                     console.log(err);
@@ -225,7 +227,7 @@ function QuotaManager({ url, actualParking, setActualParking, actualCity, setCan
     
             if(amount > 0) {
                 try {
-                    await axios.post(`${url}/parking/${actualParking[0].parkingId.idParking}/${actualCity.id}/parking-space/insert`, 
+                    await api.post(`/parking/${actualParking[0].parkingId.idParking}/${actualCity.id}/parking-space/insert`, 
                     {vehicleType: 'BIC', amount: amount, isUncovered: true}, {headers: {Authorization: `Bearer ${token}`}});
                 } catch (err) {
                     console.log(err);
@@ -233,7 +235,7 @@ function QuotaManager({ url, actualParking, setActualParking, actualCity, setCan
             } else if(amount < 0) {
                 amount = actualParking[1].BIC.uncovered - quotaBicUnc;
                 try {
-                    await axios.delete(`${url}/parking/${actualParking[0].parkingId.idParking}/${actualCity.id}/parking-space/delete`, 
+                    await api.delete(`/parking/${actualParking[0].parkingId.idParking}/${actualCity.id}/parking-space/delete`, 
                     {headers: {Authorization: `Bearer ${token}`}, data: {vehicleType: 'BIC', amount: amount, isUncovered: true}});
                 } catch (err) {
                     console.log(err);

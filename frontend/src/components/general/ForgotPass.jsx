@@ -1,20 +1,14 @@
-import { useRef, useState } from "react"
-import { useNavigate } from "react-router-dom"
-import ReCAPTCHA from "react-google-recaptcha"
-import axios from "axios"
+import { useState } from "react"
 import Swal from 'sweetalert2'
-import { decodeJWT } from "../../javascript/decodeJWT"
 import logo from '../../assets/Logo.png'
 import '../../css/login.css'
 
-export default function ForgotPass({ url }) {
-
+export default function ForgotPass() {
     const [email, setEmail] = useState("");
 
     const handleChange = (e) => {
         e.preventDefault();
 
-        
         if (!email) {
             Swal.fire({
                 icon: 'info',
@@ -22,33 +16,7 @@ export default function ForgotPass({ url }) {
             });
             return; 
         }
-
     }
-/*
-        // Si todas las validaciones pasan, enviar la solicitud Axios
-        axios.post(`${url}/auth/change-pass`, { username: username, oldPass: actualPass, newPass: newPass })
-            .then(res => {
-                console.log(res);
-                // Aquí puedes manejar la respuesta exitosa, por ejemplo, mostrar un mensaje de éxito
-                Swal.fire({
-                    icon: 'success',
-                    title: `Contraseña cambiada exitosamente`
-                });
-            })
-            .catch(err => {
-                console.log(err);
-                // Manejar errores de la solicitud Axios, por ejemplo, mostrar un mensaje de error
-                Swal.fire({
-                    icon: 'error',
-                    title: `Hubo un error al cambiar la contraseña`
-                });
-            });
-    }
-    */
-
-
-
-
 
     return (
         <article id="loginCard" className="pt-6 md:pt-10 2xl:pt-6 rounded-2xl shadow-xl bg-gradient-to-b from-red-light from-75% to-red-dark">

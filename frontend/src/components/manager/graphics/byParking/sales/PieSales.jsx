@@ -1,18 +1,19 @@
 import { Chart as ChartJS, CategoryScale, LinearScale, Title, Tooltip, Legend } from 'chart.js';
 import { Pie } from 'react-chartjs-2';
-import { useEffect, useState } from "react";
-import axios from "axios";
+import { useEffect, useState, useContext } from "react";
+import { ApiContext } from '../../../../../context/ApiContext';
 
 ChartJS.register(CategoryScale, LinearScale, Title, Tooltip, Legend);
 
-const PieSales = ({url, actualParking, startDate, endDate}) => {
+const PieSales = ({actualParking, startDate, endDate}) => {
     const [sales, setSales] = useState([]);
+    const api = useContext(ApiContext);
 
     useEffect(() => {
         const token = sessionStorage.getItem('token').replace(/"/g, '');
         setSales([]);
       
-        axios.get(`${url}/statistics/sales`, {params: {
+        api.get(`/statistics/sales`, {params: {
             initialDate: startDate,
             finalDate: endDate,
             idParking: actualParking.id

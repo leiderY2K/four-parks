@@ -1,10 +1,10 @@
-import { useState } from "react";
+import { useState, useContext } from "react";
 import { useNavigate } from "react-router-dom";
-import axios from "axios";
+import { ApiContext } from '../../context/ApiContext';
 import Swal from 'sweetalert2'
 import logo from '../../assets/Logo.png'
 
-export default function SignUp({ url }) {
+export default function SignUp() {
     const [idType, setIdType] = useState('');
     const [idNumber, setIdNumber] = useState('');
     const [name, setName] = useState('');
@@ -19,7 +19,7 @@ export default function SignUp({ url }) {
     const [masterCardNumbers, setMasterCardNumbers] = useState([5555555555554444, 2223003122003222, 5200828282828210, 5105105105105100])
     const [visaNumbers, setVisaNumbers] = useState([4242424242424242, 4000056655665556])
 
-
+    const api = useContext(ApiContext);
     const navigate = useNavigate();
 
     const handleSignUp = (e) => {
@@ -34,7 +34,7 @@ export default function SignUp({ url }) {
                 title: `Por favor llene todos los campos`
             });
         } else {
-            axios.post(`${url}/auth/register`, {
+            api.post(`/auth/register`, {
                 idUser: idNumber,
                 idDocTypeFk: idType,
                 username: username,

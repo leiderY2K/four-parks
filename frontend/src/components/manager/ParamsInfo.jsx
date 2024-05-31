@@ -1,8 +1,8 @@
-import { useState, useEffect } from "react";
-import axios from "axios";
+import { useState, useEffect, useContext } from "react";
+import { ApiContext } from '../../context/ApiContext';
 import Swal from 'sweetalert2'
 
-function ParamsInfo({url, actualCity, actualParking, setCanEditSpaces}) {
+function ParamsInfo({actualCity, actualParking, setCanEditSpaces}) {
     const [parkName, setParkName]= useState('');
     const [coordX, setCoordX]= useState('');
     const [coordY, setCoordY]= useState('');
@@ -17,6 +17,8 @@ function ParamsInfo({url, actualCity, actualParking, setCanEditSpaces}) {
     const [minPoints, setMinPoints] = useState('');
     const [minCost, setMinCost] = useState('');
     const [canEdit, setCanEdit] = useState(false);
+
+    const api = useContext(ApiContext);
 
     useEffect(() => {
         if(actualParking) {
@@ -71,7 +73,7 @@ function ParamsInfo({url, actualCity, actualParking, setCanEditSpaces}) {
         if(parkStart) params.startTime = parkStart;
         if(parkEnd) params.endTime = parkEnd;
         
-        axios.put(`${url}/parking/${actualParking[0].parkingId.idParking}/${actualParking[0].parkingId.city.idCity}`, params, {headers: {Authorization: `Bearer ${token}`}
+        api.put(`/parking/${actualParking[0].parkingId.idParking}/${actualParking[0].parkingId.city.idCity}`, params, {headers: {Authorization: `Bearer ${token}`}
         })
         .then(() => {
             Swal.fire({
@@ -97,10 +99,10 @@ function ParamsInfo({url, actualCity, actualParking, setCanEditSpaces}) {
 
         if(actualParking[2] == null && fidelization == true) {
             if(minPoints && minCost) {
-                axios.post(`${url}/parking/${actualParking[0].parkingId.idParking}/${actualParking[0].parkingId.city.idCity}/score-system/toggle`, 
+                api.post(`/parking/${actualParking[0].parkingId.idParking}/${actualParking[0].parkingId.city.idCity}/score-system/toggle`, 
                 {putEnable: fidelization, targetPoints: minPoints, targetValue: minCost}, {headers: {Authorization: `Bearer ${token}`}})
                 .then((res) => {
-                    axios.put(`${url}/parking/${actualParking[0].parkingId.idParking}/${actualParking[0].parkingId.city.idCity}/score-system/modify`, 
+                    api.put(`/parking/${actualParking[0].parkingId.idParking}/${actualParking[0].parkingId.city.idCity}/score-system/modify`, 
                     {targetPoints: minPoints, targetValue: minCost}, {headers: {Authorization: `Bearer ${token}`}})
                     .then(() => {
                         Swal.fire({
@@ -132,10 +134,10 @@ function ParamsInfo({url, actualCity, actualParking, setCanEditSpaces}) {
 
         if(actualParking[2].isEnable == false && fidelization == true) {
             if(minPoints && minCost) {
-                axios.post(`${url}/parking/${actualParking[0].parkingId.idParking}/${actualParking[0].parkingId.city.idCity}/score-system/toggle`, 
+                api.post(`/parking/${actualParking[0].parkingId.idParking}/${actualParking[0].parkingId.city.idCity}/score-system/toggle`, 
                 {putEnable: fidelization, targetPoints: minPoints, targetValue: minCost}, {headers: {Authorization: `Bearer ${token}`}})
                 .then((res) => {
-                    axios.put(`${url}/parking/${actualParking[0].parkingId.idParking}/${actualParking[0].parkingId.city.idCity}/score-system/modify`, 
+                    api.put(`/parking/${actualParking[0].parkingId.idParking}/${actualParking[0].parkingId.city.idCity}/score-system/modify`, 
                     {targetPoints: minPoints, targetValue: minCost}, {headers: {Authorization: `Bearer ${token}`}})
                     .then(() => {
                         Swal.fire({
@@ -166,10 +168,10 @@ function ParamsInfo({url, actualCity, actualParking, setCanEditSpaces}) {
         }
         
         if(actualParking[2].isEnable == true && fidelization == false) {
-            axios.post(`${url}/parking/${actualParking[0].parkingId.idParking}/${actualParking[0].parkingId.city.idCity}/score-system/toggle`, {putEnable: fidelization}, 
+            api.post(`/parking/${actualParking[0].parkingId.idParking}/${actualParking[0].parkingId.city.idCity}/score-system/toggle`, {putEnable: fidelization}, 
             {headers: {Authorization: `Bearer ${token}`}})
             .then((res) => {
-                axios.put(`${url}/parking/${actualParking[0].parkingId.idParking}/${actualParking[0].parkingId.city.idCity}/score-system/modify`, 
+                api.put(`/parking/${actualParking[0].parkingId.idParking}/${actualParking[0].parkingId.city.idCity}/score-system/modify`, 
                 {targetPoints: 0, targetValue: 0}, {headers: {Authorization: `Bearer ${token}`}})
                 .then(() => {
                     Swal.fire({
@@ -202,7 +204,7 @@ function ParamsInfo({url, actualCity, actualParking, setCanEditSpaces}) {
                 if(minPoints) params.targetPoints = minPoints;
                 if(minCost) params.targetValue = minCost;
 
-                axios.put(`${url}/parking/${actualParking[0].parkingId.idParking}/${actualParking[0].parkingId.city.idCity}/score-system/modify`, params, 
+                api.put(`/parking/${actualParking[0].parkingId.idParking}/${actualParking[0].parkingId.city.idCity}/score-system/modify`, params, 
                 {headers: {Authorization: `Bearer ${token}`}})
                 .then(() => {
                     Swal.fire({

@@ -1,14 +1,16 @@
-import { useEffect, useState } from "react";
-import axios from "axios";
+import { useEffect, useState, useContext } from "react";
+import { ApiContext } from '../../context/ApiContext';
 
-const ParkingFilters = ({url, placeName, setPlaceName, city, setCity, parkingType, setParkingType, availability, setAvailability, vehicleType, setVehicleType, date, setDate, 
+const ParkingFilters = ({placeName, setPlaceName, city, setCity, parkingType, setParkingType, availability, setAvailability, vehicleType, setVehicleType, date, setDate, 
 startTime, setStartTime, endTime, setEndTime}) => {
   const [cities, setCities] = useState([]);
+
+  const api = useContext(ApiContext);
 
   useEffect(() => {
     const token = sessionStorage.getItem('token').replace(/"/g, '');
 
-    axios.get(`${url}/city/list`,  {headers: {Authorization: `Bearer ${token}`}})
+    api.get(`/city/list`,  {headers: {Authorization: `Bearer ${token}`}})
     .then(res=>{
       const cityArray = res.data.map(city => (city))
       setCities(cityArray);

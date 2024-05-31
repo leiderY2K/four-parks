@@ -1,18 +1,19 @@
 import { Chart as ChartJS, CategoryScale, LinearScale, PointElement, LineElement, Title, Tooltip, Legend } from 'chart.js';
 import { Line } from 'react-chartjs-2';
-import { useEffect, useState } from "react";
-import axios from "axios";
+import { useEffect, useState, useContext } from "react";
+import { ApiContext } from '../../../../../context/ApiContext';
 
 ChartJS.register(CategoryScale, LinearScale, PointElement, LineElement, Title, Tooltip, Legend);
 
-const LineOccupation = ({url, actualCity, startDate}) => {
+const LineOccupation = ({actualCity, startDate}) => {
     const [idCity, setIdCity] = useState('');
     const [occupation, setOccupation] = useState([]);
+    const api = useContext(ApiContext);
  
     useEffect(() => {
         const token = sessionStorage.getItem('token').replace(/"/g, '');
 
-        axios.get(`${url}/city/${actualCity}`, {headers: {Authorization: `Bearer ${token}`}})
+        api.get(`/city/${actualCity}`, {headers: {Authorization: `Bearer ${token}`}})
         .then((res) => {
             setIdCity(res.data.idCity);
         })
@@ -26,7 +27,7 @@ const LineOccupation = ({url, actualCity, startDate}) => {
             const token = sessionStorage.getItem('token').replace(/"/g, '');
             setOccupation([]);
           
-            axios.get(`${url}/statistics/city-occupation`, {params: {
+            api.get(`/statistics/city-occupation`, {params: {
                 date: startDate,
                 city: idCity
             }, headers: {Authorization: `Bearer ${token}`}})

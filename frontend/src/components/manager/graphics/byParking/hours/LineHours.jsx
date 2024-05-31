@@ -1,18 +1,19 @@
 import { Chart as ChartJS, CategoryScale, LinearScale, PointElement, LineElement, Title, Tooltip, Legend } from 'chart.js';
 import { Line } from 'react-chartjs-2';
-import { useEffect, useState } from "react";
-import axios from "axios";
+import { useEffect, useState, useContext } from "react";
+import { ApiContext } from '../../../../../context/ApiContext';
 
 ChartJS.register(CategoryScale, LinearScale, PointElement, LineElement, Title, Tooltip, Legend);
 
-const LineHours = ({url, actualParking, startDate, endDate}) => {
+const LineHours = ({actualParking, startDate, endDate}) => {
     const [hoursAverage, setHoursAverage] = useState([]);
+    const api = useContext(ApiContext);
 
     useEffect(() => {
         const token = sessionStorage.getItem('token').replace(/"/g, '');
         setHoursAverage([]);
       
-        axios.get(`${url}/statistics/average-hour`, {params: {
+        api.get(`/statistics/average-hour`, {params: {
             initialDate: startDate,
             finalDate: endDate,
             idParking: actualParking.id

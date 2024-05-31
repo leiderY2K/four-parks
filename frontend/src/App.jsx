@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import { BrowserRouter, Route, Routes } from "react-router-dom"
+import { ApiProvider } from './context/ApiContext';
 import HomeClientPage from "./pages/client/HomeClientPage"
 import LoginPage from "./pages/general/LoginPage"
 import SignUpClientPage from "./pages/client/SignUpClientPage"
@@ -18,10 +19,8 @@ import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
 
 function App() {
-  const url = "http://localhost:8080";
-  const [initialCoords, setInitialCoords] = useState([]);
-
-  const options = { enableHighAccuracy: true, timeout: 20000, maximumAge: 0 };
+    const [initialCoords, setInitialCoords] = useState([]);
+    const options = { enableHighAccuracy: true, timeout: 20000, maximumAge: 0 };
 
     function errors(err) {
         console.warn(`ERROR(${err.code}): ${err.message}`);
@@ -70,30 +69,32 @@ function App() {
     useEffect(() => {
         geolocalizate();
     }, []);
-//   <Route path="/" element={<LoginPage url={url} />} />
+
   return (
-    <BrowserRouter>
-      <Routes>
-      
-        <Route path="/" element={<Index url={url} />} />
-       
-          <Route path="/inicio-sesion" element={<LoginPage url={url} />} />
-          <Route path="/registro" element={<SignUpClientPage url={url} />} />
-          <Route path="/recuperacion-contraseña" element={<ForgotPassPage url={url}/>} />
+    <ApiProvider>
+        <BrowserRouter>
+        <Routes>
+        
+            <Route path="/*" element={<Index />} />
+        
+            <Route path="/inicio-sesion" element={<LoginPage />} />
+            <Route path="/registro" element={<SignUpClientPage />} />
+            <Route path="/recuperacion-contraseña" element={<ForgotPassPage />} />
 
-          <Route path="/cliente-inicio" element={<HomeClientPage url={url} initialCoords={initialCoords} />}/>
-          <Route path="/mis-reservas" element={<ReservationPage url={url} />}/>
+            <Route path="/cliente-inicio" element={<HomeClientPage initialCoords={initialCoords} />}/>
+            <Route path="/mis-reservas" element={<ReservationPage />}/>
 
-          <Route path="/admin-inicio" element={<HomeAdminPage url={url} />}/>
-          <Route path="/admin-ver-estadisticas" element={<StatisticsAdminPage url={url} />}/>
-          <Route path="/registrar-cliente" element={<SignUpClientAdminPage url={url}/>} />
-          
-          <Route path="/manager-inicio" element={<HomeManagerPage url={url} initialCoords={initialCoords} />}/>
-          <Route path="/manager-ver-estadisticas" element={<StatisticsManagerPage url={url} />}/>
-          <Route path="/cambio-contraseña" element={<PasswordChangePage url={url}/>} />
-          <Route path="/agregar-administrador" element={<SignUpAdminPage url={url}/>} />
-      </Routes>
-    </BrowserRouter>
+            <Route path="/admin-inicio" element={<HomeAdminPage />}/>
+            <Route path="/admin-ver-estadisticas" element={<StatisticsAdminPage />}/>
+            <Route path="/registrar-cliente" element={<SignUpClientAdminPage />} />
+            
+            <Route path="/manager-inicio" element={<HomeManagerPage initialCoords={initialCoords} />}/>
+            <Route path="/manager-ver-estadisticas" element={<StatisticsManagerPage />}/>
+            <Route path="/cambio-contraseña" element={<PasswordChangePage />} />
+            <Route path="/agregar-administrador" element={<SignUpAdminPage />} />
+        </Routes>
+        </BrowserRouter>
+    </ApiProvider>
   )
 }
 export default App
