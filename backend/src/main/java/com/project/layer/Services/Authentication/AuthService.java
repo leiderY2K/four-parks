@@ -361,4 +361,8 @@ public class AuthService {
                 .build();
     }
 
+    public List<UserAuthentication> getAuthUsers(){
+        return userAuthRepository.getAuthUsers();
+    }
+
 }

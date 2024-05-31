@@ -19,6 +19,8 @@ import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
 import PassChangeAdmin from "./pages/admin/PassChangeAdmin";
 import PassChangeManager from "./pages/manager/PassChangeManager";
+import UnlockPage from "./pages/manager/UnlockPage";
+import AuditPage from "./pages/manager/AuditPage";
 
 function App() {
     const [initialCoords, setInitialCoords] = useState([]);
@@ -95,7 +97,8 @@ function App() {
             <Route path="/cambio-contraseña" element={<PassChangeClient />} />
             <Route path="/cambio-contraseña-admin" element={<PassChangeAdmin />} />
             <Route path="/cambio-contraseña-manager" element={<PassChangeManager />} />
-
+            <Route path="/desbloquear-administrador" element={<UnlockPage />} />
+            <Route path="/auditoria" element={<AuditPage />} />
             <Route path="/agregar-administrador" element={<SignUpAdminPage />} />
         </Routes>
         </BrowserRouter>

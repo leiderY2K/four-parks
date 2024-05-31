@@ -1,6 +1,7 @@
 package com.project.layer.Controllers;
 
 import com.project.layer.Persistence.Entity.Role;
+import com.project.layer.Persistence.Entity.UserAuthentication;
 import com.project.layer.Persistence.Error.CustomException;
 import com.project.layer.Persistence.Error.UserBlockedException;
 
@@ -13,6 +14,7 @@ import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.annotation.Validated;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -56,19 +58,19 @@ public class AuthController {
         try {
             // Se almacena la accion del usuario
             auditService.setAction(
-                    authService.getUserAction(request.getUsername(), "Ingreso", 
-                    requestService.getClientIp(ipUser)));
+                    authService.getUserAction(request.getUsername(), "Ingreso",
+                            requestService.getClientIp(ipUser)));
 
             return ResponseEntity.ok(authService.login(request));
         } catch (BadCredentialsException e) {
             // Incrementar intentos fallidos
             try {
-                //se almacena la acción de bloqueo de usuario revisar con cristian 
+                // se almacena la acción de bloqueo de usuario revisar con cristian
                 auditService
-                        .setAction(authService.getUserAction(request.getUsername(), 
-                        "Usuario Bloqueado",
-                        requestService.getClientIp(ipUser)));
-                
+                        .setAction(authService.getUserAction(request.getUsername(),
+                                "Usuario Bloqueado",
+                                requestService.getClientIp(ipUser)));
+
                 authService.incrementFailedAttempts(request.getUsername());
             } catch (UserBlockedException ex) {
                 return ResponseEntity.status(HttpStatus.FORBIDDEN).body(new AuthResponse(null, null, ex.getMessage()));
@@ -95,7 +97,8 @@ public class AuthController {
 
             System.out.println(recoveryPass.getContra());
             List<String> messages = Arrays.asList("PasswordChange", recoveryPass.getContra());
-        mailservice.sendMail("dmcuestaf@udistrital.edu.co", "[Four-parks] Se ha iniciado una solicitud de contraseña", messages);
+            mailservice.sendMail(request.getEmail(), "[Four-parks] Se ha iniciado una solicitud de contraseña",
+                    messages);
             return ResponseEntity.ok(recoveryPass);
         } catch (MessagingException e) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
@@ -132,10 +135,10 @@ public class AuthController {
         List<String> messages = Arrays.asList("Register", response.getContra());
         mailservice.sendMail(request.getEmail(), "Bienvenido a four-parks Colombia", messages);
 
-        //se establece la acción del usuario por el registro
-        auditService.setAction(authService.getUserAction(request.getUsername(), 
-        "Registro", 
-        requestService.getClientIp(ipUser)));
+        // se establece la acción del usuario por el registro
+        auditService.setAction(authService.getUserAction(request.getUsername(),
+                "Registro",
+                requestService.getClientIp(ipUser)));
 
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
@@ -170,6 +173,13 @@ public class AuthController {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
                     .body(new AuthResponse(null, null, "Credenciales incorrectas"));
         }
+
+        
     }
 
+
+    @GetMapping(value = "/get-auth-users")
+        public List<UserAuthentication> getAuthUsers(){
+        return authService.getAuthUsers();
+    }
 }

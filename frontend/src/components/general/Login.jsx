@@ -62,7 +62,7 @@ export default function Login() {
                     .catch(err => {
                         intentos=intentos+1;
 
-                        if (intentos>=2) {
+                        if (intentos>2) {
                             Swal.fire({
                                 icon: 'error',
                                 title: `Usuario bloqueado por límite de intentos`,

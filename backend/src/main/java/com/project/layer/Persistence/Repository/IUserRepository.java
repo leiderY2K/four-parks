@@ -1,6 +1,7 @@
 package com.project.layer.Persistence.Repository;
 
 import com.project.layer.Persistence.Entity.User;
+import com.project.layer.Persistence.Entity.UserAuthentication;
 import com.project.layer.Persistence.Entity.UserId;
 
 
@@ -37,6 +38,8 @@ public interface IUserRepository extends JpaRepository<User, UserId> {
             nativeQuery = true
     )
     Optional<User> findByFirstName(@Param("firstname") String firstname);
+
+
 
     /*
     @Query(

@@ -24,7 +24,7 @@ const Header = () => {
                         </li>
                         
                         <li className="mr-16 relative">
-                            <Link to="/manager-auditoria" className="inline-block font-title font-medium text-white hover:scale-105 py-2 px-4" 
+                            <Link to="/auditoria" className="inline-block font-title font-medium text-white hover:scale-105 py-2 px-4" 
                             onClick={() => {setOnToggleProfile(false);}}>Auditoria</Link>
                         </li>
 
@@ -56,7 +56,7 @@ const Header = () => {
                             </button>
                             {onToggleProfile && (
                                 <ul className="absolute bg-white shadow-md mt-2 py-2 w-52">
-                                    <li><Link to="/editar-perfil" className="text-black hover:text-white hover:bg-red-light py-2 px-4 block">Editar perfil</Link></li>
+                                    
                                     <li><Link to="/cambio-contraseña-manager" className="text-black hover:text-white hover:bg-red-light py-2 px-4 block">Cambiar contraseña</Link></li>
                                     <li><Link to="/iniciar-sesion" className="text-black hover:text-white hover:bg-red-light py-2 px-4 block">Cerrar sesión</Link></li>
 
