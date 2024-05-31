@@ -54,6 +54,5 @@ public interface IUserActionRepository extends JpaRepository<UserAction, Integer
          "AND (:ipUser IS NULL OR IPUSER = :ipUser)", nativeQuery = true)
     List<UserAction> getUserActionsByArgs(
             @Param("idUser") String idUser,
-            @Param("dateAction") Date dateAction,
-            @Param("ipUser") String ipUser);
+            @Param("dateAction") Date dateAction);
 }
