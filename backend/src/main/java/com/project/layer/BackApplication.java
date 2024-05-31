@@ -19,7 +19,7 @@ public class BackApplication {
 			public void addCorsMappings(@SuppressWarnings("null") CorsRegistry registry) {
 				registry
 					.addMapping("/**")
-					.allowedOrigins("http://fourparks.site")
+					.allowedOrigins("https://fourparks.site")
 					.allowedMethods("*")
 					.exposedHeaders("*")
 					.allowedHeaders("*");
