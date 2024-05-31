@@ -21,6 +21,7 @@ public class BackApplication {
 					.addMapping("/**")
 					.allowedOrigins("http://fourparks.site")
 					.allowedMethods("*")
+					.exposedHeaders("*")
 					.allowedHeaders("*");
 			}
 		};
