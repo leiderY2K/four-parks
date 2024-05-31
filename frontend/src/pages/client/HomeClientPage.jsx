@@ -6,6 +6,7 @@ import ParkingInfo from '../../components/client/ParkingInfo.jsx'
 import ReservationCard from '../../components/client/ReservationCard.jsx'
 
 const Home = ({url, initialCoords}) => {
+  const [placeName, setPlaceName] = useState("")
   const [city, setCity] = useState("");
   const [parkingType, setParkingType] = useState("");
   const [availability, setAvailability] = useState("");
@@ -42,9 +43,9 @@ const Home = ({url, initialCoords}) => {
         <Header />
         <div className='flex h-screen px-12 py-40 bg-gray-light'> 
           <section className='w-2/5'>
-            <ParkingFilters url={url} city={city} setCity={setCity} parkingType={parkingType} setParkingType={setParkingType} availability={availability} setAvailability={setAvailability}
-            vehicleType={vehicleType} setVehicleType={setVehicleType} date={date} setDate={setDate} startTime={startTime} setStartTime={setStartTime} 
-            endTime={endTime} setEndTime={setEndTime} />
+            <ParkingFilters url={url} placeName={placeName} setPlaceName={setPlaceName} city={city} setCity={setCity} parkingType={parkingType} setParkingType={setParkingType} 
+            availability={availability} setAvailability={setAvailability} vehicleType={vehicleType} setVehicleType={setVehicleType} date={date} setDate={setDate} 
+            startTime={startTime} setStartTime={setStartTime} endTime={endTime} setEndTime={setEndTime} />
 
             {
               (actualParking !== undefined ? (onReservationForm == true ? <ReservationCard url={url} setOnReservationForm={setOnReservationForm} actualCity={actualCity} 
@@ -54,8 +55,8 @@ const Home = ({url, initialCoords}) => {
           </section>
 
           <div className="w-1/2 ml-44 rounded-2xl z-0"> 
-            <Map url={url} city={city} parkingType={parkingType} availability={availability} vehicleType={vehicleType} date={date} startTime={startTime} endTime={endTime} 
-            actualCity={actualCity} setActualCity={setActualCity} setActualParking={setActualParking} setOnReservationForm={setOnReservationForm} />
+            <Map url={url} placeName={placeName} city={city} parkingType={parkingType} availability={availability} vehicleType={vehicleType} date={date} startTime={startTime} 
+            endTime={endTime} actualCity={actualCity} setActualCity={setActualCity} setActualParking={setActualParking} setOnReservationForm={setOnReservationForm} />
           </div>
         </div>
     </>

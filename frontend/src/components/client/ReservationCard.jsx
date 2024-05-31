@@ -17,8 +17,6 @@ function ReservationCard({url, setOnReservationForm, actualParking, actualCity }
     const [price, setPrice] = useState('');
     const [fieldParking, setFieldParking] = useState('');
 
-    
-
     const carCompData = actualParking[1].CAR;
     const motCompData = actualParking[1].MOT;
     const bicCompData = actualParking[1].BIC;
@@ -139,7 +137,6 @@ function ReservationCard({url, setOnReservationForm, actualParking, actualCity }
                 startDateRes: resStartDate, 
                 endDateRes: resEndDate,
                 startTimeRes: resStart, 
-                endDateRes: resEndDate, 
                 endTimeRes: resEnd, 
                 licensePlate: licensePlate,
                 clientId:{

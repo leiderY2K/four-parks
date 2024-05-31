@@ -22,6 +22,11 @@ const Header = () => {
                             <Link to="/manager-ver-estadisticas" className="inline-block font-title font-medium text-white hover:scale-105 py-2 px-4" 
                             onClick={() => {setOnToggleProfile(false);}}>Ver estadísticas</Link>
                         </li>
+                        
+                        <li className="mr-16 relative">
+                            <Link to="/manager-auditoria" className="inline-block font-title font-medium text-white hover:scale-105 py-2 px-4" 
+                            onClick={() => {setOnToggleProfile(false);}}>Auditoria</Link>
+                        </li>
 
                         <li className="mr-6 relative">
                             <button className="flex items-center font-title font-medium text-white hover:scale-105 py-2 px-4 focus:outline-none"

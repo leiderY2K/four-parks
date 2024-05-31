@@ -14,8 +14,9 @@ import semicoveredRedIcon from '../../assets/Parking Icons/Semicovered-Red.png';
 import "leaflet/dist/leaflet.css";
 import "../../css/map.css";
 
-const Map = ({ url, city, parkingType, availability, vehicleType, date, startTime, endTime, actualCity, setActualCity, setActualParking, setOnReservationForm }) => {
+const Map = ({ url, placeName, city, parkingType, availability, vehicleType, date, startTime, endTime, actualCity, setActualCity, setActualParking, setOnReservationForm }) => {
     const [parkings, setParkings] = useState([]);
+    const [placeCoords, setPlaceCoords] = useState();
 
     useEffect(() => {
         if(city) {
@@ -42,34 +43,61 @@ const Map = ({ url, city, parkingType, availability, vehicleType, date, startTim
     }, [city]);
 
     useEffect(() => {
-        const token = sessionStorage.getItem('token').replace(/"/g, '');
-        const params = {};
+        if(placeName) {
+            axios.get(`https://nominatim.openstreetmap.org/search`, {params: {
+                q: placeName,
+                countrycode: "co",
+                limit: 5, 
+                format: "json"
+            }})
+            .then((res) => {
+                console.log(res.data)
+                const placeObject = {
+                    coords: []
+                }
 
-        const urlCity = (city == "" ? "Bogota": city);
-        if (parkingType) params.type = parkingType;
-        if (availability) params.scheduleType = availability;
-        if (vehicleType) params.vehicleType = vehicleType;
-        if (date) params.date = date;
-        if (startTime) params.startTime = startTime;
-        if (endTime) params.endTime = endTime;
-        
-        axios.get(`${url}/parking/city/${urlCity}`, {params: params, headers: { Authorization: `Bearer ${token}` }
-        })
-        .then(res => {
-            const parkingArray = res.data.map(parking => ({
-                id: parking.parkingId.idParking,
-                name: parking.namePark,
-                address: parking.address.descAddress,
-                coords: [parking.address.coordinatesX, parking.address.coordinatesY],
-                type: parking.parkingType.idParkingType,
-                ocupability: parking.ocupability
-            }));
+                res.data.map((item) => {
+                    placeCoords.push(item.lat, item.lon)
+                })
+    
+                setPlaceCoords(placeObject)
+            })
+            .catch((err) => {
+                console.log(err);
+            })
+        }
+    }, [placeName]);
 
-            setParkings(parkingArray);
-        })
-        .catch(err => {
-            console.error(err.response || err);
-        });
+    useEffect(() => {
+        if(!placeName) {
+            const token = sessionStorage.getItem('token').replace(/"/g, '');
+            const params = {};
+    
+            const urlCity = (city == "" ? "Bogota": city);
+            if (parkingType) params.type = parkingType;
+            if (availability) params.scheduleType = availability;
+            if (vehicleType) params.vehicleType = vehicleType;
+            if (date) params.date = date;
+            if (startTime) params.startTime = startTime;
+            if (endTime) params.endTime = endTime;
+            
+            axios.get(`${url}/parking/city/${urlCity}`, {params: params, headers: { Authorization: `Bearer ${token}` }})
+            .then(res => {
+                const parkingArray = res.data.map(parking => ({
+                    id: parking.parkingId.idParking,
+                    name: parking.namePark,
+                    address: parking.address.descAddress,
+                    coords: [parking.address.coordinatesX, parking.address.coordinatesY],
+                    type: parking.parkingType.idParkingType,
+                    ocupability: parking.ocupability
+                }));
+    
+                setParkings(parkingArray);
+            })
+            .catch(err => {
+                console.error(err.response || err);
+            });
+        }
     }, [city, parkingType, availability, vehicleType, date, startTime, endTime]);
 
     const getIcon = (type, ocupability) => {
