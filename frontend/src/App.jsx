@@ -9,7 +9,7 @@ import HomeAdminPage from "./pages/admin/HomeAdminPage";
 import StatisticsAdminPage from "./pages/admin/StatisticsAdminPage";
 import HomeManagerPage from "./pages/manager/HomeManagerPage";
 import StatisticsManagerPage from "./pages/manager/StatisticsManagerPage";
-import PasswordChangePage from "./pages/general/PasswordChangePage";
+import PassChangeClient from "./pages/client/PassChangeClient";
 import SignUpClientAdminPage from "./pages/admin/SignUpClientAdminPage";
 import SignUpAdminPage from "./pages/manager/SignUpAdminPage";
 import ForgotPassPage from "./pages/general/ForgotPassPage";
@@ -17,6 +17,8 @@ import Index from "./pages/general/Index";
 
 import "slick-carousel/slick/slick.css"; 
 import "slick-carousel/slick/slick-theme.css";
+import PassChangeAdmin from "./pages/admin/PassChangeAdmin";
+import PassChangeManager from "./pages/manager/PassChangeManager";
 
 function App() {
     const [initialCoords, setInitialCoords] = useState([]);
@@ -90,7 +92,10 @@ function App() {
             
             <Route path="/manager-inicio" element={<HomeManagerPage initialCoords={initialCoords} />}/>
             <Route path="/manager-ver-estadisticas" element={<StatisticsManagerPage />}/>
-            <Route path="/cambio-contraseña" element={<PasswordChangePage />} />
+            <Route path="/cambio-contraseña" element={<PassChangeClient />} />
+            <Route path="/cambio-contraseña-admin" element={<PassChangeAdmin />} />
+            <Route path="/cambio-contraseña-manager" element={<PassChangeManager />} />
+
             <Route path="/agregar-administrador" element={<SignUpAdminPage />} />
         </Routes>
         </BrowserRouter>

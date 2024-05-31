@@ -57,7 +57,9 @@ const Header = () => {
                             {onToggleProfile && (
                                 <ul className="absolute bg-white shadow-md mt-2 py-2 w-52">
                                     <li><Link to="/editar-perfil" className="text-black hover:text-white hover:bg-red-light py-2 px-4 block">Editar perfil</Link></li>
-                                    <li><Link to="/" className="text-black hover:text-white hover:bg-red-light py-2 px-4 block">Cerrar sesión</Link></li>
+                                    <li><Link to="/cambio-contraseña-manager" className="text-black hover:text-white hover:bg-red-light py-2 px-4 block">Cambiar contraseña</Link></li>
+                                    <li><Link to="/iniciar-sesion" className="text-black hover:text-white hover:bg-red-light py-2 px-4 block">Cerrar sesión</Link></li>
+
                                 </ul>
                             )}
                         </li>
