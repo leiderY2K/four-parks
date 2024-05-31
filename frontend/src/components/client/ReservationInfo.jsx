@@ -61,11 +61,11 @@ function ReservationInfo({reservation}) {
     }
 
     return(
-        <article className="flex flex-col items-center w-96 mt-12 px-6 py-5 rounded-md shadow-md bg-blue-light">
+        <article className="flex flex-col items-center w-96 mt-12 mr-20 px-6 py-5 rounded-md shadow-md bg-blue-light">
             <section className="flex justify-between w-full h-16 mb-5">
                 <div>
-                    <div className="w-auto font-semibold text-lg"> Nombre del parqueadero </div>
-                    <div className="mb-2 text-title font-semibold"> Ciudad </div> 
+                    <div className="w-auto font-semibold text-lg"> {reservation.parkingSpace.parkingSpaceId.parking.namePark} </div>
+                    <div className="mb-2 text-title font-semibold"> {reservation.parkingSpace.parkingSpaceId.parking.parkingId.city.name} </div> 
                 </div>                  
             </section> 
 

@@ -49,7 +49,7 @@ const ReservationPage = () => {
       <div className='flex flex-wrap px-12 pt-32 pb-10 bg-gray-light'>
         {
           reservations.map(reservation => (
-            <ReservationInfo key={reservation.idReservation} reservation={reservation} />
+            <ReservationInfo key={reservation.idReservation} reservation={reservation}/>
           ))
         }
       </div>
