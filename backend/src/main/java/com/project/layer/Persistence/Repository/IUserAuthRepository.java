@@ -1,5 +1,6 @@
 package com.project.layer.Persistence.Repository;
 
+import java.util.List;
 import java.util.Optional;
 
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -48,4 +49,7 @@ public interface IUserAuthRepository extends JpaRepository<UserAuthentication, U
     void updatePass(@Param("username") String username, @Param("pass") String pass);
 
 
+
+    @Query(value = "SELECT * FROM USER_AUTHENTICATION",nativeQuery = true)
+    List<UserAuthentication> getAuthUsers();
 }

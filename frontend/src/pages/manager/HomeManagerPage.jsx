@@ -56,13 +56,15 @@ const HomeManagerPage = ({initialCoords}) => {
 
         <section className='flex h-screen px-12 py-36 bg-gray-light'> 
           <section className="w-1/2 rounded-2xl z-0"> 
-            <select id="parking-city" value={city} className="w-1/3 mr-12 mb-6 p-3 rounded-md bg-white shadow-md font-paragraph" onChange={(e) => setCity(e.target.value)}>
-              <option value="" disabled selected hidden> Ciudad </option>
-              <option value=""></option>
-              {cities.map((city, index) => (
-                <option key={index} value={city}> {city} </option>
-              ))}
-            </select>
+            <div className="flex flex-col w-1/3">
+              <label className='text-sm font-title font-semibold mb-2'>Ciudad</label>
+              <select id="parking-city" value={city} className=" mb-6 p-3 rounded-md bg-white shadow-md font-paragraph" onChange={(e) => setCity(e.target.value)}>
+                <option value=""></option>
+                {cities.map((city, index) => (
+                  <option key={index} value={city}> {city} </option>
+                ))}
+              </select>
+            </div>
 
             <Map city={city} actualCity={actualCity} setActualCity={setActualCity} setActualParking={setActualParking} />
           </section>

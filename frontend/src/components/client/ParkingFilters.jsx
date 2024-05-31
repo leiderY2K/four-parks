@@ -65,6 +65,7 @@ date, setDate, startTime, setStartTime, endTime, setEndTime}) => {
         <div className="flex flex-col w-1/2 mr-12">
           <label className='text-sm font-title font-semibold mb-2'>Ciudad</label>
           <select id="parking-city" value={city} className="p-4 rounded-md bg-white shadow-md font-paragraph" onChange={(e) => setCity(e.target.value)}>
+            <option value=""></option>
             {cities.map((city, index) => (
               <option key={index} value={city}> {city} </option>
             ))}

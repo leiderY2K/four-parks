@@ -47,8 +47,8 @@ public class AuditService {
     }
 
     //Metodo que me devuleve las acciones filtradas
-    public List<UserAction> getActionsFilter(String idUser, Date dateAction, String ipUser){
-        List<UserAction> userActions = userActionRepository.getUserActionsByArgs(idUser, dateAction, ipUser);
+    public List<UserAction> getActionsFilter(String idUser, Date dateAction){
+        List<UserAction> userActions = userActionRepository.getUserActionsByArgs(idUser, dateAction);
         return userActions;
     }
 

@@ -1,10 +1,10 @@
-import { useState } from "react";
+import { useState, useContext } from "react";
 import { useNavigate } from "react-router-dom";
 import { ApiContext } from '../../context/ApiContext';
 import Swal from 'sweetalert2'
 import logo from '../../assets/Logo.png'
 
-export default function SignUpClient() {
+export default function SignUp() {
     const [idType, setIdType] = useState('');
     const [idNumber, setIdNumber] = useState('');
     const [name, setName] = useState('');
@@ -12,16 +12,23 @@ export default function SignUpClient() {
     const [phone, setPhone] = useState('');
     const [username, setUsername] = useState('');
     const [email, setEmail] = useState('');
+    const [payMethod, setPayMethod] = useState('');
+    const [cardNumber, setCardNumber] = useState('');
+    const [expirationDate, setExpirationDate] = useState('');
+    const [cvv, setCvv] = useState('');
+    const [masterCardNumbers, setMasterCardNumbers] = useState([5555555555554444, 2223003122003222, 5200828282828210, 5105105105105100])
+    const [visaNumbers, setVisaNumbers] = useState([4242424242424242, 4000056655665556])
 
     const api = useContext(ApiContext);
     const navigate = useNavigate();
 
     const handleSignUp = (e) => {
         e.preventDefault();
-        console.log("Hola")
-        const token = sessionStorage.getItem('token').replace(/"/g, '');
+        let arr = expirationDate.split('-');
+        let year = arr[0].substr(arr[0].length - 2)
+        let month = arr[1]
 
-        if (!idType || !idNumber || !name || !lastName || !phone || !username || !email ) {
+        if (!idType || !idNumber || !name || !lastName || !phone || !username || !email) {
             Swal.fire({
                 icon: 'info',
                 title: `Por favor llene todos los campos`
@@ -36,8 +43,11 @@ export default function SignUpClient() {
                 lastName: lastName,
                 email: email,
                 phone: phone,
-                
-            }, {headers: {Authorization: `Bearer ${token}`}})
+                serialCard: "0",
+                ExpiryMonthCard: "09",
+                ExpiryYearCard: "30",
+                cvc: "999"
+            })
             .then(res => {
                 console.log(res);
 
@@ -47,7 +57,7 @@ export default function SignUpClient() {
                         text: 'Se le ha enviado un correo con su contraseña temporal'
                     });
 
-                    navigate("/admin-inicio");
+                    navigate("/inicio-sesion");
                 })
                 .catch(err => {
                     Swal.fire({
@@ -102,12 +112,17 @@ export default function SignUpClient() {
                     </div>
                 </section>
 
+        
+
                 <button className="mt-8 px-20 py-3 bg-blue-dark hover:bg-blue-darkest rounded-xl text-white font-title font-semibold text-xl" onClick={handleSignUp}>
                     Crear cuenta </button>
             </section>
 
             <hr className="h-0.5 mt-8 rounded-full bg-white"></hr>
 
+            <div className="flex justify-center mt-2 font-paragraph text-sm text-white"> ¿Ya tiene una cuenta?
+                <a href="/inicio-sesion" className="ml-1 font-semibold text-white hover:text-blue-darkest"> Inicia sesión </a>
+            </div>
         </article>
     )
 }

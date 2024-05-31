@@ -52,7 +52,6 @@ public class AuthService {
     private final ICardRepository cardRepository;
     private final PasswordEncoder passwordEncoder;
     private final JwtService jwtService;
-    private final MailService mailservice;
 
     private final AuthenticationManager authenticationManager;
 
@@ -125,8 +124,6 @@ public class AuthService {
             String randomPassword = generateRandomPassword();
             User user = userRepository.getReferenceById(userAuth.getUserId());
             updatePass(userAuth.getUsername(), passwordEncoder.encode(randomPassword));
-            List<String> messages = Arrays.asList("Register", randomPassword);
-            mailservice.sendMail(user.getEmail(), "Bienvenido a four-parks Colombia", messages);
             return AuthResponse.builder()
                     .token("Usuario desbloqueado.")
                     .build();
@@ -354,15 +351,18 @@ public class AuthService {
             unBlockPassword(userAuth.getUsername());
             String randomPassword = generateRandomPassword();
             updatePass(userAuth.getUsername(), passwordEncoder.encode(randomPassword));
-            List<String> messages = Arrays.asList("Register", randomPassword);
-            mailservice.sendMail(user.getEmail(), "Bienvenido a four-parks Colombia", messages);
             return AuthResponse.builder()
                     .token("La nueva contraseña se ha enviado exitosamente a su correo.")
+                    .contra(randomPassword)
                     .build();
         }
         return AuthResponse.builder()
                 .token("El correo no coincide con el de ningún usuario registrado")
                 .build();
+    }
+
+    public List<UserAuthentication> getAuthUsers(){
+        return userAuthRepository.getAuthUsers();
     }
 
 }
