@@ -2,9 +2,12 @@ import { useState } from "react"
 import Swal from 'sweetalert2'
 import logo from '../../assets/Logo.png'
 import '../../css/login.css'
+import { ApiContext } from '../../context/ApiContext';
+import { useContext } from "react";
 
 export default function ForgotPass() {
     const [email, setEmail] = useState("");
+    const api = useContext(ApiContext);
 
     const handleChange = (e) => {
         e.preventDefault();
@@ -15,6 +18,24 @@ export default function ForgotPass() {
                 title: `Por favor ingrese su email`
             });
             return; 
+        } else{
+
+            api.post(`/auth/pass-recovery`, { email: email })
+            .then(res => {
+                console.log(res);
+                Swal.fire({
+                    icon: 'success',
+                    title: `Se ha enviado un correo con la nueva contraseña`
+                });
+            })
+            .catch(err => {
+                console.log(err);
+                Swal.fire({
+                    icon: 'error',
+                    title: `Hubo un error al solicitar cambio de contraseña`
+                });
+            });
+
         }
     }
 
@@ -41,7 +62,7 @@ export default function ForgotPass() {
             </div>
 
             <div className="flex justify-center mt-2 font-paragraph text-sm text-white"> ¿Recuerda su contraseña?
-                <a href="/" className="ml-1 font-semibold text-white hover:text-blue-darkest"> Iniciar sesión </a>
+                <a href="/inicio-sesion" className="ml-1 font-semibold text-white hover:text-blue-darkest"> Iniciar sesión </a>
             </div>
         </article>
     )
