@@ -41,9 +41,8 @@ public class UserActionController {
 
     public List<UserAction> getActionsFilter(
             @RequestParam(required = false) String idUser,
-            @RequestParam(required = false) Date dateAction,
-            @RequestParam(required = false) String ipUser) {
-        return auditService.getActionsFilter(idUser, dateAction, ipUser);
+            @RequestParam(required = false) Date dateAction) {
+        return auditService.getActionsFilter(idUser, dateAction);
     }
 
     public AuditService getAuditService() {

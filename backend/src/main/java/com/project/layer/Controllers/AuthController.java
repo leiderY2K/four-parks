@@ -92,8 +92,10 @@ public class AuthController {
     public ResponseEntity<AuthResponse> passRecovery(@RequestBody PassRecoveryRequest request) {
         try {
             AuthResponse recoveryPass = authService.passRecovery(request);
+
+            System.out.println(recoveryPass.getContra());
             List<String> messages = Arrays.asList("PasswordChange", recoveryPass.getContra());
-        mailservice.sendMail(request.getEmail(), "Bienvenido a four-parks Colombia", messages);
+        mailservice.sendMail("dmcuestaf@udistrital.edu.co", "[Four-parks] Se ha iniciado una solicitud de contraseña", messages);
             return ResponseEntity.ok(recoveryPass);
         } catch (MessagingException e) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
@@ -162,7 +164,6 @@ public class AuthController {
             auditService.setAction(authService.getUserAction(request.getUsername(), 
             "Cambio de contraseña",
             requestService.getClientIp(ipUser)));
-
 
             return ResponseEntity.ok(authService.changePass(request));
         } catch (BadCredentialsException e) {
