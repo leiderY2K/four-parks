@@ -200,48 +200,67 @@ function ReservationCard({setOnReservationForm, actualParking, actualCity }) {
 
                 <section className="flex flex-col justify-evenly items-center w-full h-22 mt-8">
                     <div className="flex justify-between w-full mb-5">
-                        <input type="date" id="resStartDate" className="w-2/5 p-3 rounded-md bg-white font-paragraph mr-4" value={resStartDate} 
-                        onChange={(e) => setResStartDate(e.target.value)}></input>
-
-                        <input type="date" id="resStartDate" className="w-2/5 p-3 rounded-md bg-white font-paragraph mr-4" value={resEndDate} 
-                        onChange={(e) => setResEndDate(e.target.value)}></input>
-
-                        <input type="time" id="resStart" className="w-2/5 p-3 rounded-md bg-white font-paragraph mr-4" value={resStart} 
-                        onChange={handleTimeChange(setResStart)}></input>
-
-                        <input type="time" id="resEnd"className="w-2/5 p-3 rounded-md bg-white font-paragraph" placeholder="Hora fin" value={resEnd} 
-                        onChange={handleTimeChange(setResEnd)}></input>
+                        <div className="flex flex-col w-2/5 mr-4">
+                            <label className='text-sm font-title font-semibold mb-2'>Fecha inicio</label>
+                            <input type="date" id="resStartDate" className="p-3 rounded-md bg-white font-paragraph" value={resStartDate} 
+                            onChange={(e) => setResStartDate(e.target.value)}></input>
+                        </div>
+                        
+                        <div className="flex flex-col w-2/5 mr-4">
+                            <label className='text-sm font-title font-semibold mb-2'>Fecha fin</label>
+                            <input type="date" id="resStartDate" className="p-3 rounded-md bg-white font-paragraph" value={resEndDate} 
+                            onChange={(e) => setResEndDate(e.target.value)}></input>
+                        </div>
+                       
+                        <div className="flex flex-col w-2/5 mr-4">
+                            <label className='text-sm font-title font-semibold mb-2'>Hora inicio</label>
+                            <input type="time" id="resStart" className="p-3 rounded-md bg-white font-paragraph" value={resStart} 
+                            onChange={handleTimeChange(setResStart)}></input>
+                        </div>
+                        
+                        <div className="flex flex-col w-2/5 mr-4">
+                            <label className='text-sm font-title font-semibold mb-2'>Hora fin</label>    
+                            <input type="time" id="resEnd"className="p-3 rounded-md bg-white font-paragraph" placeholder="Hora fin" value={resEnd} 
+                            onChange={handleTimeChange(setResEnd)}></input>
+                        </div>
                     </div>
                 
                     <div className="flex justify-between w-full mb-5">
-                        <select id="vehicleType" className="w-2/5 p-3 rounded-md bg-white font-paragraph mr-4" value={vehicleType} onChange={(e) => setVehicleType(e.target.value)}>
-                            <option value="" disabled hidden> Tipo de vehiculo </option>
-                            <option value=""></option>
-                            {motCompData?<option value="MOT">Moto</option>:<></>}
-                            {carCompData?<option value="CAR">Carro</option>:<></>}
-                            {bicCompData?<option value="BIC">Bicicleta</option>:<></>}
-                        </select>
+                        <div className="flex flex-col w-2/5 mr-4">
+                            <label className='text-sm font-title font-semibold mb-2'>Tipo de vehículo</label>    
+                            <select id="vehicleType" className="p-3 rounded-md bg-white font-paragraph" value={vehicleType} onChange={(e) => setVehicleType(e.target.value)}>
+                                {motCompData?<option value="MOT">Moto</option>:<></>}
+                                {carCompData?<option value="CAR">Carro</option>:<></>}
+                                {bicCompData?<option value="BIC">Bicicleta</option>:<></>}
+                            </select>
+                        </div>
                         
-                        {tipoParkeadero=="SEC" ?  <select id="fieldParking" className="w-2/5 p-3 rounded-md bg-white font-paragraph mr-4" value={fieldParking} onChange={(e) => setFieldParking(e.target.value)}>
-                            <option value="" disabled hidden> Tipo de plaza </option>
-                            <option value=""></option>
-                            <option value="COV">Cubierta</option>
-                            <option value="UNC">Descubierta</option>
-                            
-                        </select> :<></>}
+                        {tipoParkeadero=="SEC" ?  (
+                            <div className="flex flex-col w-2/5 mr-4">
+                                <label className='text-sm font-title font-semibold mb-2'>Tipo de plaza</label>    
+                                <select id="fieldParking" className="p-3 rounded-md bg-white font-paragraph" value={fieldParking} onChange={(e) => setFieldParking(e.target.value)}>
+                                    <option value="COV">Cubierta</option>
+                                    <option value="UNC">Descubierta</option>
+                                </select>
+                            </div>
+                        ) :<></>}
 
-                        <input id="licensePlate" className="w-2/5 p-3 rounded-md bg-white font-paragraph placeholder:text-gray-dark" placeholder="Matricula del vehiculo"
-                        value={licensePlate} onChange={(e) => setLicensePlate(e.target.value)}></input>
+                        <div className="flex flex-col w-2/5 mr-4">
+                            <label className='text-sm font-title font-semibold mb-2'>Matrícula del vehículo</label>    
+                            <input id="licensePlate" className="p-3 rounded-md bg-white font-paragraph placeholder:text-gray-dark" placeholder="XYZ123"
+                            value={licensePlate} onChange={(e) => setLicensePlate(e.target.value)}></input>
+                        </div>
                     </div>
                 
                     <div className="w-full">
-                        <select id="resPayMethod" className="w-full p-3 rounded-md bg-white font-paragraph placeholder:text-gray-dark" value={resPayMethod} 
-                        onChange={(e) => setResPayMethod(e.target.value)}>
-                            <option value="" disabled hidden> Metodo de pago </option>
-                            <option value=""></option>
-                            <option value="5104499087433833">5104499087433833</option>
-                            <option value="Nequi">Nequi</option>
-                        </select>
+                        <div className="flex flex-col w-full mr-4">
+                            <label className='text-sm font-title font-semibold mb-2'>Método de pago</label>    
+                            <select id="resPayMethod" className="p-3 rounded-md bg-white font-paragraph" value={resPayMethod} 
+                            onChange={(e) => setResPayMethod(e.target.value)}>
+                                <option value=""></option>
+                                <option value="5104499087433833">5104499087433833</option>
+                            </select>
+                        </div>
                     </div>
 
                     <div className="flex justify-between w-full mt-5">

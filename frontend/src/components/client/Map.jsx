@@ -15,7 +15,7 @@ import semicoveredRedIcon from '../../assets/Parking Icons/Semicovered-Red.png';
 import "leaflet/dist/leaflet.css";
 import "../../css/map.css";
 
-const Map = ({ placeName, city, parkingType, availability, vehicleType, date, startTime, endTime, actualCity, setActualCity, setActualParking, setOnReservationForm }) => {
+const Map = ({ placeName, distance, city, parkingType, availability, vehicleType, date, startTime, endTime, actualCity, setActualCity, setActualParking, setOnReservationForm }) => {
     const [parkings, setParkings] = useState([]);
     const [placeCoords, setPlaceCoords] = useState();
 
@@ -46,6 +46,8 @@ const Map = ({ placeName, city, parkingType, availability, vehicleType, date, st
     }, [city]);
 
     useEffect(() => {
+        setParkings([]);
+
         if(placeName) {
             axios.get(`https://nominatim.openstreetmap.org/search`, {params: {
                 q: placeName,
@@ -54,22 +56,61 @@ const Map = ({ placeName, city, parkingType, availability, vehicleType, date, st
                 format: "json"
             }})
             .then((res) => {
-                console.log(res.data)
-                const placeObject = {
-                    coords: []
-                }
-
-                res.data.map((item) => {
-                    placeCoords.push(item.lat, item.lon)
-                })
+                const placeArray = res.data.map(place => ({
+                    coordinatesX: place.lat,
+                    coordinatesY: place.lon
+                }));
     
-                setPlaceCoords(placeObject)
+                setPlaceCoords(placeArray)
             })
             .catch((err) => {
                 console.log(err);
             })
         }
     }, [placeName]);
+
+    useEffect(() => {
+        if (placeCoords) {
+            const token = sessionStorage.getItem('token').replace(/"/g, '');
+    
+            const coordsObject = placeCoords.reduce((acc, coords, index) => {
+                acc[index] = { coordinatesX: coords.coordinatesX, coordinatesY: coords.coordinatesY };
+                return acc;
+            }, {});
+    
+            api.post(`/parking/spot`, { coordinates: coordsObject }, { params: { distance: distance }, headers: { Authorization: `Bearer ${token}` } })
+            .then((res) => {
+                const parkingsLists = res.data.parkingsLists;
+                // Convertir el objeto en un array de arrays y luego aplanarlo en un solo array
+                const parkingsArray = Object.values(parkingsLists).flat();
+
+                // Si parkingsArray tiene elementos, mapearlos
+                if (parkingsArray.length > 0) {
+                    const formattedParkingArray = parkingsArray.map(parking => ({
+                        id: parking.parkingId.idParking,
+                        name: parking.namePark,
+                        address: parking.address.descAddress,
+                        coords: [parking.address.coordinatesX, parking.address.coordinatesY],
+                        type: parking.parkingType.idParkingType,
+                        ocupability: parking.ocupability,
+                    }));
+                    
+                    setParkings(formattedParkingArray);
+                    
+                    let newCenterCoords = actualCity;
+                    newCenterCoords.centerCoords = [formattedParkingArray[0].coords[0], formattedParkingArray[0].coords[1]];
+
+                    setActualCity(newCenterCoords);
+                } else {
+                    setParkings([])
+                }
+            })
+            .catch((err) => {
+                console.log(err);
+            });
+        }
+    }, [placeCoords, distance]);
+    
 
     useEffect(() => {
         if(!placeName) {

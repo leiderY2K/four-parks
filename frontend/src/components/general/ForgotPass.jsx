@@ -41,7 +41,7 @@ export default function ForgotPass() {
             </div>
 
             <div className="flex justify-center mt-2 font-paragraph text-sm text-white"> ¿Recuerda su contraseña?
-                <a href="/" className="ml-1 font-semibold text-white hover:text-blue-darkest"> Iniciar sesión </a>
+                <a href="/inicio-sesion" className="ml-1 font-semibold text-white hover:text-blue-darkest"> Iniciar sesión </a>
             </div>
         </article>
     )

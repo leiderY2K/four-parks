@@ -103,7 +103,7 @@ public class ParkingController {
         return parkingResponse;
     }
 
-    @GetMapping("/spot")
+    @PostMapping("/spot")
     public ParkingsResponse getParkingsBySpot(
         @RequestBody ParkingsRequest spots,
         @RequestParam("distance") float distance
